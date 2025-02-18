@@ -162,6 +162,7 @@ class ImageWrapper:
 
     @JOverride
     def showMeasurements(self, module):
+        # ImageI.showMeasurements(module)
         print('ImageWrapper: Implement showMeasurements')
     
     @JOverride

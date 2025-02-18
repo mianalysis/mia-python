@@ -1,14 +1,15 @@
-from jpype import JImplements, JOverride
+from jpype import JImplements, JOverride, JPackage
 from scyjava import jimport
 from src.wrappers.metadata import MetadataWrapper
 
+import jpype
 import os   
-
-WorkspaceI = jimport('io.github.mianalysis.mia.object.WorkspaceI')
+pac = JPackage('io.github.mianalysis.mia.object')
+# 
 File = jimport('java.io.File')
 
-@JImplements(WorkspaceI)
-class WorkspaceWrapper:
+@JImplements(pac.WorkspaceI)
+class WorkspaceWrapper(object):
     def __init__(self, ID, file_path, series, workspaces):
         self._ID = ID
         self._workspaces = workspaces
@@ -65,12 +66,19 @@ class WorkspaceWrapper:
     def showMetadata(self):
         print('WorkspaceWrapper: Implement showMetadata')
 
-    @JOverride
-    def getImage(self,name):
-        return self._images[name]
+    # Deactivating this for now as it's a default method and this is 
+    # something I'm testing using jpype1 1.5.1
+    
+    # @JOverride
+    # def getImage(self,name):
+    #     return super().getImage(name)
+        # return self._images[name]
 
     @JOverride
-    def getObjects(self,name):
+    def getObjects(self,name=None):
+        if not name:
+            return self._objects
+        
         return self._objects[name]
 
     @JOverride
@@ -82,16 +90,12 @@ class WorkspaceWrapper:
         print('WorkspaceWrapper: Implement getSingleTimepointWorkspaces')
 
     @JOverride
-    def getObjects(self):
-        return self._objects
-
-    @JOverride
     def setObjects(self,objects):
         self._objects = objects
 
     @JOverride
     def getImages(self):
-        print('WorkspaceWrapper: Implement getImages')
+        return jpype.java.util.LinkedHashMap(self._images)
 
     @JOverride
     def setImages(self,images):

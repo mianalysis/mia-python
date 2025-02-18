@@ -7,4 +7,8 @@ ObjI = jimport('io.github.mianalysis.mia.object.coordinates.Obj')
 class ObjWrapper:
     def __init__(self):
         print('Implement constructor')
+        
+    @JOverride
+    def removeParent(self, name):
+        ObjI.removeParent(self, name)
      
