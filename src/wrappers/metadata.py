@@ -257,7 +257,7 @@ class MetadataWrapper:
 
     @JOverride
     def hasKey(self, key):
-        print('MetadataWrapper: Implement hasKey')
+        return key in self._store.keys()
     
     @JOverride
     def keySet(self):
@@ -269,15 +269,15 @@ class MetadataWrapper:
 
     @JOverride
     def clear(self):
-        print('MetadataWrapper: Implement clear')
+        self._store = {}
 
     @JOverride
     def put(self, key, value):
-        print('MetadataWrapper: Implement put')
+        self._store[key] = value
 
     @JOverride
     def get(self, key):
-        print('MetadataWrapper: Implement get')
+        return self._store[key]
 
     @JOverride
     def clone(self):

@@ -69,10 +69,9 @@ class WorkspaceWrapper(object):
     # Deactivating this for now as it's a default method and this is 
     # something I'm testing using jpype1 1.5.1
     
-    # @JOverride
-    # def getImage(self,name):
-    #     return super().getImage(name)
-        # return self._images[name]
+    @JOverride
+    def getImage(self,name):
+        return self._images[name]
 
     @JOverride
     def getObjects(self,name=None):

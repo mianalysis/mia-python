@@ -2,6 +2,8 @@
 from jpype import JImplements, JOverride
 from scyjava import jimport
 
+Status = jimport('io.github.mianalysis.mia.object.system.Status')
+
 ModuleI = jimport('io.github.mianalysis.mia.module.ModuleI')
 
 
@@ -17,7 +19,8 @@ class ModuleDemo:
     
     @JOverride
     def process(self, workspace):
-        print('ModuleWrapper: Implement process')
+        print(workspace.getMetadata())
+        return Status.PASS
     
     @JOverride
     def initialiseParameters(self):
