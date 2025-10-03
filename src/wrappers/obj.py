@@ -12,19 +12,19 @@ class ObjWrapper(VolumeWrapper):
     # private LinkedHashMap<String, ObjMetadata> metadata = new LinkedHashMap<>();
     # private HashMap<Integer, Roi> rois = new HashMap<>();
     
-    def __init__(self, obj_collection, factory, ID, spat_cal=None):
-        super().__init__(factory, spat_cal=spat_cal)
+    def __init__(self, obj_collection, coordinate_set_factory, ID, spat_cal=None):
+        super().__init__(coordinate_set_factory, spat_cal=spat_cal)
         self._ID = ID
         self._obj_collection = obj_collection
         self._T = 0
 
     @JOverride
     def getObjectCollection(self):
-        print('ObjWrapper: Implement getObjectCollection')
+        return self._obj_collection
 
     @JOverride
-    def setObjectCollection(self, objCollection):
-        print('ObjWrapper: Implement setObjectCollection')
+    def setObjectCollection(self, obj_collection):
+        self._obj_collection = obj_collection
 
     @JOverride
     def getName(self):
@@ -47,28 +47,28 @@ class ObjWrapper(VolumeWrapper):
         self._T = T
 
     @JOverride
-    def getParents(self):
-        print('ObjWrapper: Implement getParents')
+    def getAllParents(self):
+        print('ObjWrapper: Implement getAllParents')
 
     @JOverride
-    def setParents(self, Parents):
-        print('ObjWrapper: Implement setParents')
+    def setAllParents(self, parents):
+        print('ObjWrapper: Implement setAllParents')
 
     @JOverride
-    def getChildren(self):
-        print('ObjWrapper: Implement getChildren')
+    def getAllChildren(self):
+        print('ObjWrapper: Implement getAllChildren')
 
     @JOverride
-    def setChildren(self, Children):
-        print('ObjWrapper: Implement setChildren')
+    def setAllChildren(self, children):
+        print('ObjWrapper: Implement setAllChildren')
 
     @JOverride
-    def getPartners(self):
-        print('ObjWrapper: Implement getPartners')
+    def getAllPartners(self):
+        print('ObjWrapper: Implement getAllPartners')
 
     @JOverride
-    def setPartners(self, Partners):
-        print('ObjWrapper: Implement setPartners')
+    def setAllPartners(self, partners):
+        print('ObjWrapper: Implement setAllPartners')
 
     @JOverride
     def removeRelationships(self):
@@ -79,7 +79,7 @@ class ObjWrapper(VolumeWrapper):
         print('ObjWrapper: Implement getMeasurements')
 
     @JOverride
-    def setMeasurements(self, Measurements):
+    def setMeasurements(self, measurements):
         print('ObjWrapper: Implement setMeasurements')
 
     @JOverride
@@ -87,7 +87,7 @@ class ObjWrapper(VolumeWrapper):
         print('ObjWrapper: Implement getMetadata')
 
     @JOverride
-    def setMetadata(self, Metadata):
+    def setMetadata(self, metadata):
         print('ObjWrapper: Implement setMetadata')
 
     @JOverride

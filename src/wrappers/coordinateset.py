@@ -3,38 +3,43 @@ from scyjava import jimport
 
 from src.wrappers.volume import VolumeWrapper
 
-@JImplements('io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI','io.github.mianalysis.mia.TestIter')
+@JImplements('io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI')
 class CoordinateSetWrapper():
     def __init__(self):
         self._points = []
 
     @JOverride
     def getFactory(self):
-        print('CoordinateSetWrapper: Implement getFactory')
+        return PythonCoordinateSetFactory()
 
     @JOverride
-    def add(self, x, y, z):
-        self.points.append((x,y,z))
+    def addCoord(self, x, y, z):
+        self._points.append((x,y,z))
 
     @JOverride
     def getNumberOfElements(self):
-        print('CoordinateSetWrapper: Implement getNumberOfElements')
+        return self.size()
 
     @JOverride
     def createEmptyCoordinateSet(self):
-        print('CoordinateSetWrapper: Implement createEmptyCoordinateSet')
+        return getFactory().createCoordinateSet()
 
     @JOverride
     def finalise(self):
-        print('CoordinateSetWrapper: Implement finalise')
+        pass
 
     @JOverride
-    def finalise(self, z):
-        print('CoordinateSetWrapper: Implement finalise')
+    def finaliseSlice(self, z):
+        pass
 
     @JOverride
     def duplicate(self):
-        print('CoordinateSetWrapper: Implement duplicate')
+        new_points = getFactory().createCoordinateSet()
+
+        for point in self._points:
+            new_points.append(point)
+
+        return new_points        
     
     @JOverride
     def calculateProjected(self):
@@ -60,19 +65,15 @@ class CoordinateSetWrapper():
         print('CoordinateSetWrapper: Implement isEmpty')
 
     @JOverride
-    def toArray(self):
+    def toArray(self, array=None):
         print('CoordinateSetWrapper: Implement toArray')
 
     @JOverride
-    def toArray(self, a):
-        print('CoordinateSetWrapper: Implement toArray')
-
-    @JOverride
-    def contains(self, o):
+    def contains(self, point):
         print('CoordinateSetWrapper: Implement contains')
         
     @JOverride
-    def containsAll(self, c):
+    def containsAll(self, points):
         print('CoordinateSetWrapper: Implement containsAll')
     
     @JOverride
@@ -80,39 +81,35 @@ class CoordinateSetWrapper():
         print('CoordinateSetWrapper: Implement add')
         
     @JOverride
-    def addAll(self, c):
+    def addAll(self, points):
         print('CoordinateSetWrapper: Implement addAll')
 
     @JOverride
-    def retainAll(self, c):
+    def retainAll(self, points):
         print('CoordinateSetWrapper: Implement retainAll')
 
     @JOverride
-    def remove(self, o):
+    def remove(self, point):
         print('CoordinateSetWrapper: Implement remove')
         
     @JOverride
-    def removeAll(self, c):
+    def removeAll(self, points):
         print('CoordinateSetWrapper: Implement removeAll')
 
     @JOverride
     def clear(self):
         print('CoordinateSetWrapper: Implement clear')
-        
-    @JOverride
-    def contains(self, point):
-        print('CoordinateSetWrapper: Implement contains')
 
     @JOverride
     def extend(self, point):
         print('CoordinateSetWrapper: Implement extend')
         
     @JOverride
-    def equals(self, o):
+    def equals(self, point):
         print('CoordinateSetWrapper: Implement equals')
 
     @JOverride
-    def hashCode(self, o):
+    def hashCode(self, point):
         print('CoordinateSetWrapper: Implement hashCode')
 
     @JOverride

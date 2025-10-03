@@ -3,12 +3,11 @@ from scyjava import jimport
 from src.wrappers.metadata import MetadataWrapper
 
 import jpype
-import os   
-pac = JPackage('io.github.mianalysis.mia.object')
-# 
+import os
+
 File = jimport('java.io.File')
 
-@JImplements(pac.WorkspaceI)
+@JImplements('io.github.mianalysis.mia.object.WorkspaceI')
 class WorkspaceWrapper(object):
     def __init__(self, ID, file_path, series, workspaces):
         self._ID = ID
@@ -74,10 +73,11 @@ class WorkspaceWrapper(object):
         return self._images[name]
 
     @JOverride
-    def getObjects(self,name=None):
-        if not name:
-            return self._objects
+    def getAllObjects(self):        
+        return self._objects
         
+    @JOverride
+    def getObjects(self):        
         return self._objects[name]
 
     @JOverride
@@ -89,7 +89,7 @@ class WorkspaceWrapper(object):
         print('WorkspaceWrapper: Implement getSingleTimepointWorkspaces')
 
     @JOverride
-    def setObjects(self,objects):
+    def setAllObjects(self,objects):
         self._objects = objects
 
     @JOverride

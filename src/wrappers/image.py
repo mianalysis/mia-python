@@ -152,10 +152,7 @@ class ImageWrapper:
         print('ImageWrapper: Implement setMeasurements')
 
     @JOverride
-    def show(self, title=None, lut=None, normalise=True, display_mode=ImageI.DisplayModes.COLOUR, overlay=None):
-        if not title:
-            title = self.getName()
-
+    def show(self, title, lut, normalise, display_mode, overlay):
         self._renderer.render(self, title, lut, normalise, display_mode, overlay)
 
     @JOverride
@@ -166,3 +163,4 @@ class ImageWrapper:
     @JOverride
     def showAllMeasurements(self):
         print('ImageWrapper: Implement showAllMeasurements')
+        
