@@ -3,10 +3,23 @@ from scyjava import jimport
 
 from src.wrappers.volume import VolumeWrapper
 
+Point = jimport('io.github.mianalysis.mia.object.coordinates.Point')
+
 @JImplements('io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI')
 class CoordinateSetWrapper():
     def __init__(self):
         self._points = []
+
+    def getPythonPoints(self):
+        return self._points
+
+    def getPythonPointAtIndex(self, idx):
+        point = self._points[idx]
+        return 
+        
+    def getPointAtIndex(self, idx):
+        point = self._points[idx]
+        return Point(point[0],point[1],point[2])
 
     @JOverride
     def getFactory(self):
@@ -15,6 +28,8 @@ class CoordinateSetWrapper():
     @JOverride
     def addCoord(self, x, y, z):
         self._points.append((x,y,z))
+        
+        return True
 
     @JOverride
     def getNumberOfElements(self):
@@ -58,7 +73,7 @@ class CoordinateSetWrapper():
 
     @JOverride
     def iterator(self):
-        print('CoordinateSetWrapper: Implement iterator')
+        return PythonCoordinateSetIterator(self)
 
     @JOverride
     def isEmpty(self):
@@ -132,4 +147,36 @@ class PythonCoordinateSetFactory:
     def duplicate(self):
         return PythonCoordinateSetFactory()
 
+@JImplements('java.util.Iterator')
+class PythonCoordinateSetIterator:
+    def __init__(self, coordinate_set):
+        self._next_idx = 0
+        self._coordinate_set = coordinate_set
+
+    @JOverride
+    def hasNext(self):
+        return self._next_idx < self._coordinate_set.size()
+        
+    @JOverride
+    def next(self):
+        if self._next_idx == self._coordinate_set.size():
+            print('No such element: the coordinate set has no more elements')
+            return None
+            
+        point = self._coordinate_set.getPointAtIndex(self._next_idx)
+        self._next_idx = self._next_idx + 1
+        
+        return point        
+
+    @JOverride
+    def remove(self, point):
+        # Check the iterator has returned a value (i.e. next_idx>0)
+        if self._next_idx == 0:
+            return
+
+        return self._coordinate_set.getPointAtIndex(self._next_idx-1)
+        
+    @JOverride
+    def forEachRemaining(self, action):
+        print('PythonCoordinateSetIterator: Implement forEachRemaining')
         

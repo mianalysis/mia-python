@@ -12,9 +12,6 @@ class VolumeWrapper:
         self._coordinate_set_factory = coordinate_set_factory
         self._spat_cal = spat_cal
 
-    # def __init__(self, factory, width, height, nSlices, dppXY, dppZ, units):
-    #     print('VolumeWrapper: Implement constructor')
-
     @JOverride
     def getFactory(self):
         return PythonVolumeFactory()

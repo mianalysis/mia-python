@@ -1,6 +1,7 @@
 from jpype import JImplements, JOverride, JPackage
 from scyjava import jimport
 from src.wrappers.metadata import MetadataWrapper
+from src.utilities.conversion import py_dict_to_java_map
 
 import jpype
 import os
@@ -64,20 +65,17 @@ class WorkspaceWrapper(object):
     @JOverride
     def showMetadata(self):
         print('WorkspaceWrapper: Implement showMetadata')
-
-    # Deactivating this for now as it's a default method and this is 
-    # something I'm testing using jpype1 1.5.1
     
     @JOverride
     def getImage(self,name):
         return self._images[name]
 
     @JOverride
-    def getAllObjects(self):        
-        return self._objects
+    def getAllObjects(self):
+        return py_dict_to_java_map(self._objects,'LinkedHashMap')
         
     @JOverride
-    def getObjects(self):        
+    def getObjects(self, name):        
         return self._objects[name]
 
     @JOverride
