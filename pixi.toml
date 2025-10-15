@@ -8,7 +8,7 @@ version = "0.1.0"
 [tasks]
 
 [dependencies]
-python = ">=3.13.7,<3.14"
+python = "==3.12"
 
 [pypi-dependencies]
 jpype1 = "==1.5.1"

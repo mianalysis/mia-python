@@ -3,8 +3,12 @@ from scyjava import jimport
 
 from src.wrappers.volume import VolumeWrapper
 
-@JImplements('io.github.mianalysis.mia.object.coordinates.Obj')
-class ObjWrapper(VolumeWrapper):
+Obj = jimport('io.github.mianalysis.mia.object.coordinates.ObjI')
+ObjAdaptor = jimport('io.github.mianalysis.mia.python.ObjAdaptor')
+VolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor')
+
+@JImplements('io.github.mianalysis.mia.object.coordinates.ObjI')
+class PythonObjWrapper(VolumeWrapper):
     # private LinkedHashMap<String, Obj> parents = new LinkedHashMap<>();
     # private LinkedHashMap<String, Objs> children = new LinkedHashMap<>();
     # private LinkedHashMap<String, Objs> partners = new LinkedHashMap<>();
@@ -13,7 +17,10 @@ class ObjWrapper(VolumeWrapper):
     # private HashMap<Integer, Roi> rois = new HashMap<>();
     
     def __init__(self, obj_collection, coordinate_set_factory, ID, spat_cal=None):
-        super().__init__(coordinate_set_factory, spat_cal=spat_cal)
+        if spat_cal is None:
+            spat_cal = obj_collection.getSpatialCalibration()
+            
+        VolumeWrapper.__init__(self, coordinate_set_factory, spat_cal=spat_cal)
         self._ID = ID
         self._obj_collection = obj_collection
         self._T = 0
@@ -37,6 +44,8 @@ class ObjWrapper(VolumeWrapper):
     @JOverride
     def setID(self, ID):
         self._ID = ID
+        
+        return self
 
     @JOverride
     def getT(self):
@@ -45,6 +54,8 @@ class ObjWrapper(VolumeWrapper):
     @JOverride
     def setT(self, T):
         self._T = T
+        
+        return self
 
     @JOverride
     def getAllParents(self):
@@ -124,7 +135,7 @@ class ObjWrapper(VolumeWrapper):
 
     @JOverride
     def toString(self):
-        print('ObjWrapper: Implement toString')
+        return f"Object \"{self.getName()}\", ID = {self.getID()}, frame = {self.getT()}"
 
 
     ## Inherited from VolumeWrapper
@@ -194,8 +205,8 @@ class ObjWrapper(VolumeWrapper):
         return super().getSpatialCalibration()
 
     @JOverride
-    def setSpatialCalibration(self, spatCal):
-        super().setSpatialCalibration(spatCal)
+    def setSpatialCalibration(self, spat_cal):
+        super().setSpatialCalibration(spat_cal)
 
     @JOverride
     def getCoordinateSet(self):
@@ -245,9 +256,13 @@ class ObjWrapper(VolumeWrapper):
     #         }
     #     }
     # }
+    
+    # Obj default methods
+    def addToImage(self, image, hue):
+        ObjAdaptor.addToImage(self, image, hue)
 
 
-@JImplements('io.github.mianalysis.mia.object.coordinates.ObjFactory')
+@JImplements('io.github.mianalysis.mia.object.coordinates.ObjFactoryI')
 class PythonObjFactory:
     
     @JOverride

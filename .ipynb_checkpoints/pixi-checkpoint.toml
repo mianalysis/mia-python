@@ -8,10 +8,10 @@ version = "0.1.0"
 [tasks]
 
 [dependencies]
-python = ">=3.13.7,<3.14"
+python = "==3.12"
 
 [pypi-dependencies]
-jpype1 = ">=1.6.0"
+jpype1 = "==1.5.1"
 jupyter = ">=1.1.1"
 matplotlib = ">=3.10.0"
 pyimagej = ">=1.6.0"

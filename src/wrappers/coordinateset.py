@@ -3,12 +3,18 @@ from scyjava import jimport
 
 from src.wrappers.volume import VolumeWrapper
 
+import numpy as np
+
 Point = jimport('io.github.mianalysis.mia.object.coordinates.Point')
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI')
 class CoordinateSetWrapper():
     def __init__(self):
         self._points = []
+        self._chunk_size = 10000
+        self._chunks = []
+        self._current_chunk = np.empty((self._chunk_size, 3), dtype=np.int32)
+        self._count = 0
 
     def getPythonPoints(self):
         return self._points
@@ -18,8 +24,9 @@ class CoordinateSetWrapper():
         return 
         
     def getPointAtIndex(self, idx):
-        point = self._points[idx]
-        return Point(point[0],point[1],point[2])
+        # point = self._points[idx]
+        # return Point(point[0],point[1],point[2])
+        return Point(self._points[idx,0],self._points[idx,1],self._points[idx,2])
 
     @JOverride
     def getFactory(self):
@@ -27,7 +34,13 @@ class CoordinateSetWrapper():
 
     @JOverride
     def addCoord(self, x, y, z):
-        self._points.append((x,y,z))
+        # self._points.append((x,y,z))
+        if self._count == len(self._current_chunk):
+            self._chunks.append(self._current_chunk)
+            self._current_chunk = np.empty((self._chunk_size, 3), dtype=np.int32)
+            self._count = 0
+        self._current_chunk[self._count] = [x, y, z]
+        self._count += 1
         
         return True
 
@@ -41,6 +54,7 @@ class CoordinateSetWrapper():
 
     @JOverride
     def finalise(self):
+        self._points = np.vstack(self._chunks + [self._current_chunk[:self._count]])
         pass
 
     @JOverride

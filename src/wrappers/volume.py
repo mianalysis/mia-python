@@ -1,17 +1,24 @@
 from jpype import JImplements, JOverride
 from scyjava import jimport
 
+VolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor')
+
 @JImplements('io.github.mianalysis.mia.object.coordinates.volume.Volume')
 class VolumeWrapper:
     # protected Volume surface = null;
     # protected Volume projection = null;
     # protected Point<Double> meanCentroidPx = null;
 
-    def __init__(self, coordinate_set_factory, spat_cal=None):
+    def __init__(self, coordinate_set_factory, spat_cal):
         self._coordinate_set = coordinate_set_factory.createCoordinateSet()
         self._coordinate_set_factory = coordinate_set_factory
         self._spat_cal = spat_cal
 
+        # Storing these for access speed
+        self._width = spat_cal.getWidth()
+        self._height = spat_cal.getHeight()
+        self._nSlices = spat_cal.getNSlices()
+        
     @JOverride
     def getFactory(self):
         return PythonVolumeFactory()
@@ -129,6 +136,30 @@ class VolumeWrapper:
     #     }
     # }
 
+    # Default methods
+    def addCoord(self, x, y, z):
+        if self._spat_cal is not None:
+            if x < 0 or x >= self._width:
+                print("Coordinate out of bounds! (x: " + x + ")")
+                return
+            if y < 0 or y >= self._height:
+                print("Coordinate out of bounds! (y: " + y + ")")
+                return
+            if z < 0 or z >= self._nSlices:
+                print("Coordinate out of bounds! (z: " + z + ")")
+                return
+
+        self._coordinate_set.addCoord(x, y, z)
+
+    def finalise(self):
+        VolumeAdaptor.finalise(self)
+
+    def finaliseSlice(self, z):
+        VolumeAdaptor.finaliseSlice(self, z)
+
+    def getWidth(self):
+        return VolumeAdaptor.getWidth(self)
+
 @JImplements('io.github.mianalysis.mia.object.coordinates.volume.VolumeFactory')
 class PythonVolumeFactory:
     
@@ -138,6 +169,8 @@ class PythonVolumeFactory:
     
     @JOverride
     def createVolume(self, coordinate_set_factory, spat_cal):
+        print("Creating with")
+        print(spat_cal)
         return VolumeWrapper(coordinate_set_factory, spat_cal)
 
     @JOverride
