@@ -1,6 +1,6 @@
 from jpype import JImplements, JOverride, JPackage
 from scyjava import jimport
-from src.wrappers.metadata import MetadataWrapper
+from src.wrappers.metadatawrapper import MetadataWrapper
 from src.utilities.conversion import py_dict_to_java_map
 
 import jpype
@@ -36,7 +36,7 @@ class WorkspaceWrapper(object):
 
     @JOverride
     def removeObjects(self, name, retainMeasurements):
-        print('WorkspaceWrapper: Implement removeObjects')
+        raise Exception('WorkspaceWrapper: Implement removeObjects')
 
     @JOverride
     def addImage(self, image):
@@ -44,27 +44,23 @@ class WorkspaceWrapper(object):
 
     @JOverride
     def removeImage(self, name, retainMeasurements):
-        print('WorkspaceWrapper: Implement removeImage')
+        raise Exception('WorkspaceWrapper: Implement removeImage')
 
     @JOverride
     def clearAllImages(self,retainMeasurements):
-        print('WorkspaceWrapper: Implement clearAllImages')
+        raise Exception('WorkspaceWrapper: Implement clearAllImages')
 
     @JOverride
     def clearAllObjects(self,retainMeasurements):
-        print('WorkspaceWrapper: Implement clearAllObjects')
+        raise Exception('WorkspaceWrapper: Implement clearAllObjects')
 
     @JOverride
     def clearMetadata(self):
-        print('WorkspaceWrapper: Implement clearMetadata')
+        raise Exception('WorkspaceWrapper: Implement clearMetadata')
 
     @JOverride
-    def showMetadata(self,module):
-        print('WorkspaceWrapper: Implement showMetadata')
-
-    @JOverride
-    def showMetadata(self):
-        print('WorkspaceWrapper: Implement showMetadata')
+    def showMetadata(self,module=None):
+        raise Exception('WorkspaceWrapper: Implement showMetadata')
     
     @JOverride
     def getImage(self,name):
@@ -84,7 +80,7 @@ class WorkspaceWrapper(object):
 
     @JOverride
     def getSingleTimepointWorkspaces(self):
-        print('WorkspaceWrapper: Implement getSingleTimepointWorkspaces')
+        raise Exception('WorkspaceWrapper: Implement getSingleTimepointWorkspaces')
 
     @JOverride
     def setAllObjects(self,objects):
@@ -96,7 +92,7 @@ class WorkspaceWrapper(object):
 
     @JOverride
     def setImages(self,images):
-        print('WorkspaceWrapper: Implement setImages')
+        raise Exception('WorkspaceWrapper: Implement setImages')
 
     @JOverride
     def getMetadata(self):
@@ -104,7 +100,7 @@ class WorkspaceWrapper(object):
 
     @JOverride
     def setMetadata(self,metadata):
-        print('WorkspaceWrapper: Implement setMetadata')
+        raise Exception('WorkspaceWrapper: Implement setMetadata')
 
     @JOverride
     def getID(self):
@@ -112,32 +108,32 @@ class WorkspaceWrapper(object):
 
     @JOverride
     def getProgress(self):
-        print('WorkspaceWrapper: Implement getProgress')
+        raise Exception('WorkspaceWrapper: Implement getProgress')
 
     @JOverride
     def setProgress(self,progress):
-        print('WorkspaceWrapper: Implement setProgress')
+        raise Exception('WorkspaceWrapper: Implement setProgress')
 
     @JOverride
     def getStatus(self):
-        print('WorkspaceWrapper: Implement getStatus')
+        raise Exception('WorkspaceWrapper: Implement getStatus')
 
     @JOverride
     def setStatus(self,status):
-        print('WorkspaceWrapper: Implement setStatus')
+        raise Exception('WorkspaceWrapper: Implement setStatus')
 
     @JOverride
     def exportWorkspace(self):
-        print('WorkspaceWrapper: Implement exportWorkspace')
+        raise Exception('WorkspaceWrapper: Implement exportWorkspace')
     
     @JOverride
     def setExportWorkspace(self,exportWorkspace):
-        print('WorkspaceWrapper: Implement setExportWorkspace')
+        raise Exception('WorkspaceWrapper: Implement setExportWorkspace')
     
     @JOverride
     def getWorkspaces(self):
-        print('WorkspaceWrapper: Implement getWorkspaces')
+        raise Exception('WorkspaceWrapper: Implement getWorkspaces')
     
     @JOverride
     def setWorkspaces(self,workspaces):
-        print('WorkspaceWrapper: Implement setWorkspaces')
+        raise Exception('WorkspaceWrapper: Implement setWorkspaces')

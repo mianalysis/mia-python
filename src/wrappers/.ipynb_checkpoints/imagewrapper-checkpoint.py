@@ -3,7 +3,7 @@ ij =imagej.init(['io.github.mianalysis:mia-plugin:2.0.0-SNAPSHOT'])
 
 from jpype import JImplements, JOverride
 from scyjava import jimport
-from src.wrappers.imagerenderer import NotebookImageRenderer
+from src.utilities.imagerenderer import NotebookImageRenderer
 
 import numpy as np
 import PIL

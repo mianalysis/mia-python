@@ -1,31 +1,26 @@
 from jpype import JImplements, JOverride
 from scyjava import jimport
 
+from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper
+from src.objects.volume import Volume
+
 VolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor')
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.volume.Volume')
 class VolumeWrapper:
-    # protected Volume surface = null;
-    # protected Volume projection = null;
-    # protected Point<Double> meanCentroidPx = null;
-
-    def __init__(self, coordinate_set_factory, spat_cal):
-        self._coordinate_set = coordinate_set_factory.createCoordinateSet()
-        self._coordinate_set_factory = coordinate_set_factory
-        self._spat_cal = spat_cal
-
-        # Storing these for access speed
-        self._width = spat_cal.getWidth()
-        self._height = spat_cal.getHeight()
-        self._nSlices = spat_cal.getNSlices()
+    def __init__(self, coordinate_set_factory_wrapper: CoordinateSetWrapper, spat_cal):
+        self._volume = Volume(coordinate_set_factory_wrapper.getPythonCoordinateSet(), spat_cal)
+        
+    def getPythonVolume(self):
+        return self._volume
         
     @JOverride
     def getFactory(self):
-        return PythonVolumeFactory()
+        return VolumeFactory()
 
     @JOverride
     def getCoordinateSetFactory(self):
-        return self._coordinate_set_factory
+        print('VolumeWrapper: Implement getCoordinateSetFactory')
 
     @JOverride
     def getSurface(self, ignoreEdgesXY, ignoreEdgesZ):
@@ -81,19 +76,19 @@ class VolumeWrapper:
 
     @JOverride
     def getSpatialCalibration(self):
-        return self._spat_cal
+        print('VolumeWrapper: Implement getSpatialCalibration')
 
     @JOverride
     def setSpatialCalibration(self, spat_cal):
-        self._spat_cal = spat_cal
+        print('VolumeWrapper: Implement setSpatialCalibration')
 
     @JOverride
     def getCoordinateSet(self):
-        return self._coordinate_set
+        print('VolumeWrapper: Implement getCoordinateSet')
 
     @JOverride
     def setCoordinateSet(self, coordinate_set):
-        self._coordinate_set = coordinate_set
+        print('VolumeWrapper: Implement setCoordinateSet')
 
     @JOverride
     def createNewVolume(self, factory, spatCal):
@@ -103,65 +98,21 @@ class VolumeWrapper:
     def getCalibratedIterator(self, pixelDistances, matchXY):
         print('VolumeWrapper: Implement getCalibratedIterator')
 
-    # private class VolumeIterator implements Iterator<Point<Double>> {
-    #     private Iterator<Point<Integer>> iterator;
-    #     private boolean pixelDistances;
-    #     private boolean matchXY;
-
-    #     public VolumeIterator(boolean pixelDistances, boolean matchXY) {
-    #         this.pixelDistances = pixelDistances;
-    #         this.iterator = coordinateSet.iterator();
-    #         this.matchXY = matchXY;
-    #     }
-
-    #     @Override
-    #     public boolean hasNext() {
-    #         return iterator.hasNext();
-    #     }
-
-    #     @Override
-    #     public Point<Double> next() {
-    #         Point<Integer> nextPoint = iterator.next();
-    #         int x = nextPoint.x;
-    #         int y = nextPoint.y;
-    #         int z = nextPoint.z;
-
-    #         if (pixelDistances && matchXY) {
-    #             return new Point<>((double) x, (double) y, (double) z * spatCal.dppZ / spatCal.dppXY);
-    #         } else if (pixelDistances & !matchXY) {
-    #             return new Point<>((double) x, (double) y, (double) z);
-    #         } else {
-    #             return new Point<>((double) x * spatCal.dppXY, (double) y * spatCal.dppXY, (double) z * spatCal.dppZ);
-    #         }
-    #     }
-    # }
-
     # Default methods
     def addCoord(self, x, y, z):
-        if self._spat_cal is not None:
-            if x < 0 or x >= self._width:
-                print("Coordinate out of bounds! (x: " + x + ")")
-                return
-            if y < 0 or y >= self._height:
-                print("Coordinate out of bounds! (y: " + y + ")")
-                return
-            if z < 0 or z >= self._nSlices:
-                print("Coordinate out of bounds! (z: " + z + ")")
-                return
-
-        self._coordinate_set.addCoord(x, y, z)
+        print('VolumeWrapper: Implement addCoord')
 
     def finalise(self):
-        VolumeAdaptor.finalise(self)
+        print('VolumeWrapper: Implement finalise')
 
     def finaliseSlice(self, z):
-        VolumeAdaptor.finaliseSlice(self, z)
+        print('VolumeWrapper: Implement finaliseSlice')
 
     def getWidth(self):
-        return VolumeAdaptor.getWidth(self)
+        print('VolumeWrapper: Implement getWidth')
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.volume.VolumeFactory')
-class PythonVolumeFactory:
+class VolumeFactory:
     
     @JOverride
     def getName(self):
@@ -169,11 +120,9 @@ class PythonVolumeFactory:
     
     @JOverride
     def createVolume(self, coordinate_set_factory, spat_cal):
-        print("Creating with")
-        print(spat_cal)
         return VolumeWrapper(coordinate_set_factory, spat_cal)
 
     @JOverride
     def duplicate(self):
-        return PythonVolumeFactory()
+        return VolumeFactory()
     

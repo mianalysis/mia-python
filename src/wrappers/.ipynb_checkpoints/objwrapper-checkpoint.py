@@ -1,14 +1,14 @@
 from jpype import JImplements, JOverride
 from scyjava import jimport
 
-from src.wrappers.volume import VolumeWrapper
+from src.wrappers.volumewrapper import VolumeWrapper
 
 Obj = jimport('io.github.mianalysis.mia.object.coordinates.ObjI')
 ObjAdaptor = jimport('io.github.mianalysis.mia.python.ObjAdaptor')
 VolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor')
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.ObjI')
-class PythonObjWrapper(VolumeWrapper):
+class ObjWrapper(VolumeWrapper):
     # private LinkedHashMap<String, Obj> parents = new LinkedHashMap<>();
     # private LinkedHashMap<String, Objs> children = new LinkedHashMap<>();
     # private LinkedHashMap<String, Objs> partners = new LinkedHashMap<>();
@@ -263,7 +263,7 @@ class PythonObjWrapper(VolumeWrapper):
 
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.ObjFactoryI')
-class PythonObjFactory:
+class ObjFactory:
     
     @JOverride
     def getName(self):
@@ -275,4 +275,4 @@ class PythonObjFactory:
 
     @JOverride
     def duplicate(self):
-        return PythonObjFactory()
+        return ObjFactory()
