@@ -1,14 +1,10 @@
 from jpype import JImplements, JOverride
-from scyjava import jimport
-
-import jpype
-
-Objs = jimport('io.github.mianalysis.mia.object.ObjsI')
+from src.objects.objs import Objs
 
 @JImplements('io.github.mianalysis.mia.object.ObjsI')
-class ObjsWrapper(jpype._jcollection._JMap):      
+class ObjsWrapper():      
     def __init__(self):
-        self._objs = {}
+        self._objs = Objs()
         
     @JOverride
     def createAndAddNewObject(self, factory):
@@ -210,6 +206,10 @@ class ObjsWrapper(jpype._jcollection._JMap):
     # From Map
 
     @JOverride
+    def get(self, object):
+        raise Exception('MapWrapper: Implement size')
+    
+    @JOverride
     def size(self):
         raise Exception('MapWrapper: Implement size')
     
@@ -348,7 +348,7 @@ class ObjsWrapper(jpype._jcollection._JMap):
 
 
 @JImplements('io.github.mianalysis.mia.object.ObjsFactoryI')
-class ObjsFactory:
+class ObjsFactoryWrapper:
     
     @JOverride
     def getName(self):
@@ -356,29 +356,29 @@ class ObjsFactory:
     
     @JOverride
     def createObjs(self, name, dppXY, dppZ, units, width, height, nSlices, nFrames, frameInterval, temporalUnit):
-        raise Exception('ObjsFactory: Implement createObjs')
+        raise Exception('ObjsFactoryWrapper: Implement createObjs 1')
         return ObjsWrapper()
         # return ObjsWrapper(name, dppXY, dppZ, units, width, height, nSlices, nFrames, frameInterval, temporalUnit)
 
     @JOverride
     def createFromExampleObjs(self, name, example_objs):
-        raise Exception('ObjsFactory: Implement createObjs')
+        raise Exception('ObjsFactoryWrapper: Implement createObjs 2')
         return ObjsWrapper()
         # return ObjsWrapper(name, name, imageForCalibration)
 
     @JOverride
     def createFromImage(self, name, imageForCalibration):
-        raise Exception('ObjsFactory: Implement createObjs')
+        raise Exception('ObjsFactoryWrapper: Implement createObjs 3')
         return ObjsWrapper()
         # return ObjsWrapper(name, name, imageForCalibration)
         
     @JOverride
     def createFromSpatCal(self, name, spat_cal, nFrames, frameInterval, temporalUnit):
-        raise Exception('ObjsFactory: Implement createObjs')
+        raise Exception('ObjsFactoryWrapper: Implement createObjs 4')
         return ObjsWrapper()
         # return ObjsWrapper(name, cal, nFrames, frameInterval, temporalUnit)
         
     @JOverride
     def duplicate(self):
-        return ObjsFactory()
+        return ObjsFactoryWrapper()
         

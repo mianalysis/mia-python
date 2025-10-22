@@ -1,73 +1,80 @@
+from __future__ import annotations
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.objects.coordinateset import CoordinateSet, CoordinateSetFactory
+    from src.utilities.types import Point
+
 class Volume:
-    def __init__(self, coordinate_set_factory, spat_cal):
-        self._coordinate_set = coordinate_set_factory.createCoordinateSet()
-        self._coordinate_set_factory = coordinate_set_factory
+    def __init__(self, coordinate_set_factory: CoordinateSetFactory, spat_cal):
+        self._coordinate_set: CoordinateSet = coordinate_set_factory.createCoordinateSet()
+        self._coordinate_set_factory: CoordinateSetFactory = coordinate_set_factory
         self._spat_cal = spat_cal
 
         # Storing these for access speed
-        self._width = spat_cal.getWidth()
-        self._height = spat_cal.getHeight()
-        self._nSlices = spat_cal.getNSlices()
+        self._width: int = spat_cal.getWidth()
+        self._height: int = spat_cal.getHeight()
+        self._nSlices: int = spat_cal.getNSlices()
 
-    def getCoordinateSetFactory(self):
+    def getCoordinateSetFactory(self) -> CoordinateSetFactory:
         return self._coordinate_set_factory
     
-    def getSurface(self, ignoreEdgesXY, ignoreEdgesZ):
-        print('VolumeWrapper: Implement getSurface')
+    def getSurface(self, ignore_edges_XY: bool, ignore_edges_Z: bool) -> Volume:
+        raise Exception('VolumeWrapper: Implement getSurface')
 
-    def hasCalculatedSurface(self):
-        print('VolumeWrapper: Implement hasCalculatedSurface')
+    def hasCalculatedSurface(self) -> bool:
+        raise Exception('VolumeWrapper: Implement hasCalculatedSurface')
 
-    def getProjected(self):
-        print('VolumeWrapper: Implement getProjected')
+    def getProjected(self) -> Volume:
+        raise Exception('VolumeWrapper: Implement getProjected')
 
-    def hasCalculatedProjection(self):
-        print('VolumeWrapper: Implement hasCalculatedProjection')
+    def hasCalculatedProjection(self) -> bool:
+        raise Exception('VolumeWrapper: Implement hasCalculatedProjection')
 
-    def getMeanCentroid(self, pixelDistances, matchXY):
-        print('VolumeWrapper: Implement getMeanCentroid')
+    def getMeanCentroid(self, pixel_distances: bool, match_XY: bool) -> Point:
+        raise Exception('VolumeWrapper: Implement getMeanCentroid')
 
-    def hasCalculatedCentroid(self):
-        print('VolumeWrapper: Implement hasCalculatedCentroid')
+    def hasCalculatedCentroid(self) -> bool:
+        raise Exception('VolumeWrapper: Implement hasCalculatedCentroid')
 
-    def clearAllCoordinates(self):
-        print('VolumeWrapper: Implement clearAllCoordinates')
+    def clearAllCoordinates(self): # No return
+        raise Exception('VolumeWrapper: Implement clearAllCoordinates')
 
-    def clearSurface(self):
-        print('VolumeWrapper: Implement clearSurface')
+    def clearSurface(self): # No return
+        raise Exception('VolumeWrapper: Implement clearSurface')
 
-    def clearPoints(self):
-        print('VolumeWrapper: Implement clearPoints')
+    def clearPoints(self): # No return
+        raise Exception('VolumeWrapper: Implement clearPoints')
 
-    def clearProjected(self):
-        print('VolumeWrapper: Implement clearProjected')
+    def clearProjected(self): # No return
+        raise Exception('VolumeWrapper: Implement clearProjected')
 
-    def clearCentroid(self):
-        print('VolumeWrapper: Implement clearCentroid')
+    def clearCentroid(self): # No return
+        raise Exception('VolumeWrapper: Implement clearCentroid')
 
-    def hashCode(self):
-        print('VolumeWrapper: Implement hashCode')
+    def hashCode(self) -> int:
+        raise Exception('VolumeWrapper: Implement hashCode')
 
-    def equals(self, obj):
-        print('VolumeWrapper: Implement equals')
+    def equals(self, obj: Volume) -> bool:
+        raise Exception('VolumeWrapper: Implement equals')
 
-    def getSpatialCalibration(self):
+    def getSpatialCalibration(self): # To do
         return self._spat_cal
 
-    def setSpatialCalibration(self, spat_cal):
+    def setSpatialCalibration(self, spat_cal): # To do
         self._spat_cal = spat_cal
 
-    def getCoordinateSet(self):
+    def getCoordinateSet(self) -> CoordinateSet:
         return self._coordinate_set
 
-    def setCoordinateSet(self, coordinate_set):
+    def setCoordinateSet(self, coordinate_set: CoordinateSet):
         self._coordinate_set = coordinate_set
 
-    def createNewVolume(self, factory, spatCal):
-        print('VolumeWrapper: Implement createNewVolume')
+    def createNewVolume(self, coordinate_set_factory: CoordinateSetFactory, spatCal) -> Volume:
+        raise Exception('VolumeWrapper: Implement createNewVolume')
 
-    def getCalibratedIterator(self, pixelDistances, matchXY):
-        print('VolumeWrapper: Implement getCalibratedIterator')
+    def getCalibratedIterator(self, pixel_distances: bool, match_XY: bool): # To do
+        raise Exception('VolumeWrapper: Implement getCalibratedIterator')
 
     # private class VolumeIterator implements Iterator<Point<Double>> {
     #     private Iterator<Point<Integer>> iterator;
@@ -103,26 +110,26 @@ class Volume:
     # }
 
     # Default methods
-    def addCoord(self, x, y, z):
+    def addCoord(self, x: int, y: int, z: int): # No return
         if self._spat_cal is not None:
             if x < 0 or x >= self._width:
-                print("Coordinate out of bounds! (x: " + x + ")")
+                print("Coordinate out of bounds! (x: %i)" % x)
                 return
             if y < 0 or y >= self._height:
-                print("Coordinate out of bounds! (y: " + y + ")")
+                print("Coordinate out of bounds! (y: %i)" % y)
                 return
             if z < 0 or z >= self._nSlices:
-                print("Coordinate out of bounds! (z: " + z + ")")
+                print("Coordinate out of bounds! (z: %i)" % z)
                 return
 
         self._coordinate_set.addCoord(x, y, z)
 
-    def finalise(self):
-        print('VolumeWrapper: Implement finalise')
+    def finalise(self): # No return
+        raise Exception('VolumeWrapper: Implement finalise')
 
-    def finaliseSlice(self, z):
-        print('VolumeWrapper: Implement finaliseSlice')
+    def finaliseSlice(self, z: int): # No return
+        raise Exception('VolumeWrapper: Implement finaliseSlice')
 
-    def getWidth(self):
-        print('VolumeWrapper: Implement getWidth')
+    def getWidth(self) -> int:
+        raise Exception('VolumeWrapper: Implement getWidth')
         

@@ -1,14 +1,17 @@
 from __future__ import annotations
-from src.utilities.types import *
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.utilities.types import Point, Points
 
 import numpy as np
 
 class CoordinateSet():
     def __init__(self):
-        self._points: Points = np.empty((0,3)).astype(np.int32)
+        self._points: Points = np.empty((0,3)).astype(int)
         self._chunk_size: int = 10000
         self._chunks: list[np.ndarray] = []
-        self._current_chunk: Points = np.empty((self._chunk_size, 3), dtype=np.int32)
+        self._current_chunk: Points = np.empty((self._chunk_size, 3), dtype=int)
         self._count: int = 0
 
     def getPoints(self) -> np.ndarray:
@@ -17,10 +20,10 @@ class CoordinateSet():
     def getPointAtIndex(self, idx: int) -> Point:
         return self._points[idx]
 
-    def addCoord(self, x: np.int32, y: np.int32, z: np.int32) -> bool:        
+    def addCoord(self, x: int, y: int, z: int) -> bool:        
         if self._count == len(self._current_chunk):
             self._chunks.append(self._current_chunk)
-            self._current_chunk = np.empty((self._chunk_size, 3), dtype=np.int32)
+            self._current_chunk = np.empty((self._chunk_size, 3), dtype=int)
             self._count = 0
         self._current_chunk[self._count] = [x, y, z]
         self._count += 1

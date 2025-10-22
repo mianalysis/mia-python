@@ -1,100 +1,109 @@
+from __future__ import annotations
+from typing import Dict
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from src.objects.objs import Objs
+    from src.objects.coordinateset import CoordinateSetFactory
+    from src.objects.image import Image
+    
 from src.objects.volume import Volume
 
 class Obj(Volume):
-    # private LinkedHashMap<String, Obj> parents = new LinkedHashMap<>();
-    # private LinkedHashMap<String, Objs> children = new LinkedHashMap<>();
-    # private LinkedHashMap<String, Objs> partners = new LinkedHashMap<>();
     # private LinkedHashMap<String, Measurement> measurements = new LinkedHashMap<>();
     # private LinkedHashMap<String, ObjMetadata> metadata = new LinkedHashMap<>();
     # private HashMap<Integer, Roi> rois = new HashMap<>();
     
-    def __init__(self, obj_collection, coordinate_set_factory, ID, spat_cal=None):        
+    def __init__(self, obj_collection: Objs, coordinate_set_factory: CoordinateSetFactory, ID: int, spat_cal=None):        
         if spat_cal is None:
             spat_cal = obj_collection.getSpatialCalibration()
             
         super().__init__(coordinate_set_factory, spat_cal=spat_cal)
         
-        self._ID = ID
-        self._obj_collection = obj_collection
-        self._T = 0
+        self._ID: int = ID
+        self._obj_collection: Objs = obj_collection
+        self._T: int = 0
+        self._parents: Dict[str, Obj] = {}
+        self._children: Dict[str, Objs] = {}
+        self._partners: Dict[str, Objs] = {}
 
-    def getObjectCollection(self):
+    def getObjectCollection(self) -> Objs:
         return self._obj_collection
 
-    def setObjectCollection(self, obj_collection):
+    def setObjectCollection(self, obj_collection: Objs):
         self._obj_collection = obj_collection
 
-    def getName(self):
+    def getName(self) -> str:
         return self._obj_collection.getName()
 
-    def getID(self):
+    def getID(self) -> int:
         return self._ID
 
-    def setID(self, ID):
+    def setID(self, ID: int) -> Obj:
         self._ID = ID
         
         return self
 
-    def getT(self):
+    def getT(self) -> int:
         return self._T
 
-    def setT(self, T):
+    def setT(self, T: int) -> Obj:
         self._T = T
         
         return self
 
-    def getAllParents(self):
-        print('ObjWrapper: Implement getAllParents')
+    def getAllParents(self) -> Dict[str, Obj]:
+        raise Exception('ObjWrapper: Implement getAllParents')
 
-    def setAllParents(self, parents):
-        print('ObjWrapper: Implement setAllParents')
+    def setAllParents(self, parents: Dict[str, Obj]):
+        raise Exception('ObjWrapper: Implement setAllParents')
 
-    def getAllChildren(self):
-        print('ObjWrapper: Implement getAllChildren')
+    def getAllChildren(self) -> Dict[str, Objs]:
+        raise Exception('ObjWrapper: Implement getAllChildren')
 
-    def setAllChildren(self, children):
-        print('ObjWrapper: Implement setAllChildren')
+    def setAllChildren(self, children: Dict[str, Objs]):
+        raise Exception('ObjWrapper: Implement setAllChildren')
 
-    def getAllPartners(self):
-        print('ObjWrapper: Implement getAllPartners')
+    def getAllPartners(self) -> Dict[str, Objs]:
+        raise Exception('ObjWrapper: Implement getAllPartners')
 
-    def setAllPartners(self, partners):
-        print('ObjWrapper: Implement setAllPartners')
+    def setAllPartners(self, partners: Dict[str, Objs]):
+        raise Exception('ObjWrapper: Implement setAllPartners')
 
-    def removeRelationships(self):
-        print('ObjWrapper: Implement removeRelationships')
+    def removeRelationships(self): # No return
+        raise Exception('ObjWrapper: Implement removeRelationships')
 
-    def getMeasurements(self):
-        print('ObjWrapper: Implement getMeasurements')
+    def getMeasurements(self): # To do
+        raise Exception('ObjWrapper: Implement getMeasurements')
 
-    def setMeasurements(self, measurements):
-        print('ObjWrapper: Implement setMeasurements')
+    def setMeasurements(self, measurements): # To do
+        raise Exception('ObjWrapper: Implement setMeasurements')
 
-    def getMetadata(self):
-        print('ObjWrapper: Implement getMetadata')
+    def getMetadata(self): # To do
+        raise Exception('ObjWrapper: Implement getMetadata')
 
-    def setMetadata(self, metadata):
-        print('ObjWrapper: Implement setMetadata')
+    def setMetadata(self, metadata): # To do
+        raise Exception('ObjWrapper: Implement setMetadata')
 
-    def getRoi(self, z_slice):
-        print('ObjWrapper: Implement getRoi')
+    def getRoi(self, z_slice): # To do
+        raise Exception('ObjWrapper: Implement getRoi')
 
-    def getRois(self):
-        print('ObjWrapper: Implement getRois')
+    def getRois(self): # To do
+        raise Exception('ObjWrapper: Implement getRois')
 
-    def clearROIs(self):
-        print('ObjWrapper: Implement clearROIs')
+    def clearROIs(self): # No return
+        raise Exception('ObjWrapper: Implement clearROIs')
 
-    def duplicate(self, newCollection, duplicateRelationships, duplicateMeasurements, duplicateMetadata):
-        print('ObjWrapper: Implement duplicate')
+    def duplicate(self, new_collection: Objs, duplicate_relationships: bool, duplicate_measurements: bool, duplicate_metadata: bool) -> Obj:
+        raise Exception('ObjWrapper: Implement duplicate')
 
-    def equalsIgnoreNameAndID(self, obj):
-        print('ObjWrapper: Implement equalsIgnoreNameAndID')
+    def equalsIgnoreNameAndID(self, obj: Obj) -> bool:
+        raise Exception('ObjWrapper: Implement equalsIgnoreNameAndID')
 
-    def toString(self):
+    def toString(self) -> str:
         return f"Object \"{self.getName()}\", ID = {self.getID()}, frame = {self.getT()}"
     
     # Obj default methods
-    def addToImage(self, image, hue):
-        print('ObjWrapper: Implement addToImage')
+    def addToImage(self, image: Image, hue: float): # No return
+        raise Exception('ObjWrapper: Implement addToImage')
         
