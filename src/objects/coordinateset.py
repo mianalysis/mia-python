@@ -14,7 +14,7 @@ class CoordinateSet():
         self._current_chunk: Points = np.empty((self._chunk_size, 3), dtype=int)
         self._count: int = 0
 
-    def getPoints(self) -> np.ndarray:
+    def getPoints(self) -> Points:
         return self._points
 
     def getPointAtIndex(self, idx: int) -> Point:

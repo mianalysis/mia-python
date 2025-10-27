@@ -1,150 +1,160 @@
 from jpype import JImplements, JOverride
 from scyjava import jimport
+from typing import TYPE_CHECKING
 
-from src.objects.coordinateset import CoordinateSet
+from src.objects.coordinateset import CoordinateSet, CoordinateSetIterator
 from src.objects.coordinateset import CoordinateSetFactory
 
-Point = jimport('io.github.mianalysis.mia.object.coordinates.Point')
+if TYPE_CHECKING:
+    from types.JCoordinateSetWrapper import JCoordinateSetType, JCoordinateSetFactoryType
+    from types.JPoint import JPoint as JPointType
+
+from src.utilities.types import Point, Points    
+
+JPoint = jimport('io.github.mianalysis.mia.object.coordinates.Point')
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI')
 class CoordinateSetWrapper():
     def __init__(self):
         self._coordinate_set: CoordinateSet = CoordinateSet()
         
-    def getPythonCoordinateSet(self):
+    def getPythonCoordinateSet(self) -> CoordinateSet:
         return self._coordinate_set
 
-    def getPythonPoints(self):
+    def getPythonPoints(self) -> Points:
         return self._coordinate_set.getPoints()
 
-    def getPythonPointAtIndex(self, idx):
+    def getPythonPointAtIndex(self, idx:int) -> Point:
         return self._coordinate_set.getPointAtIndex(idx)
         
-    def getPointAtIndex(self, idx):
-        point = self._coordinate_set.getPointAtIndex(idx)
-        return Point(point[idx,0],point[idx,1],point[idx,2])
+    def getPointAtIndex(self, idx: int) -> JPointType[int]:
+        point: Point = self._coordinate_set.getPointAtIndex(idx)
+        return JPoint[int](point[idx,0],point[idx,1],point[idx,2])
 
     @JOverride
-    def getFactory(self):
+    def getFactory(self) -> JCoordinateSetFactoryType:
         return CoordinateSetFactoryWrapper()
 
     @JOverride
-    def addCoord(self, x, y, z):
+    def addCoord(self, x: int, y: int, z: int) -> bool:
         return self._coordinate_set.addCoord(x,y,z)
 
     @JOverride
-    def getNumberOfElements(self):
+    def getNumberOfElements(self) -> int:
         return self._coordinate_set.getNumberOfElements()
 
     @JOverride
-    def createEmptyCoordinateSet(self):
+    def createEmptyCoordinateSet(self) -> JCoordinateSetType:
         return self.getFactory().createCoordinateSet()
 
     @JOverride
-    def finalise(self):
+    def finalise(self): # No return
         self._coordinate_set.finalise()
 
     @JOverride
-    def finaliseSlice(self, z):
+    def finaliseSlice(self, z: int): # No return
         self._coordinate_set.finaliseSlice(z)
 
     @JOverride
-    def duplicate(self):
-        new_coordinate_set_wrapper = self.getFactory().createCoordinateSet()
-        new_coordinate_set_wrapper._coordinate_set = self._coordinate_set.duplicate()
+    def duplicate(self) -> JCoordinateSetType:
+        new_coordinate_set_wrapper: JCoordinateSetType = self.getFactory().createCoordinateSet()
+        
+        point: Point
+        for point in self._coordinate_set.getPoints():
+            new_coordinate_set_wrapper.addCoord(point[0], point[1], point[2])
 
         return new_coordinate_set_wrapper        
     
     @JOverride
-    def calculateProjected(self):
+    def calculateProjected(self) -> JCoordinateSetType:
         raise Exception('CoordinateSetWrapper: Implement calculateProjected')
         
     @JOverride
-    def getSlice(self, slice):
+    def getSlice(self, slice: int) -> JCoordinateSetType:
         raise Exception('CoordinateSetWrapper: Implement getSlice')
 
 
     # From Set
     
     @JOverride
-    def size(self):
+    def size(self) -> int:
         return self._coordinate_set.size()
 
     @JOverride
-    def iterator(self):
+    def iterator(self) -> CoordinateSetIterator:
         return self._coordinate_set.iterator()
 
     @JOverride
-    def isEmpty(self):
-        raise Exception('CoordinateSetWrapper: Implement isEmpty')
+    def isEmpty(self) -> bool:
+        return self._coordinate_set.isEmpty()
 
     @JOverride
-    def toArray(self, array=None):
-        raise Exception('CoordinateSetWrapper: Implement toArray')
+    def toArray(self, array=None): # To do
+        return self._coordinate_set.toArray(array)
 
     @JOverride
-    def contains(self, point):
-        raise Exception('CoordinateSetWrapper: Implement contains')
+    def contains(self, point: Point) -> bool:
+        return self._coordinate_set.contains(point)
         
     @JOverride
-    def containsAll(self, points):
-        raise Exception('CoordinateSetWrapper: Implement containsAll')
+    def containsAll(self, points: Points) -> bool:
+        return self._coordinate_set.containsAll(points)
     
     @JOverride
-    def add(self, point):
-        raise Exception('CoordinateSetWrapper: Implement add')
+    def add(self, point: Point) -> bool:
+        return self._coordinate_set.add(point)
         
     @JOverride
-    def addAll(self, points):
-        raise Exception('CoordinateSetWrapper: Implement addAll')
+    def addAll(self, points: Points) -> bool:
+        return self._coordinate_set.addAll(points)
 
     @JOverride
-    def retainAll(self, points):
-        raise Exception('CoordinateSetWrapper: Implement retainAll')
+    def retainAll(self, points: Points) -> bool:
+        return self._coordinate_set.retainAll(points)
 
     @JOverride
-    def remove(self, point):
-        raise Exception('CoordinateSetWrapper: Implement remove')
+    def remove(self, point: Point) -> bool:
+        return self._coordinate_set.remove(point)
         
     @JOverride
-    def removeAll(self, points):
-        raise Exception('CoordinateSetWrapper: Implement removeAll')
+    def removeAll(self, points: Points) -> bool:
+        return self._coordinate_set.removeAll(points)
 
     @JOverride
-    def clear(self):
-        raise Exception('CoordinateSetWrapper: Implement clear')
+    def clear(self): # No return
+        return self._coordinate_set.clear()
         
     @JOverride
-    def equals(self, point):
-        raise Exception('CoordinateSetWrapper: Implement equals')
+    def equals(self, point: Point) -> bool:
+        return self._coordinate_set.equals(point)
 
     @JOverride
-    def hashCode(self, point):
-        raise Exception('CoordinateSetWrapper: Implement hashCode')
+    def hashCode(self, point: Point) -> int:
+        return self._coordinate_set.hashCode(point)
 
     @JOverride
-    def spliterator(self):
+    def spliterator(self): # To do
         raise Exception('CoordinateSetWrapper: Implement spliterator')
 
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI')
-class CoordinateSetFactoryWrapper:
+class CoordinateSetFactoryWrapper(JCoordinateSetFactoryType):
     
     def __init__(self):
-        self._coordinate_set_factory = CoordinateSetFactory()
+        self._coordinate_set_factory: CoordinateSetFactory = CoordinateSetFactory()
         
-    def getPythonCoordinateSetFactory(self):
+    def getPythonCoordinateSetFactory(self) -> CoordinateSetFactory:
         return self._coordinate_set_factory
     
     @JOverride
-    def getName(self):
+    def getName(self) -> str:
         return "Python coordinate set factory"
     
     @JOverride
-    def createCoordinateSet(self):
+    def createCoordinateSet(self) -> JCoordinateSetType:
         return CoordinateSetWrapper()
 
     @JOverride
-    def duplicate(self):
+    def duplicate(self) -> JCoordinateSetFactoryType:
         return CoordinateSetFactoryWrapper()
         
