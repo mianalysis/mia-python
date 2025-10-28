@@ -374,7 +374,7 @@ class ObjsFactoryWrapper:
         
     @JOverride
     def createFromSpatCal(self, name, spat_cal, nFrames, frameInterval, temporalUnit):
-        raise Exception('ObjsFactoryWrapper: Implement createObjs 4')
+        # raise Exception('ObjsFactoryWrapper: Implement createObjs 4')
         return ObjsWrapper()
         # return ObjsWrapper(name, cal, nFrames, frameInterval, temporalUnit)
         

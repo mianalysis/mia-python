@@ -4,9 +4,9 @@ from scyjava import jimport
 from src.objects.obj import Obj
 from src.wrappers.volumewrapper import VolumeWrapper
 
-Obj = jimport('io.github.mianalysis.mia.object.coordinates.ObjI')
-ObjAdaptor = jimport('io.github.mianalysis.mia.python.ObjAdaptor')
-VolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor')
+JObj = jimport('io.github.mianalysis.mia.object.coordinates.ObjI')
+JObjAdaptor = jimport('io.github.mianalysis.mia.python.ObjAdaptor')
+JVolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor')
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.ObjI')
 class ObjWrapper(VolumeWrapper):

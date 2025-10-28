@@ -8,7 +8,7 @@ from src.utilities.imagerenderer import NotebookImageRenderer
 import numpy as np
 import PIL
 
-ImageI = jimport('io.github.mianalysis.mia.object.image.ImageI')
+JImage = jimport('io.github.mianalysis.mia.object.image.ImageI')
 
 @JImplements('io.github.mianalysis.mia.object.image.ImageI')
 class ImageWrapper:
@@ -19,8 +19,8 @@ class ImageWrapper:
                 
     @JOverride
     def getRenderer(self):
-        if (ImageI.getUseGlobalImageRenderer()):
-            return ImageI.getGlobalImageRenderer()
+        if (JImage.getUseGlobalImageRenderer()):
+            return JImage.getGlobalImageRenderer()
         else:
             return self._renderer
     

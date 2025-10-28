@@ -1,3 +1,4 @@
+from __future__ import annotations
 from jpype import JImplements, JOverride
 from scyjava import jimport
 from typing import TYPE_CHECKING
@@ -6,8 +7,7 @@ from src.objects.coordinateset import CoordinateSet, CoordinateSetIterator
 from src.objects.coordinateset import CoordinateSetFactory
 
 if TYPE_CHECKING:
-    from types.JCoordinateSetWrapper import JCoordinateSetType, JCoordinateSetFactoryType
-    from types.JPoint import JPoint as JPointType
+    from types.JPointType import JPointType
 
 from src.utilities.types import Point, Points    
 
@@ -32,7 +32,7 @@ class CoordinateSetWrapper():
         return JPoint[int](point[idx,0],point[idx,1],point[idx,2])
 
     @JOverride
-    def getFactory(self) -> JCoordinateSetFactoryType:
+    def getFactory(self) -> CoordinateSetFactoryWrapper:
         return CoordinateSetFactoryWrapper()
 
     @JOverride
@@ -44,7 +44,7 @@ class CoordinateSetWrapper():
         return self._coordinate_set.getNumberOfElements()
 
     @JOverride
-    def createEmptyCoordinateSet(self) -> JCoordinateSetType:
+    def createEmptyCoordinateSet(self) -> CoordinateSetWrapper:
         return self.getFactory().createCoordinateSet()
 
     @JOverride
@@ -56,8 +56,8 @@ class CoordinateSetWrapper():
         self._coordinate_set.finaliseSlice(z)
 
     @JOverride
-    def duplicate(self) -> JCoordinateSetType:
-        new_coordinate_set_wrapper: JCoordinateSetType = self.getFactory().createCoordinateSet()
+    def duplicate(self) -> CoordinateSetWrapper:
+        new_coordinate_set_wrapper: CoordinateSetWrapper = self.getFactory().createCoordinateSet()
         
         point: Point
         for point in self._coordinate_set.getPoints():
@@ -66,11 +66,11 @@ class CoordinateSetWrapper():
         return new_coordinate_set_wrapper        
     
     @JOverride
-    def calculateProjected(self) -> JCoordinateSetType:
+    def calculateProjected(self) -> CoordinateSetWrapper:
         raise Exception('CoordinateSetWrapper: Implement calculateProjected')
         
     @JOverride
-    def getSlice(self, slice: int) -> JCoordinateSetType:
+    def getSlice(self, slice: int) -> CoordinateSetWrapper:
         raise Exception('CoordinateSetWrapper: Implement getSlice')
 
 
@@ -138,7 +138,7 @@ class CoordinateSetWrapper():
 
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI')
-class CoordinateSetFactoryWrapper(JCoordinateSetFactoryType):
+class CoordinateSetFactoryWrapper():
     
     def __init__(self):
         self._coordinate_set_factory: CoordinateSetFactory = CoordinateSetFactory()
@@ -151,10 +151,10 @@ class CoordinateSetFactoryWrapper(JCoordinateSetFactoryType):
         return "Python coordinate set factory"
     
     @JOverride
-    def createCoordinateSet(self) -> JCoordinateSetType:
+    def createCoordinateSet(self) -> CoordinateSetWrapper:
         return CoordinateSetWrapper()
 
     @JOverride
-    def duplicate(self) -> JCoordinateSetFactoryType:
+    def duplicate(self) -> CoordinateSetFactoryWrapper:
         return CoordinateSetFactoryWrapper()
         

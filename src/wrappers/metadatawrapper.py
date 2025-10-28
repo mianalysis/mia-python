@@ -1,7 +1,7 @@
 from jpype import JImplements, JOverride
 from scyjava import jimport
 
-MetadataI = jimport('io.github.mianalysis.mia.object.metadata.MetadataI')
+JMetadata = jimport('io.github.mianalysis.mia.object.metadata.MetadataI')
 
 @JImplements('io.github.mianalysis.mia.object.metadata.MetadataI')
 class MetadataWrapper:
@@ -10,35 +10,35 @@ class MetadataWrapper:
         
     @JOverride
     def getFilename(self):
-        return self._store[MetadataI.FILENAME]
+        return self._store[JMetadata.FILENAME]
 
     @JOverride
     def setFilename(self, filename):
-        self._store[MetadataI.FILENAME] = filename
+        self._store[JMetadata.FILENAME] = filename
     
     @JOverride
     def getFilepath(self):
-        return self._store[MetadataI.FILEPATH]
+        return self._store[JMetadata.FILEPATH]
     
     @JOverride
     def setFilepath(self, filepath):
-        self._store[MetadataI.FILEPATH] = filepath
+        self._store[JMetadata.FILEPATH] = filepath
     
     @JOverride
     def getExt(self):
-        return self._store[MetadataI.EXTENSION]
+        return self._store[JMetadata.EXTENSION]
     
     @JOverride
     def setExt(self, ext):
-        self._store[MetadataI.EXTENSION] = ext
+        self._store[JMetadata.EXTENSION] = ext
     
     @JOverride
     def getFile(self):
-        return self._store[MetadataI.FILE]
+        return self._store[JMetadata.FILE]
     
     @JOverride
     def setFile(self, file):
-        self._store[MetadataI.FILE] = file
+        self._store[JMetadata.FILE] = file
     
     @JOverride
     def getHour(self):
@@ -178,14 +178,14 @@ class MetadataWrapper:
     
     @JOverride
     def getSeriesNumber(self):
-        if self._store[MetadataI.SERIES_NUMBER] is None:
+        if self._store[JMetadata.SERIES_NUMBER] is None:
             return -1
         else:
-            return self._store[MetadataI.SERIES_NUMBER]
+            return self._store[JMetadata.SERIES_NUMBER]
     
     @JOverride
     def setSeriesNumber(self, seriesNumber):
-        self._store[MetadataI.SERIES_NUMBER] = seriesNumber
+        self._store[JMetadata.SERIES_NUMBER] = seriesNumber
     
     @JOverride
     def getSeriesName(self):

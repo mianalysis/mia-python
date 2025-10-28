@@ -6,7 +6,7 @@ from src.utilities.conversion import py_dict_to_java_map
 import jpype
 import os
 
-File = jimport('java.io.File')
+JFile = jimport('java.io.File')
 
 @JImplements('io.github.mianalysis.mia.object.WorkspaceI')
 class WorkspaceWrapper(object):
@@ -17,7 +17,7 @@ class WorkspaceWrapper(object):
         self._objects = {}
 
         self._metadata = MetadataWrapper()
-        self._metadata.setFile(File(file_path))
+        self._metadata.setFile(JFile(file_path))
         self._metadata.setSeriesNumber(series)
         
         if file_path is None:
