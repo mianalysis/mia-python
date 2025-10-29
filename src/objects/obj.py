@@ -103,7 +103,13 @@ class Obj(Volume):
     def toString(self) -> str:
         return f"Object \"{self.getName()}\", ID = {self.getID()}, frame = {self.getT()}"
     
+    
     # Obj default methods
+    
     def addToImage(self, image: Image, hue: float): # No return
         raise Exception('ObjWrapper: Implement addToImage')
         
+    # Volume default methods
+    
+    def addCoord(self, x: int, y: int, z: int): # No return
+        super().addCoord(x,y,z)

@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 JVolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor')
 
-@JImplements('io.github.mianalysis.mia.object.coordinates.volume.Volume')
+@JImplements('io.github.mianalysis.mia.object.coordinates.volume.VolumeI')
 class VolumeWrapper:
     def __init__(self, coordinate_set_factory_wrapper: CoordinateSetWrapper, spat_cal):
         self._volume: Volume = Volume(coordinate_set_factory_wrapper.getPythonCoordinateSet(), spat_cal)

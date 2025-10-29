@@ -125,11 +125,11 @@ class Volume:
         self._coordinate_set.addCoord(x, y, z)
 
     def finalise(self): # No return
-        raise Exception('VolumeWrapper: Implement finalise')
+        pass
 
     def finaliseSlice(self, z: int): # No return
-        raise Exception('VolumeWrapper: Implement finaliseSlice')
+        pass
 
     def getWidth(self) -> int:
-        raise Exception('VolumeWrapper: Implement getWidth')
+        return self._width
         

@@ -1,10 +1,20 @@
 from jpype import JImplements, JOverride
+from typing import TYPE_CHECKING
+
 from src.objects.objs import Objs
+from src.wrappers.objwrapper import ObjWrapper
+
+if TYPE_CHECKING:
+    from src.objects.obj import Obj
+    
 
 @JImplements('io.github.mianalysis.mia.object.ObjsI')
 class ObjsWrapper():      
     def __init__(self):
         self._objs = Objs()
+        
+    def getPythonObjs(self) -> Objs:
+        return self._objs
         
     @JOverride
     def createAndAddNewObject(self, factory):
@@ -31,8 +41,8 @@ class ObjsWrapper():
         raise Exception('ObjsWrapper: Implement setSpatialCalibration')
     
     @JOverride
-    def getAndIncrementID(self):
-        raise Exception('ObjsWrapper: Implement getAndIncrementID')
+    def getAndIncrementID(self) -> int:
+        return self._objs.getAndIncrementID()
     
     @JOverride
     def resetCollection(self):
@@ -274,8 +284,13 @@ class ObjsWrapper():
         raise Exception('MapWrapper: Implement replaceAll')
     
     @JOverride
-    def putIfAbsent(self, key, value):
-        raise Exception('MapWrapper: Implement putIfAbsent')
+    def putIfAbsent(self, key: int, value: ObjWrapper) -> ObjWrapper:
+        obj: Obj = self._objs.putIfAbsent(key, value.getPythonObj())
+        
+        obj_wrapper = ObjWrapper()
+        obj_wrapper.setPythonObj(obj)
+        
+        return obj_wrapper
     
     @JOverride
     def removeKeyValue(self, key, value):
@@ -290,7 +305,7 @@ class ObjsWrapper():
         raise Exception('MapWrapper: Implement replace (key, value)')
     
     @JOverride
-    def computeIfAbsent(self, key, mappingFunction):
+    def computeIfAbsent(self, key, mapping_function):
         raise Exception('MapWrapper: Implement computeIfAbsent')
     
     @JOverride

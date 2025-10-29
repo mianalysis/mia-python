@@ -1,8 +1,15 @@
+from __future__ import annotations
 from jpype import JImplements, JOverride
 from scyjava import jimport
+from typing import TYPE_CHECKING
 
 from src.objects.obj import Obj
 from src.wrappers.volumewrapper import VolumeWrapper
+
+if TYPE_CHECKING:
+    from src.wrappers.coordinatesetwrapper import CoordinateSetFactoryWrapper
+    from src.wrappers.objswrapper import ObjsWrapper
+
 
 JObj = jimport('io.github.mianalysis.mia.object.coordinates.ObjI')
 JObjAdaptor = jimport('io.github.mianalysis.mia.python.ObjAdaptor')
@@ -11,118 +18,124 @@ JVolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor')
 @JImplements('io.github.mianalysis.mia.object.coordinates.ObjI')
 class ObjWrapper(VolumeWrapper):
     
-    def __init__(self, obj_collection, coordinate_set_factory_wrapper, ID, spat_cal=None):
-        self._obj = Obj(obj_collection, coordinate_set_factory_wrapper.getPythonCoordinateSetFactory(), ID, spat_cal)
+    def __init__(self, obj_collection: ObjsWrapper, coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper, ID: int, spat_cal=None): # To do
+        if obj_collection is not None:
+            self._obj: Obj = Obj(obj_collection.getPythonObjs(), coordinate_set_factory_wrapper.getPythonCoordinateSetFactory(), ID, spat_cal)
 
-    def getPythonObj(self):
+    def getPythonObj(self) -> Obj:
         return self._obj
-    
+
+    def setPythonObj(self, obj: Obj):
+        self._obj = obj
+            
     @JOverride
-    def getFactory(self):
+    def getFactory(self) -> ObjFactoryWrapper:
         return ObjFactoryWrapper()
     
     @JOverride
-    def getObjectCollection(self):
-        self._obj.getObjectCollection()
+    def getObjectCollection(self) -> ObjsWrapper:
+        return self._j_obj_collection
 
     @JOverride
-    def setObjectCollection(self, obj_collection):
-        self._obj.setObjectCollection(obj_collection)
+    def setObjectCollection(self, obj_collection: ObjsWrapper): # No return
+        self._obj.setObjectCollection(obj_collection.getPythonObjs())
 
     @JOverride
-    def getName(self):
+    def getName(self) -> str:
         return self._obj.getName()
 
     @JOverride
-    def getID(self):
+    def getID(self) -> int:
         return self._obj.getID()
 
     @JOverride
-    def setID(self, ID):
-        return self._obj.setID(ID)
+    def setID(self, ID: int) -> ObjWrapper:
+        self._obj.setID(ID)
+        return self
 
     @JOverride
-    def getT(self):
+    def getT(self) -> int:
         return self._obj.getT()
 
     @JOverride
-    def setT(self, T):
-        return self._obj.setT(T)
+    def setT(self, T: int) -> ObjWrapper:
+        self._obj.setT(T)
+        return self
 
     @JOverride
-    def getAllParents(self):
+    def getAllParents(self): # To do
         raise Exception('ObjWrapper: Implement getAllParents')
 
     @JOverride
-    def setAllParents(self, parents):
+    def setAllParents(self, parents): # To do
         raise Exception('ObjWrapper: Implement setAllParents')
 
     @JOverride
-    def getAllChildren(self):
+    def getAllChildren(self): # To do
         raise Exception('ObjWrapper: Implement getAllChildren')
 
     @JOverride
-    def setAllChildren(self, children):
+    def setAllChildren(self, children): # To do
         raise Exception('ObjWrapper: Implement setAllChildren')
 
     @JOverride
-    def getAllPartners(self):
+    def getAllPartners(self): # To do
         raise Exception('ObjWrapper: Implement getAllPartners')
 
     @JOverride
-    def setAllPartners(self, partners):
+    def setAllPartners(self, partners): # To do
         raise Exception('ObjWrapper: Implement setAllPartners')
 
     @JOverride
-    def removeRelationships(self):
+    def removeRelationships(self): # To do
         raise Exception('ObjWrapper: Implement removeRelationships')
 
     @JOverride
-    def getMeasurements(self):
+    def getMeasurements(self): # To do
         raise Exception('ObjWrapper: Implement getMeasurements')
 
     @JOverride
-    def setMeasurements(self, measurements):
+    def setMeasurements(self, measurements): # To do
         raise Exception('ObjWrapper: Implement setMeasurements')
 
     @JOverride
-    def getMetadata(self):
+    def getMetadata(self): # To do
         raise Exception('ObjWrapper: Implement getMetadata')
 
     @JOverride
-    def setMetadata(self, metadata):
+    def setMetadata(self, metadata): # To do
         raise Exception('ObjWrapper: Implement setMetadata')
 
     @JOverride
-    def getRoi(self, z_slice):
+    def getRoi(self, z_slice: int): # To do
         raise Exception('ObjWrapper: Implement getRoi')
 
     @JOverride
-    def getRois(self):
+    def getRois(self): # To do
         raise Exception('ObjWrapper: Implement getRois')
 
     @JOverride
-    def clearROIs(self):
+    def clearROIs(self): # No return
         raise Exception('ObjWrapper: Implement clearROIs')
 
     @JOverride
-    def duplicate(self, newCollection, duplicateRelationships, duplicateMeasurements, duplicateMetadata):
+    def duplicate(self, new_collection: ObjsWrapper, duplicate_relationships: bool, duplicate_measurements: bool, duplicate_metadata: bool) -> ObjWrapper:
         raise Exception('ObjWrapper: Implement duplicate')
 
     @JOverride
-    def equalsIgnoreNameAndID(self, obj):
+    def equalsIgnoreNameAndID(self, obj: ObjWrapper) -> bool:
         raise Exception('ObjWrapper: Implement equalsIgnoreNameAndID')
 
     @JOverride
-    def toString(self):
+    def toString(self) -> str:
         return self._obj.toString()
 
 
     ## Inherited from VolumeWrapper
 
     @JOverride
-    def getCoordinateSetFactory(self):
-        return self._obj.getCoordinateSetFactory()
+    def getCoordinateSetFactory(self) -> CoordinateSetFactoryWrapper:
+        return super().getCoordinateSetFactory()
 
     @JOverride
     def getSurface(self, ignoreEdgesXY, ignoreEdgesZ):
@@ -200,9 +213,26 @@ class ObjWrapper(VolumeWrapper):
     def getCalibratedIterator(self, pixelDistances, matchXY):
         return self._obj.getCalibratedIterator(pixelDistances, matchXY)
     
+    
     # Obj default methods
+    
     def addToImage(self, image, hue):
         self._obj.addToImage(image, hue)
+        
+        
+    # Volume default methods
+    
+    def addCoord(self, x: int, y: int, z: int): # No return
+        self._obj.addCoord(x,y,z)
+        
+    def finalise(self): # No return
+        self._obj.finalise()
+
+    def finaliseSlice(self, z: int): # No return
+        self._obj.finaliseSlice(z)
+
+    def getWidth(self) -> int:
+        return self._obj.getWidth()
 
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.ObjFactoryI')

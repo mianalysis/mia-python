@@ -14,6 +14,7 @@ if TYPE_CHECKING:
 class Objs():
     def __init__(self):
         self._objs: Dict[int, Obj] = {}
+        self._max_ID: int = 0
         
     def createAndAddNewObject(self, factory: CoordinateSetFactory) -> Obj:
         raise Exception('ObjsWrapper: Implement createAndAddNewObject')
@@ -34,7 +35,8 @@ class Objs():
         raise Exception('ObjsWrapper: Implement setSpatialCalibration')
     
     def getAndIncrementID(self) -> int:
-        raise Exception('ObjsWrapper: Implement getAndIncrementID')
+        self._max_ID = self._max_ID + 1
+        return self._max_ID
     
     def resetCollection(self): # No return
         raise Exception('ObjsWrapper: Implement resetCollection')
