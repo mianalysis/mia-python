@@ -4,12 +4,14 @@ from scyjava import jimport
 from typing import TYPE_CHECKING
 
 from src.objects.obj import Obj
+from src.objects.volume import Volume
 from src.wrappers.volumewrapper import VolumeWrapper
 
 if TYPE_CHECKING:
-    from src.wrappers.coordinatesetwrapper import CoordinateSetFactoryWrapper
+    from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSetFactoryWrapper
+    from src.wrappers.imagewrapper import ImageWrapper
     from src.wrappers.objswrapper import ObjsWrapper
-
+    from types.JPointType import JPointType
 
 JObj = jimport('io.github.mianalysis.mia.object.coordinates.ObjI')
 JObjAdaptor = jimport('io.github.mianalysis.mia.python.ObjAdaptor')
@@ -138,86 +140,88 @@ class ObjWrapper(VolumeWrapper):
         return super().getCoordinateSetFactory()
 
     @JOverride
-    def getSurface(self, ignoreEdgesXY, ignoreEdgesZ):
-        return self._obj.getSurface(ignoreEdgesXY, ignoreEdgesZ)
+    def getSurface(self, ignoreEdgesXY: bool, ignoreEdgesZ: bool) -> VolumeWrapper:
+        volume: Volume = self._obj.getSurface(ignoreEdgesXY, ignoreEdgesZ)
+        return VolumeWrapper.wrapVolume(volume, self._obj.getSpatialCalibration())
 
     @JOverride
-    def hasCalculatedSurface(self):
+    def hasCalculatedSurface(self) -> bool:
         return self._obj.hasCalculatedSurface()
 
     @JOverride
-    def getProjected(self):
-        return self._obj.getProjected()
+    def getProjected(self) -> VolumeWrapper:
+        volume: Volume = self._obj.getProjected()
+        return VolumeWrapper.wrapVolume(volume, self._obj.getSpatialCalibration())
 
     @JOverride
-    def hasCalculatedProjection(self):
+    def hasCalculatedProjection(self) -> bool:
         return self._obj.hasCalculatedProjection()
 
     @JOverride
-    def getMeanCentroid(self, pixelDistances, matchXY):
-        return self._obj.getMeanCentroid(pixelDistances, matchXY)
+    def getMeanCentroid(self, pixelDistances: bool, matchXY: bool) -> JPointType[float]:
+        raise Exception('ObjWrapper: Implement getMeanCentroid')
 
     @JOverride
-    def hasCalculatedCentroid(self):
+    def hasCalculatedCentroid(self) -> bool:
         return self._obj.hasCalculatedCentroid()
 
     @JOverride
-    def clearAllCoordinates(self):
+    def clearAllCoordinates(self): # No return
         self._obj.clearAllCoordinates()
 
     @JOverride
-    def clearSurface(self):
+    def clearSurface(self): # No return
         self._obj.clearSurface()
 
     @JOverride
-    def clearPoints(self):
+    def clearPoints(self): # No return
         self._obj.clearPoints()
 
     @JOverride
-    def clearProjected(self):
+    def clearProjected(self): # No return
         self._obj.clearProjected()
 
     @JOverride
-    def clearCentroid(self):
+    def clearCentroid(self): # No return
         self._obj.clearCentroid()
 
     @JOverride
-    def hashCode(self):
-        self._obj.hashCode()
+    def hashCode(self) -> int:
+        raise Exception('ObjWrapper: Implement hashCode')
 
     @JOverride
-    def equals(self, obj):
-        self._obj.equals(obj)
+    def equals(self, obj: ObjWrapper) -> bool:
+        raise Exception('ObjWrapper: Implement equals')
 
     @JOverride
-    def getSpatialCalibration(self):
-        return self._obj.getSpatialCalibration()
+    def getSpatialCalibration(self): # To do
+        raise Exception('ObjWrapper: Implement getSpatialCalibration')
 
     @JOverride
-    def setSpatialCalibration(self, spat_cal):
-        self._obj.setSpatialCalibration(spat_cal)
+    def setSpatialCalibration(self, spat_cal): # To do
+        raise Exception('ObjWrapper: Implement setSpatialCalibration')
 
     @JOverride
-    def getCoordinateSet(self):
-        return self._obj.getCoordinateSet()
+    def getCoordinateSet(self) -> CoordinateSetWrapper:
+        raise Exception('ObjWrapper: Implement getCoordinateSet')
 
     @JOverride
-    def setCoordinateSet(self, coordinate_set):
-        self._obj.setCoordinateSet(coordinate_set)
+    def setCoordinateSet(self, coordinate_set: CoordinateSetWrapper):
+        raise Exception('ObjWrapper: Implement setCoordinateSet')
 
     @JOverride
-    def createNewVolume(self, factory, spat_cal):
+    def createNewVolume(self, factory, spat_cal): # To do
         return self._obj.createNewVolume(factory, spat_cal)
 
     @JOverride
-    def getCalibratedIterator(self, pixelDistances, matchXY):
+    def getCalibratedIterator(self, pixelDistances, matchXY): # To do
         return self._obj.getCalibratedIterator(pixelDistances, matchXY)
     
     
     # Obj default methods
     
-    def addToImage(self, image, hue):
-        self._obj.addToImage(image, hue)
+    def addToImage(self, image: ImageWrapper, hue: float):
+        raise Exception('ObjWrapper: Implement addToImage')
         
         
     # Volume default methods
@@ -239,13 +243,14 @@ class ObjWrapper(VolumeWrapper):
 class ObjFactoryWrapper:
     
     @JOverride
-    def getName(self):
+    def getName(self) -> str:
         return "Python object factory"
     
     @JOverride
-    def createObj(self, obj_collection, factory, ID, spat_cal=None):
+    def createObj(self, obj_collection: ObjsWrapper, factory: CoordinateSetFactoryWrapper, ID: int, spat_cal=None) -> ObjWrapper: # To do
         return ObjWrapper(obj_collection, factory, ID, spat_cal)
 
     @JOverride
-    def duplicate(self):
+    def duplicate(self) -> ObjFactoryWrapper:
         return ObjFactoryWrapper()
+    

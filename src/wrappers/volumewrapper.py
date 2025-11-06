@@ -14,10 +14,14 @@ JVolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor')
 @JImplements('io.github.mianalysis.mia.object.coordinates.volume.VolumeI')
 class VolumeWrapper:
     def __init__(self, coordinate_set_factory_wrapper: CoordinateSetWrapper, spat_cal):
-        self._volume: Volume = Volume(coordinate_set_factory_wrapper.getPythonCoordinateSet(), spat_cal)
+        if coordinate_set_factory_wrapper is not None:
+            self._volume: Volume = Volume(coordinate_set_factory_wrapper.getPythonCoordinateSet(), spat_cal)
         
     def getPythonVolume(self) -> Volume:
         return self._volume
+    
+    def setPythonVolume(self, volume: Volume): # No return
+        self._volume = volume
         
     @JOverride
     def getFactory(self) -> VolumeFactoryWrapper:
@@ -129,4 +133,10 @@ class VolumeFactoryWrapper:
     @JOverride
     def duplicate(self) -> VolumeFactoryWrapper:
         return VolumeFactoryWrapper()
+
+def wrapVolume(volume: Volume, spat_cal) -> VolumeWrapper:
+    volume_wrapper: VolumeWrapper = VolumeWrapper(None,spat_cal)
+    volume_wrapper.setPythonWrapper(volume)
+    
+    return volume_wrapper
     
