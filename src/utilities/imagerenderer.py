@@ -1,6 +1,10 @@
-from jpype import JImplements, JOverride
+from jpype import JImplements, JOverride # type: ignore
+from typing import TYPE_CHECKING
 
-@JImplements('io.github.mianalysis.mia.object.image.renderer.ImageRenderer')
+if TYPE_CHECKING:
+    from types.JPype import *
+    
+@JImplements('io.github.mianalysis.mia.object.image.renderer.ImageRenderer') # type: ignore
 class NotebookImageRenderer:     
     def __init__(self, ij):
         self._ij = ij

@@ -1,6 +1,6 @@
 from __future__ import annotations
-from jpype import JImplements, JOverride
-from scyjava import jimport
+from jpype import JImplements, JOverride # type: ignore
+from scyjava import jimport # type: ignore
 from typing import TYPE_CHECKING
 
 from src.objects.coordinateset import CoordinateSet, CoordinateSetIterator
@@ -8,10 +8,11 @@ from src.objects.coordinateset import CoordinateSetFactory
 
 if TYPE_CHECKING:
     from types.JPointType import JPointType
+    from types.JPype import *
 
 from src.utilities.types import Point, Points    
 
-JPoint = jimport('io.github.mianalysis.mia.object.coordinates.Point')
+JPoint = jimport('io.github.mianalysis.mia.object.coordinates.Point') # type: ignore
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI')
 class CoordinateSetWrapper():
@@ -20,6 +21,9 @@ class CoordinateSetWrapper():
         
     def getPythonCoordinateSet(self) -> CoordinateSet:
         return self._coordinate_set
+    
+    def setPythonCoordinateSet(self, coordinate_set: CoordinateSet):
+        self._coordinate_set = coordinate_set
 
     def getPythonPoints(self) -> Points:
         return self._coordinate_set.getPoints()
@@ -29,7 +33,7 @@ class CoordinateSetWrapper():
         
     def getPointAtIndex(self, idx: int) -> JPointType[int]:
         point: Point = self._coordinate_set.getPointAtIndex(idx)
-        return JPoint[int](point[idx,0],point[idx,1],point[idx,2])
+        return JPoint[int](point[idx,0],point[idx,1],point[idx,2]) # type: ignore
 
     @JOverride
     def getFactory(self) -> CoordinateSetFactoryWrapper:
@@ -145,6 +149,9 @@ class CoordinateSetFactoryWrapper():
         
     def getPythonCoordinateSetFactory(self) -> CoordinateSetFactory:
         return self._coordinate_set_factory
+    
+    def setPythonCoordinateSetFactory(self, coordinate_set_factory: CoordinateSetFactory):
+        self._coordinate_set_factory = coordinate_set_factory
     
     @JOverride
     def getName(self) -> str:

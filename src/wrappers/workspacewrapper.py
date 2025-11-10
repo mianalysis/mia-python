@@ -1,12 +1,16 @@
-from jpype import JImplements, JOverride, JPackage
-from scyjava import jimport
+from jpype import JImplements, JOverride # type: ignore
+from scyjava import jimport # type: ignore
 from src.wrappers.metadatawrapper import MetadataWrapper
 from src.utilities.conversion import py_dict_to_java_map
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from types.JPype import *
 
 import jpype
 import os
 
-JFile = jimport('java.io.File')
+JFile = jimport('java.io.File') # type: ignore
 
 @JImplements('io.github.mianalysis.mia.object.WorkspaceI')
 class WorkspaceWrapper(object):
@@ -43,15 +47,15 @@ class WorkspaceWrapper(object):
         self._images[image.getName()] = image
 
     @JOverride
-    def removeImage(self, name, retainMeasurements):
+    def removeImage(self, name: str, retainMeasurements: bool):
         raise Exception('WorkspaceWrapper: Implement removeImage')
 
     @JOverride
-    def clearAllImages(self,retainMeasurements):
+    def clearAllImages(self,retainMeasurements: bool):
         raise Exception('WorkspaceWrapper: Implement clearAllImages')
 
     @JOverride
-    def clearAllObjects(self,retainMeasurements):
+    def clearAllObjects(self,retainMeasurements: bool):
         raise Exception('WorkspaceWrapper: Implement clearAllObjects')
 
     @JOverride
@@ -63,7 +67,7 @@ class WorkspaceWrapper(object):
         raise Exception('WorkspaceWrapper: Implement showMetadata')
     
     @JOverride
-    def getImage(self,name):
+    def getImage(self,name: str):
         return self._images[name]
 
     @JOverride

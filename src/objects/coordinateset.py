@@ -55,7 +55,7 @@ class CoordinateSet():
     def calculateProjected(self):
         raise Exception('CoordinateSetWrapper: Implement calculateProjected')
         
-    def getSlice(self, slice):
+    def getSlice(self, slice: int):
         raise Exception('CoordinateSetWrapper: Implement getSlice')
 
 
@@ -132,7 +132,7 @@ class CoordinateSetIterator:
 
         return self._coordinate_set.getPointAtIndex(self._next_idx-1)
         
-    def forEachRemaining(self, action):
+    def forEachRemaining(self, action): # To do
         raise Exception('CoordinateSetIterator: Implement forEachRemaining')
         
 

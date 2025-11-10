@@ -1,5 +1,9 @@
 from jpype import JImplements, JOverride
 from scyjava import jimport
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from types.JPype import *
 
 JMetadata = jimport('io.github.mianalysis.mia.object.metadata.MetadataI')
 

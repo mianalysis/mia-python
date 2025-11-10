@@ -1,6 +1,6 @@
 from __future__ import annotations
-from jpype import JImplements, JOverride
-from scyjava import jimport
+from jpype import JImplements, JOverride # type: ignore
+from scyjava import jimport # type: ignore
 from typing import TYPE_CHECKING
 
 from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSetFactoryWrapper
@@ -8,8 +8,9 @@ from src.objects.volume import Volume
 
 if TYPE_CHECKING:
     from types.JPointType import JPointType
+    from types.JPype import *
 
-JVolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor')
+JVolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor') # type: ignore
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.volume.VolumeI')
 class VolumeWrapper:
@@ -100,7 +101,7 @@ class VolumeWrapper:
         raise Exception('VolumeWrapper: Implement setCoordinateSet')
 
     @JOverride
-    def createNewVolume(self, factory: CoordinateSetFactoryWrapper, spatCal): # To do
+    def createNewVolume(self, factory: CoordinateSetFactoryWrapper, spat_cal): # To do
         raise Exception('VolumeWrapper: Implement createNewVolume')
 
     @JOverride

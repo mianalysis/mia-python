@@ -1,5 +1,5 @@
 from __future__ import annotations
-from jpype import JImplements, JOverride
+from jpype import JImplements, JOverride # type: ignore
 from typing import Dict
 from typing import TYPE_CHECKING
 
@@ -11,8 +11,10 @@ if TYPE_CHECKING:
     from src.wrappers.objwrapper import ObjWrapper
     from src.wrappers.coordinatesetwrapper import CoordinateSetFactoryWrapper
     from types.JPointType import JPointType
+    from types.JPype import *
 
-@JImplements('io.github.mianalysis.mia.object.ObjsI')
+
+# @JImplements('io.github.mianalysis.mia.object.ObjsI') # type: ignore
 class ObjsWrapper():      
     def __init__(self):
         self._objs: Objs = Objs()
@@ -44,7 +46,7 @@ class ObjsWrapper():
         raise Exception('ObjsWrapper: Implement getSpatialCalibration')
     
     @JOverride
-    def setSpatialCalibration(self, spatCal, updateAllObjects: bool): # To do
+    def setSpatialCalibration(self, spat_cal, update_all_objects: bool): # To do
         raise Exception('ObjsWrapper: Implement setSpatialCalibration')
     
     @JOverride
@@ -64,7 +66,7 @@ class ObjsWrapper():
         raise Exception('ObjsWrapper: Implement getAsSingleObject')
     
     @JOverride
-    def getObjectsInFrame(self, outputObjectsName: str, frame: int) -> ObjsWrapper:
+    def getObjectsInFrame(self, output_objects_name: str, frame: int) -> ObjsWrapper:
         raise Exception('ObjsWrapper: Implement getObjectsInFrame')
     
     @JOverride
@@ -84,8 +86,8 @@ class ObjsWrapper():
         raise Exception('ObjsWrapper: Implement setNFrames')
     
     @JOverride
-    def duplicate(self, newObjectsName: str, duplicateRelationships: bool, duplicateMeasurement: bool,
-                  duplicateMetadata: bool, addOriginalDuplicateRelationship: bool) -> ObjsWrapper:
+    def duplicate(self, new_objects_name: str, duplicate_relationships: bool, duplicate_measurement: bool,
+                  duplicate_metadata: bool, add_original_duplicate_relationship: bool) -> ObjsWrapper:
         raise Exception('ObjsWrapper: Implement duplicate')
 
 

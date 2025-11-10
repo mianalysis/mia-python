@@ -40,7 +40,7 @@ class Obj(Volume):
         return self._ID
 
     def setID(self, ID: int) -> Obj:
-        self._ID = ID
+        self._ID = ID # type: ignore
         
         return self
 
@@ -48,7 +48,7 @@ class Obj(Volume):
         return self._T
 
     def setT(self, T: int) -> Obj:
-        self._T = T
+        self._T = T # type: ignore
         
         return self
 
@@ -85,7 +85,7 @@ class Obj(Volume):
     def setMetadata(self, metadata): # To do
         raise Exception('ObjWrapper: Implement setMetadata')
 
-    def getRoi(self, z_slice): # To do
+    def getRoi(self, z_slice: int): # To do
         raise Exception('ObjWrapper: Implement getRoi')
 
     def getRois(self): # To do

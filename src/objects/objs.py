@@ -31,7 +31,7 @@ class Objs():
     def getSpatialCalibration(self): # To do
         raise Exception('ObjsWrapper: Implement getSpatialCalibration')
     
-    def setSpatialCalibration(self, spat_cal, update_all_objects): # To do
+    def setSpatialCalibration(self, spat_cal, update_all_objects: bool): # To do
         raise Exception('ObjsWrapper: Implement setSpatialCalibration')
     
     def getAndIncrementID(self) -> int:

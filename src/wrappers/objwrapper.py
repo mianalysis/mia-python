@@ -1,6 +1,6 @@
 from __future__ import annotations
-from jpype import JImplements, JOverride
-from scyjava import jimport
+from jpype import JImplements, JOverride # type: ignore
+from scyjava import jimport # type: ignore
 from typing import TYPE_CHECKING
 
 from src.objects.obj import Obj
@@ -8,19 +8,21 @@ from src.objects.volume import Volume
 from src.wrappers.volumewrapper import VolumeWrapper
 
 if TYPE_CHECKING:
+    from src.objects.coordinateset import CoordinateSet
     from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSetFactoryWrapper
     from src.wrappers.imagewrapper import ImageWrapper
     from src.wrappers.objswrapper import ObjsWrapper
     from types.JPointType import JPointType
+    from types.JPype import *
 
-JObj = jimport('io.github.mianalysis.mia.object.coordinates.ObjI')
-JObjAdaptor = jimport('io.github.mianalysis.mia.python.ObjAdaptor')
-JVolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor')
+JObj = jimport('io.github.mianalysis.mia.object.coordinates.ObjI') # type: ignore
+JObjAdaptor = jimport('io.github.mianalysis.mia.python.ObjAdaptor') # type: ignore
+JVolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor') # type: ignore
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.ObjI')
 class ObjWrapper(VolumeWrapper):
     
-    def __init__(self, obj_collection: ObjsWrapper, coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper, ID: int, spat_cal=None): # To do
+    def __init__(self, obj_collection: ObjsWrapper | None, coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper, ID: int, spat_cal=None): # To do
         if obj_collection is not None:
             self._obj: Obj = Obj(obj_collection.getPythonObjs(), coordinate_set_factory_wrapper.getPythonCoordinateSetFactory(), ID, spat_cal)
 
@@ -36,7 +38,10 @@ class ObjWrapper(VolumeWrapper):
     
     @JOverride
     def getObjectCollection(self) -> ObjsWrapper:
-        return self._j_obj_collection
+        objs_wrapper: ObjsWrapper = ObjsWrapper()
+        objs_wrapper.setPythonObjs(self._obj.getObjectCollection())
+
+        return objs_wrapper
 
     @JOverride
     def setObjectCollection(self, obj_collection: ObjsWrapper): # No return
@@ -137,7 +142,10 @@ class ObjWrapper(VolumeWrapper):
 
     @JOverride
     def getCoordinateSetFactory(self) -> CoordinateSetFactoryWrapper:
-        return super().getCoordinateSetFactory()
+        coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper = CoordinateSetFactoryWrapper()
+        coordinate_set_factory_wrapper.setPythonCoordinateSetFactory(self._obj.getCoordinateSetFactory())
+        
+        return coordinate_set_factory_wrapper
 
     @JOverride
     def getSurface(self, ignoreEdgesXY: bool, ignoreEdgesZ: bool) -> VolumeWrapper:
@@ -203,7 +211,11 @@ class ObjWrapper(VolumeWrapper):
 
     @JOverride
     def getCoordinateSet(self) -> CoordinateSetWrapper:
-        raise Exception('ObjWrapper: Implement getCoordinateSet')
+        coordinate_set: CoordinateSet = self._obj.getCoordinateSet()
+        coordinate_set_wrapper: CoordinateSetWrapper = CoordinateSetWrapper()
+        coordinate_set_wrapper.setPythonCoordinateSet(coordinate_set)
+        
+        return coordinate_set_wrapper
 
     @JOverride
     def setCoordinateSet(self, coordinate_set: CoordinateSetWrapper):
@@ -214,8 +226,8 @@ class ObjWrapper(VolumeWrapper):
         return self._obj.createNewVolume(factory, spat_cal)
 
     @JOverride
-    def getCalibratedIterator(self, pixelDistances, matchXY): # To do
-        return self._obj.getCalibratedIterator(pixelDistances, matchXY)
+    def getCalibratedIterator(self, pixelDistances: bool, matchXY: bool): # To do
+        raise Exception('ObjWrapper: Implement getCalibratedIterator')
     
     
     # Obj default methods
