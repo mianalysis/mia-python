@@ -1,13 +1,10 @@
-import imagej
+import imagej  # type: ignore
 ij =imagej.init(['io.github.mianalysis:mia-plugin:2.0.0-SNAPSHOT'])
 
-from jpype import JImplements, JOverride
-from scyjava import jimport
+from jpype import JImplements, JOverride  # type: ignore
+from scyjava import jimport  # type: ignore
 from src.utilities.imagerenderer import NotebookImageRenderer
 from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from types.JPype import *
 
 import numpy as np
 import PIL

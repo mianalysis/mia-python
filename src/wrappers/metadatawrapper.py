@@ -1,295 +1,327 @@
-from jpype import JImplements, JOverride
-from scyjava import jimport
-from typing import TYPE_CHECKING
+from __future__ import annotations
+from jpype import JImplements, JOverride # type: ignore
+from scyjava import jimport # type: ignore
+from typing import Any, Dict
 
-if TYPE_CHECKING:
-    from types.JPype import *
+from src.types.JFileType import JFileType
 
 JMetadata = jimport('io.github.mianalysis.mia.object.metadata.MetadataI')
+
+FILENAME: str = JMetadata.FILENAME # type: ignore
+FILEPATH: str = JMetadata.FILEPATH  # type: ignore
+WELL: str = JMetadata.WELL  # type: ignore
+ROW: str = JMetadata.ROW  # type: ignore
+COL: str = JMetadata.COL  # type: ignore
+FIELD: str = JMetadata.FIELD  # type: ignore
+TIMEPOINT: str = JMetadata.TIMEPOINT  # type: ignore
+ZPOSITION: str = JMetadata.ZPOSITION  # type: ignore
+CHANNEL: str = JMetadata.CHANNEL  # type: ignore
+YEAR: str = JMetadata.YEAR  # type: ignore
+MONTH: str = JMetadata.MONTH  # type: ignore
+DAY: str = JMetadata.DAY  # type: ignore
+HOUR: str = JMetadata.HOUR  # type: ignore
+MINUTE: str = JMetadata.MINUTE  # type: ignore
+SECOND: str = JMetadata.SECOND  # type: ignore
+CELLTYPE: str = JMetadata.CELLTYPE  # type: ignore
+MAGNIFICATION: str = JMetadata.MAGNIFICATION  # type: ignore
+COMMENT: str = JMetadata.COMMENT  # type: ignore
+FILE: str = JMetadata.FILE  # type: ignore
+EXTENSION: str = JMetadata.EXTENSION  # type: ignore
+KEYWORD: str = JMetadata.KEYWORD  # type: ignore
+SERIES_NUMBER: str = JMetadata.SERIES_NUMBER  # type: ignore
+SERIES_NAME: str = JMetadata.SERIES_NAME  # type: ignore
+UNITS: str = JMetadata.UNITS  # type: ignore
+PLATE_NAME: str = JMetadata.PLATE_NAME  # type: ignore
+PLATE_MANUFACTURER: str = JMetadata.PLATE_MANUFACTURER  # type: ignore
+PLATE_MODEL: str = JMetadata.PLATE_MODEL  # type: ignore
+TIMELINE_NUMBER: str = JMetadata.TIMELINE_NUMBER  # type: ignore
+ACTION_NUMBER: str = JMetadata.ACTION_NUMBER  # type: ignore
+AREA_NAME: str = JMetadata.AREA_NAME  # type: ignore
+
 
 @JImplements('io.github.mianalysis.mia.object.metadata.MetadataI')
 class MetadataWrapper:
     def __init__(self):
-        self._store = {}
+        self._store: Dict[str, Any] = {}
         
     @JOverride
-    def getFilename(self):
-        return self._store[JMetadata.FILENAME]
-
-    @JOverride
-    def setFilename(self, filename):
-        self._store[JMetadata.FILENAME] = filename
+    def getFilename(self) -> str:
+        return self._store[FILENAME]
     
     @JOverride
-    def getFilepath(self):
-        return self._store[JMetadata.FILEPATH]
+    def setFilename(self, filename: str):  # No return
+        self._store[FILENAME] = filename
     
     @JOverride
-    def setFilepath(self, filepath):
-        self._store[JMetadata.FILEPATH] = filepath
+    def getFilepath(self) -> str:
+        return self._store[FILEPATH]
     
     @JOverride
-    def getExt(self):
-        return self._store[JMetadata.EXTENSION]
+    def setFilepath(self, filepath: str):  # No return
+        self._store[FILEPATH] = filepath
     
     @JOverride
-    def setExt(self, ext):
-        self._store[JMetadata.EXTENSION] = ext
+    def getExt(self) -> str:
+        return self._store[EXTENSION]
     
     @JOverride
-    def getFile(self):
-        return self._store[JMetadata.FILE]
+    def setExt(self, ext: str):  # No return
+        self._store[EXTENSION] = ext
     
     @JOverride
-    def setFile(self, file):
-        self._store[JMetadata.FILE] = file
+    def getFile(self) -> JFileType:
+        return self._store[FILE]
     
     @JOverride
-    def getHour(self):
+    def setFile(self, file: JFileType):  # No return
+        self._store[FILE] = file
+    
+    @JOverride
+    def getHour(self) -> int:
         raise Exception('MetadataWrapper: Implement getHour')
     
     @JOverride
-    def setHour(self, hour):
+    def setHour(self, hour: int):  # No return
         raise Exception('MetadataWrapper: Implement setHour')
     
     @JOverride
-    def getMin(self):
+    def getMin(self) -> int:
         raise Exception('MetadataWrapper: Implement getMin')
     
     @JOverride
-    def setMin(self, min):
+    def setMin(self, min: int):  # No return
         raise Exception('MetadataWrapper: Implement setMin')
     
     @JOverride
-    def getSec(self):
+    def getSec(self) -> int:
         raise Exception('MetadataWrapper: Implement getSec')
     
     @JOverride
-    def setSec(self, sec):
+    def setSec(self, sec: int):  # No return
         raise Exception('MetadataWrapper: Implement setSec')
     
     @JOverride
-    def getWell(self):
+    def getWell(self) -> str:
         raise Exception('MetadataWrapper: Implement getWell')
     
     @JOverride
-    def setWell(self, well):
+    def setWell(self, well: str):  # No return
         raise Exception('MetadataWrapper: Implement setWell')
     
     @JOverride
-    def getRow(self):
+    def getRow(self) -> int:
         raise Exception('MetadataWrapper: Implement getRow')
     
     @JOverride
-    def setRow(self, row):
+    def setRow(self, row: int):  # No return
         raise Exception('MetadataWrapper: Implement setRow')
     
     @JOverride
-    def getCol(self):
+    def getCol(self) -> int:
         raise Exception('MetadataWrapper: Implement getCol')
     
     @JOverride
-    def setCol(self, col):
+    def setCol(self, col: int):  # No return
         raise Exception('MetadataWrapper: Implement setCol')
     
     @JOverride
-    def getField(self):
+    def getField(self) -> int:
         raise Exception('MetadataWrapper: Implement getField')
     
     @JOverride
-    def setField(self, field):
+    def setField(self, field: int):  # No return
         raise Exception('MetadataWrapper: Implement setField')
     
     @JOverride
-    def getTimepoint(self):
+    def getTimepoint(self) -> int:
         raise Exception('MetadataWrapper: Implement getTimepoint')
     
     @JOverride
-    def setTimepoint(self, timepoint):
+    def setTimepoint(self, timepoint: int):  # No return
         raise Exception('MetadataWrapper: Implement setTimepoint')
     
     @JOverride
-    def getZ(self):
+    def getZ(self) -> int:
         raise Exception('MetadataWrapper: Implement getZ')
     
     @JOverride
-    def setZ(self, z):
+    def setZ(self, z: int):  # No return
         raise Exception('MetadataWrapper: Implement setZ')
     
     @JOverride
-    def getChannel(self):
+    def getChannel(self) -> int:
         raise Exception('MetadataWrapper: Implement getChannel')
     
     @JOverride
-    def setChannel(self, channel):
+    def setChannel(self, channel: int):  # No return
         raise Exception('MetadataWrapper: Implement setChannel')
     
     @JOverride
-    def getCelltype(self):
+    def getCelltype(self) -> str:
         raise Exception('MetadataWrapper: Implement getCelltype')
     
     @JOverride
-    def setCelltype(self, celltype):
+    def setCelltype(self, celltype: str):  # No return
         raise Exception('MetadataWrapper: Implement setCelltype')
     
     @JOverride
-    def getMag(self):
+    def getMag(self) -> str:
         raise Exception('MetadataWrapper: Implement getMag')
     
     @JOverride
-    def setMag(self, mag):
+    def setMag(self, mag: str):  # No return
         raise Exception('MetadataWrapper: Implement setMag')
     
     @JOverride
-    def getYear(self):
+    def getYear(self) -> int:
         raise Exception('MetadataWrapper: Implement getYear')
     
     @JOverride
-    def setYear(self, year):
+    def setYear(self, year: int):  # No return
         raise Exception('MetadataWrapper: Implement setYear')
     
     @JOverride
-    def getMonth(self):
+    def getMonth(self) -> int:
         raise Exception('MetadataWrapper: Implement getMonth')
     
     @JOverride
-    def setMonth(self, month):
+    def setMonth(self, month: int):  # No return
         raise Exception('MetadataWrapper: Implement setMonth')
     
     @JOverride
-    def getDay(self):
+    def getDay(self) -> int:
         raise Exception('MetadataWrapper: Implement getDay')
     
     @JOverride
-    def setDay(self, day):
+    def setDay(self, day: int):  # No return
         raise Exception('MetadataWrapper: Implement setDay')
     
     @JOverride
-    def getComment(self):
+    def getComment(self) -> str:
         raise Exception('MetadataWrapper: Implement getComment')
     
     @JOverride
-    def setComment(self, comment):
+    def setComment(self, comment: str):  # No return
         raise Exception('MetadataWrapper: Implement setComment')
     
     @JOverride
-    def getKeyword(self):
+    def getKeyword(self) -> str:
         raise Exception('MetadataWrapper: Implement getKeyword')
     
     @JOverride
-    def putKeyword(self, keyword):
+    def putKeyword(self, keyword: str):  # No return
         raise Exception('MetadataWrapper: Implement putKeyword')
     
     @JOverride
-    def getSeriesNumber(self):
-        if self._store[JMetadata.SERIES_NUMBER] is None:
+    def getSeriesNumber(self) -> int:
+        if self._store[SERIES_NUMBER] is None:
             return -1
         else:
-            return self._store[JMetadata.SERIES_NUMBER]
+            return self._store[SERIES_NUMBER]
     
     @JOverride
-    def setSeriesNumber(self, seriesNumber):
-        self._store[JMetadata.SERIES_NUMBER] = seriesNumber
+    def setSeriesNumber(self, seriesNumber: int):  # No return
+        self._store[SERIES_NUMBER] = seriesNumber
     
     @JOverride
-    def getSeriesName(self):
+    def getSeriesName(self) -> str:
         raise Exception('MetadataWrapper: Implement getSeriesName')
     
     @JOverride
-    def setSeriesName(self, seriesName):
+    def setSeriesName(self, seriesName: str):  # No return
         raise Exception('MetadataWrapper: Implement setSeriesName')
     
     @JOverride
-    def getUnits(self):
+    def getUnits(self) -> str:
         raise Exception('MetadataWrapper: Implement getUnits')
     
     @JOverride
-    def setUnits(self, units):
+    def setUnits(self, units: str):  # No return
         raise Exception('MetadataWrapper: Implement setUnits')
     
     @JOverride
-    def getPlateName(self):
+    def getPlateName(self) -> str:
         raise Exception('MetadataWrapper: Implement getPlateName')
     
     @JOverride
-    def setPlateName(self, plateName):
+    def setPlateName(self, plateName: str):  # No return
         raise Exception('MetadataWrapper: Implement setPlateName')
     
     @JOverride
-    def getPlateManufacturer(self):
+    def getPlateManufacturer(self) -> str:
         raise Exception('MetadataWrapper: Implement getPlateManufacturer')
     
     @JOverride
-    def setPlateManufacturer(self, plateManufacturer):
+    def setPlateManufacturer(self, plateManufacturer: str):  # No return
         raise Exception('MetadataWrapper: Implement setPlateManufacturer')
     
     @JOverride
-    def getPlateModel(self):
+    def getPlateModel(self) -> str:
         raise Exception('MetadataWrapper: Implement getPlateModel')
     
     @JOverride
-    def setPlateModel(self, plateModel):
+    def setPlateModel(self, plateModel: str):  # No return
         raise Exception('MetadataWrapper: Implement setPlateModel')
     
     @JOverride
-    def getTimelineNumber(self):
+    def getTimelineNumber(self) -> int:
         raise Exception('MetadataWrapper: Implement getTimelineNumber')
     
     @JOverride
-    def setTimelineNumber(self, timelineNumber):
+    def setTimelineNumber(self, timelineNumber: int):  # No return
         raise Exception('MetadataWrapper: Implement setTimelineNumber')
     
     @JOverride
-    def getActionNumber(self):
+    def getActionNumber(self) -> int:
         raise Exception('MetadataWrapper: Implement getActionNumber')
     
     @JOverride
-    def setActionNumber(self, actionNumber):
+    def setActionNumber(self, actionNumber: int):  # No return
         raise Exception('MetadataWrapper: Implement setActionNumber')
     
     @JOverride
-    def getAsString(self, property):
+    def getAsString(self, property: str) -> str:
         raise Exception('MetadataWrapper: Implement getAsString')
     
     @JOverride
-    def printParameters(self):
+    def printParameters(self):  # No return
         raise Exception('MetadataWrapper: Implement raise ExceptionParameters')
     
     @JOverride
-    def insertMetadataValues(self, genericFormat):
+    def insertMetadataValues(self, genericFormat: str) -> str:
         raise Exception('MetadataWrapper: Implement insertMetadataValues')
 
     @JOverride
-    def hasKey(self, key):
+    def hasKey(self, key: str) -> bool:
         return key in self._store.keys()
     
     @JOverride
-    def keySet(self):
+    def keySet(self):  # To do
         raise Exception('MetadataWrapper: Implement keySet')
 
     @JOverride
-    def values(self):
+    def values(self):  # To do
         raise Exception('MetadataWrapper: Implement values')
 
     @JOverride
-    def clear(self):
+    def clear(self):  # No return
         self._store = {}
 
     @JOverride
-    def put(self, key, value):
+    def put(self, key: str, value: Any):
         self._store[key] = value
 
     @JOverride
-    def get(self, key):
+    def get(self, key: str) -> Any:
         return self._store[key]
 
     @JOverride
-    def remove(self, key):
+    def remove(self, key: str) -> Any:
         item = self._store[key]
         self._store.pop(key)
         return item
 
     @JOverride
-    def clone(self):
+    def clone(self) -> MetadataWrapper:
         raise Exception('MetadataWrapper: Implement clone')
         

@@ -12,8 +12,7 @@ if TYPE_CHECKING:
     from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSetFactoryWrapper
     from src.wrappers.imagewrapper import ImageWrapper
     from src.wrappers.objswrapper import ObjsWrapper
-    from types.JPointType import JPointType
-    from types.JPype import *
+    from src.types.JPointType import JPointType
 
 JObj = jimport('io.github.mianalysis.mia.object.coordinates.ObjI') # type: ignore
 JObjAdaptor = jimport('io.github.mianalysis.mia.python.ObjAdaptor') # type: ignore

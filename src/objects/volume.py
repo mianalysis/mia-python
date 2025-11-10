@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
     from src.objects.coordinateset import CoordinateSet, CoordinateSetFactory
-    from src.utilities.types import Point
+    from src.types.types import Point
 
 class Volume:
     def __init__(self, coordinate_set_factory: CoordinateSetFactory, spat_cal): # To do

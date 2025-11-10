@@ -7,10 +7,9 @@ from src.objects.coordinateset import CoordinateSet, CoordinateSetIterator
 from src.objects.coordinateset import CoordinateSetFactory
 
 if TYPE_CHECKING:
-    from types.JPointType import JPointType
-    from types.JPype import *
-
-from src.utilities.types import Point, Points    
+    from src.types.JPointType import JPointType
+    from src.types.JPype import *
+    from src.types.types import Point, Points
 
 JPoint = jimport('io.github.mianalysis.mia.object.coordinates.Point') # type: ignore
 

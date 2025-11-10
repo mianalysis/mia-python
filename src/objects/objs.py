@@ -9,7 +9,7 @@ if TYPE_CHECKING:
     from src.objects.coordinateset import CoordinateSetFactory
     from src.objects.image import Image
     from src.objects.obj import Obj
-    from src.utilities.types import Point
+    from src.types.types import Point
 
 class Objs():
     def __init__(self):
