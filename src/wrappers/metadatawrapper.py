@@ -7,36 +7,36 @@ from src.types.JFileType import JFileType
 
 JMetadata = jimport('io.github.mianalysis.mia.object.metadata.MetadataI')
 
-FILENAME: str = JMetadata.FILENAME # type: ignore
-FILEPATH: str = JMetadata.FILEPATH  # type: ignore
-WELL: str = JMetadata.WELL  # type: ignore
-ROW: str = JMetadata.ROW  # type: ignore
-COL: str = JMetadata.COL  # type: ignore
-FIELD: str = JMetadata.FIELD  # type: ignore
-TIMEPOINT: str = JMetadata.TIMEPOINT  # type: ignore
-ZPOSITION: str = JMetadata.ZPOSITION  # type: ignore
-CHANNEL: str = JMetadata.CHANNEL  # type: ignore
-YEAR: str = JMetadata.YEAR  # type: ignore
-MONTH: str = JMetadata.MONTH  # type: ignore
-DAY: str = JMetadata.DAY  # type: ignore
-HOUR: str = JMetadata.HOUR  # type: ignore
-MINUTE: str = JMetadata.MINUTE  # type: ignore
-SECOND: str = JMetadata.SECOND  # type: ignore
-CELLTYPE: str = JMetadata.CELLTYPE  # type: ignore
-MAGNIFICATION: str = JMetadata.MAGNIFICATION  # type: ignore
-COMMENT: str = JMetadata.COMMENT  # type: ignore
-FILE: str = JMetadata.FILE  # type: ignore
-EXTENSION: str = JMetadata.EXTENSION  # type: ignore
-KEYWORD: str = JMetadata.KEYWORD  # type: ignore
-SERIES_NUMBER: str = JMetadata.SERIES_NUMBER  # type: ignore
-SERIES_NAME: str = JMetadata.SERIES_NAME  # type: ignore
-UNITS: str = JMetadata.UNITS  # type: ignore
-PLATE_NAME: str = JMetadata.PLATE_NAME  # type: ignore
-PLATE_MANUFACTURER: str = JMetadata.PLATE_MANUFACTURER  # type: ignore
-PLATE_MODEL: str = JMetadata.PLATE_MODEL  # type: ignore
-TIMELINE_NUMBER: str = JMetadata.TIMELINE_NUMBER  # type: ignore
-ACTION_NUMBER: str = JMetadata.ACTION_NUMBER  # type: ignore
-AREA_NAME: str = JMetadata.AREA_NAME  # type: ignore
+FILENAME: str = JMetadata.FILENAME
+FILEPATH: str = JMetadata.FILEPATH
+WELL: str = JMetadata.WELL
+ROW: str = JMetadata.ROW
+COL: str = JMetadata.COL
+FIELD: str = JMetadata.FIELD
+TIMEPOINT: str = JMetadata.TIMEPOINT
+ZPOSITION: str = JMetadata.ZPOSITION
+CHANNEL: str = JMetadata.CHANNEL
+YEAR: str = JMetadata.YEAR
+MONTH: str = JMetadata.MONTH
+DAY: str = JMetadata.DAY
+HOUR: str = JMetadata.HOUR
+MINUTE: str = JMetadata.MINUTE
+SECOND: str = JMetadata.SECOND
+CELLTYPE: str = JMetadata.CELLTYPE
+MAGNIFICATION: str = JMetadata.MAGNIFICATION
+COMMENT: str = JMetadata.COMMENT
+FILE: str = JMetadata.FILE
+EXTENSION: str = JMetadata.EXTENSION
+KEYWORD: str = JMetadata.KEYWORD
+SERIES_NUMBER: str = JMetadata.SERIES_NUMBER
+SERIES_NAME: str = JMetadata.SERIES_NAME
+UNITS: str = JMetadata.UNITS
+PLATE_NAME: str = JMetadata.PLATE_NAME
+PLATE_MANUFACTURER: str = JMetadata.PLATE_MANUFACTURER
+PLATE_MODEL: str = JMetadata.PLATE_MODEL
+TIMELINE_NUMBER: str = JMetadata.TIMELINE_NUMBER
+ACTION_NUMBER: str = JMetadata.ACTION_NUMBER
+AREA_NAME: str = JMetadata.AREA_NAME
 
 
 @JImplements('io.github.mianalysis.mia.object.metadata.MetadataI')
