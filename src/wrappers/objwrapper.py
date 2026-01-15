@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING
 
 from src.objects.obj import Obj
 from src.objects.volume import Volume
-from src.wrappers.volumewrapper import VolumeWrapper
+from src.wrappers.volumewrapper import VolumeFactoryWrapper, VolumeWrapper
 
 if TYPE_CHECKING:
     from src.objects.coordinateset import CoordinateSet
@@ -21,9 +21,9 @@ JVolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor') # type
 @JImplements('io.github.mianalysis.mia.object.coordinates.ObjI')
 class ObjWrapper(VolumeWrapper):
     
-    def __init__(self, obj_collection: ObjsWrapper | None, coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper, ID: int, spat_cal=None): # To do
+    def __init__(self, coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper, obj_collection: ObjsWrapper | None, ID: int):
         if obj_collection is not None:
-            self._obj: Obj = Obj(obj_collection.getPythonObjs(), coordinate_set_factory_wrapper.getPythonCoordinateSetFactory(), ID, spat_cal)
+            self._obj: Obj = Obj(coordinate_set_factory_wrapper.getPythonCoordinateSetFactory(), obj_collection.getPythonObjs(), ID)
 
     def getPythonObj(self) -> Obj:
         return self._obj
@@ -32,8 +32,8 @@ class ObjWrapper(VolumeWrapper):
         self._obj = obj
             
     @JOverride
-    def getFactory(self) -> ObjFactoryWrapper:
-        return ObjFactoryWrapper()
+    def getFactory(self) -> VolumeFactoryWrapper:
+        return VolumeFactoryWrapper()
     
     @JOverride
     def getObjectCollection(self) -> ObjsWrapper:
@@ -149,7 +149,7 @@ class ObjWrapper(VolumeWrapper):
     @JOverride
     def getSurface(self, ignoreEdgesXY: bool, ignoreEdgesZ: bool) -> VolumeWrapper:
         volume: Volume = self._obj.getSurface(ignoreEdgesXY, ignoreEdgesZ)
-        return VolumeWrapper.wrapVolume(volume, self._obj.getSpatialCalibration())
+        return VolumeWrapper.wrapVolume(volume)
 
     @JOverride
     def hasCalculatedSurface(self) -> bool:
@@ -158,7 +158,7 @@ class ObjWrapper(VolumeWrapper):
     @JOverride
     def getProjected(self) -> VolumeWrapper:
         volume: Volume = self._obj.getProjected()
-        return VolumeWrapper.wrapVolume(volume, self._obj.getSpatialCalibration())
+        return VolumeWrapper.wrapVolume(volume)
 
     @JOverride
     def hasCalculatedProjection(self) -> bool:
@@ -201,14 +201,6 @@ class ObjWrapper(VolumeWrapper):
         raise Exception('ObjWrapper: Implement equals')
 
     @JOverride
-    def getSpatialCalibration(self): # To do
-        raise Exception('ObjWrapper: Implement getSpatialCalibration')
-
-    @JOverride
-    def setSpatialCalibration(self, spat_cal): # To do
-        raise Exception('ObjWrapper: Implement setSpatialCalibration')
-
-    @JOverride
     def getCoordinateSet(self) -> CoordinateSetWrapper:
         coordinate_set: CoordinateSet = self._obj.getCoordinateSet()
         coordinate_set_wrapper: CoordinateSetWrapper = CoordinateSetWrapper()
@@ -219,10 +211,6 @@ class ObjWrapper(VolumeWrapper):
     @JOverride
     def setCoordinateSet(self, coordinate_set: CoordinateSetWrapper):
         raise Exception('ObjWrapper: Implement setCoordinateSet')
-
-    @JOverride
-    def createNewVolume(self, factory, spat_cal): # To do
-        return self._obj.createNewVolume(factory, spat_cal)
 
     @JOverride
     def getCalibratedIterator(self, pixelDistances: bool, matchXY: bool): # To do

@@ -1,79 +1,76 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
+from jpype import JImplements, JOverride # type: ignore
 
 if TYPE_CHECKING:
     from src.objects.coordinateset import CoordinateSet, CoordinateSetFactory
     from src.types.types import Point
+    from src.types.JSpatiallyCalibrated import JSpatiallyCalibrated
 
-class Volume:
-    def __init__(self, coordinate_set_factory: CoordinateSetFactory, spat_cal): # To do
+@JImplements('io.github.mianalysis.mia.object.coordinates.SpatiallyCalibrated')
+class Volume():
+    def __init__(self: Volume, coordinate_set_factory: CoordinateSetFactory, width: int, height: int, n_slices: int, dpp_xy: float, dpp_z: float, spatial_units: str):
         self._coordinate_set: CoordinateSet = coordinate_set_factory.createCoordinateSet()
         self._coordinate_set_factory: CoordinateSetFactory = coordinate_set_factory
-        self._spat_cal = spat_cal
+        self._width: int = width
+        self._height: int = height
+        self._n_slices: int = n_slices
+        self._dpp_xy: float = dpp_xy
+        self._dpp_z: float = dpp_z
+        self._spatial_units: str = spatial_units
 
-        # Storing these for access speed
-        self._width: int = spat_cal.getWidth()
-        self._height: int = spat_cal.getHeight()
-        self._nSlices: int = spat_cal.getNSlices()
-
-    def getCoordinateSetFactory(self) -> CoordinateSetFactory:
+    def getCoordinateSetFactory(self: Volume) -> CoordinateSetFactory:
         return self._coordinate_set_factory
     
-    def getSurface(self, ignore_edges_XY: bool, ignore_edges_Z: bool) -> Volume:
+    def getSurface(self: Volume, ignore_edges_XY: bool, ignore_edges_Z: bool) -> Volume:
         raise Exception('VolumeWrapper: Implement getSurface')
 
-    def hasCalculatedSurface(self) -> bool:
+    def hasCalculatedSurface(self: Volume) -> bool:
         raise Exception('VolumeWrapper: Implement hasCalculatedSurface')
 
-    def getProjected(self) -> Volume:
+    def getProjected(self: Volume) -> Volume:
         raise Exception('VolumeWrapper: Implement getProjected')
 
-    def hasCalculatedProjection(self) -> bool:
+    def hasCalculatedProjection(self: Volume) -> bool:
         raise Exception('VolumeWrapper: Implement hasCalculatedProjection')
 
-    def getMeanCentroid(self, pixel_distances: bool, match_XY: bool) -> Point:
+    def getMeanCentroid(self: Volume, pixel_distances: bool, match_XY: bool) -> Point:
         raise Exception('VolumeWrapper: Implement getMeanCentroid')
 
-    def hasCalculatedCentroid(self) -> bool:
+    def hasCalculatedCentroid(self: Volume) -> bool:
         raise Exception('VolumeWrapper: Implement hasCalculatedCentroid')
 
-    def clearAllCoordinates(self): # No return
+    def clearAllCoordinates(self: Volume): # No return
         raise Exception('VolumeWrapper: Implement clearAllCoordinates')
 
-    def clearSurface(self): # No return
+    def clearSurface(self: Volume): # No return
         raise Exception('VolumeWrapper: Implement clearSurface')
 
-    def clearPoints(self): # No return
+    def clearPoints(self: Volume): # No return
         raise Exception('VolumeWrapper: Implement clearPoints')
 
-    def clearProjected(self): # No return
+    def clearProjected(self: Volume): # No return
         raise Exception('VolumeWrapper: Implement clearProjected')
 
-    def clearCentroid(self): # No return
+    def clearCentroid(self: Volume): # No return
         raise Exception('VolumeWrapper: Implement clearCentroid')
 
-    def hashCode(self) -> int:
+    def hashCode(self: Volume) -> int:
         raise Exception('VolumeWrapper: Implement hashCode')
 
-    def equals(self, obj: Volume) -> bool:
+    def equals(self: Volume, obj: Volume) -> bool:
         raise Exception('VolumeWrapper: Implement equals')
 
-    def getSpatialCalibration(self): # To do
-        return self._spat_cal
-
-    def setSpatialCalibration(self, spat_cal): # To do
-        self._spat_cal = spat_cal
-
-    def getCoordinateSet(self) -> CoordinateSet:
+    def getCoordinateSet(self: Volume) -> CoordinateSet:
         return self._coordinate_set
 
-    def setCoordinateSet(self, coordinate_set: CoordinateSet):
+    def setCoordinateSet(self: Volume, coordinate_set: CoordinateSet):
         self._coordinate_set = coordinate_set
 
-    def createNewVolume(self, coordinate_set_factory: CoordinateSetFactory, spatCal) -> Volume:
+    def createNewVolume(self: Volume, coordinate_set_factory: CoordinateSetFactory, exampleVolume: Volume) -> Volume:
         raise Exception('VolumeWrapper: Implement createNewVolume')
 
-    def getCalibratedIterator(self, pixel_distances: bool, match_XY: bool): # To do
+    def getCalibratedIterator(self: Volume, pixel_distances: bool, match_XY: bool): # To do
         raise Exception('VolumeWrapper: Implement getCalibratedIterator')
 
     # private class VolumeIterator implements Iterator<Point<Double>> {
@@ -110,26 +107,78 @@ class Volume:
     # }
 
     # Default methods
-    def addCoord(self, x: int, y: int, z: int): # No return
-        if self._spat_cal is not None:
-            if x < 0 or x >= self._width:
-                print("Coordinate out of bounds! (x: %i)" % x)
-                return
-            if y < 0 or y >= self._height:
-                print("Coordinate out of bounds! (y: %i)" % y)
-                return
-            if z < 0 or z >= self._nSlices:
-                print("Coordinate out of bounds! (z: %i)" % z)
-                return
+    def addCoord(self: Volume, x: int, y: int, z: int): # No return
+        if x < 0 or x >= self._width:
+            print("Coordinate out of bounds! (x: %i)" % x)
+            return
+        if y < 0 or y >= self._height:
+            print("Coordinate out of bounds! (y: %i)" % y)
+            return
+        if z < 0 or z >= self._n_slices:
+            print("Coordinate out of bounds! (z: %i)" % z)
+            return
 
         self._coordinate_set.addCoord(x, y, z)
 
-    def finalise(self): # No return
-        pass
+    def finalise(self: Volume): # No return
+        self._coordinate_set.finalise()
 
-    def finaliseSlice(self, z: int): # No return
-        pass
+    def finaliseSlice(self: Volume, z: int): # No return
+        self._coordinate_set.finaliseSlice(z)
 
-    def getWidth(self) -> int:
+    @JOverride
+    def getWidth(self: Volume) -> int:
         return self._width
+
+    @JOverride
+    def setWidth(self: Volume, width: int): # No return
+        self._width = width
+
+    @JOverride
+    def getHeight(self: Volume) -> int:
+        return self._height
+
+    @JOverride
+    def setHeight(self: Volume, height: int): # No return
+        self.height = height
+
+    @JOverride
+    def getNSlices(self: Volume) -> int:
+        return self._n_slices
+
+    @JOverride
+    def setNSlices(self: Volume, n_slices: int): # No return
+        self.n_slices = n_slices
+
+    @JOverride
+    def getDppXY(self: Volume) -> float:
+        return self._dpp_xy
+
+    @JOverride
+    def setDppXY(self: Volume, dpp_xy: float): # No return
+        self._dpp_xy = dpp_xy
+
+    @JOverride
+    def getDppZ(self: Volume) -> float:
+        return self._dpp_z
+
+    @JOverride
+    def setDppZ(self: Volume, dpp_z: float): # No return
+        self._dpp_z = dpp_z
+
+    @JOverride
+    def getSpatialUnits(self: Volume) -> str:
+        return self._spatial_units
+
+    @JOverride
+    def setSpatialUnits(self: Volume, spatial_units: str): # No return
+        self._spatial_units = spatial_units
+
+    @JOverride
+    def applySpatialCalibrationToImage(self: Volume, ipl): # To do
+        raise Exception('SpatiallyCalibrated: Implement applySpatialCalibrationToImage')
+
+    @JOverride    
+    def setSpatialCalibrationFromExample(self: Volume, example: JSpatiallyCalibrated): # To do
+        raise Exception('SpatiallyCalibrated: Implement setSpatialCalibrationFromExample')
         

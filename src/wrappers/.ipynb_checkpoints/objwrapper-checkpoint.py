@@ -193,14 +193,6 @@ class ObjWrapper(VolumeWrapper):
         super().clearCentroid()
 
     @JOverride
-    def hashCode(self):
-        super().hashCode()
-
-    @JOverride
-    def equals(self, obj):
-        super().equals(obj)
-
-    @JOverride
     def getSpatialCalibration(self):
         return super().getSpatialCalibration()
 

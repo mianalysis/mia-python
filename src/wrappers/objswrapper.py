@@ -379,29 +379,17 @@ class ObjsFactoryWrapper:
         return "Python objects factory"
     
     @JOverride
-    def createObjs(self, name: str, dppXY: float, dppZ: float, units: str, width: int, height: int, nSlices: int, nFrames: int, frameInterval: float, temporalUnit) -> ObjsWrapper: # To do
+    def createObjs(self, name: str, width: int, height: int, nSlices: int, dppXY: float, dppZ: float, spatialUnits: str, nFrames: int, frameInterval: float, temporalUnit) -> ObjsWrapper: # To do
         raise Exception('ObjsFactoryWrapper: Implement createObjs 1')
-        return ObjsWrapper()
-        # return ObjsWrapper(name, dppXY, dppZ, units, width, height, nSlices, nFrames, frameInterval, temporalUnit)
 
     @JOverride
-    def createFromExampleObjs(self, name: str, example_objs: ObjsWrapper) -> ObjsWrapper:
+    def createFromExample(self, name: str, example_objs: ObjsWrapper) -> ObjsWrapper:
         raise Exception('ObjsFactoryWrapper: Implement createObjs 2')
-        return ObjsWrapper()
-        # return ObjsWrapper(name, name, imageForCalibration)
 
     @JOverride
     def createFromImage(self, name: str, imageForCalibration) -> ObjsWrapper: # To do
         raise Exception('ObjsFactoryWrapper: Implement createObjs 3')
-        return ObjsWrapper()
-        # return ObjsWrapper(name, name, imageForCalibration)
-        
-    @JOverride
-    def createFromSpatCal(self, name: str, spat_cal, nFrames: int, frameInterval: float, temporalUnit) -> ObjsWrapper: # To do
-        # raise Exception('ObjsFactoryWrapper: Implement createObjs 4')
-        return ObjsWrapper()
-        # return ObjsWrapper(name, cal, nFrames, frameInterval, temporalUnit)
-        
+                
     @JOverride
     def duplicate(self) -> ObjsFactoryWrapper:
         return ObjsFactoryWrapper()

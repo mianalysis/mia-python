@@ -14,7 +14,7 @@ class Obj(Volume):
     # private LinkedHashMap<String, ObjMetadata> metadata = new LinkedHashMap<>();
     # private HashMap<Integer, Roi> rois = new HashMap<>();
     
-    def __init__(self, obj_collection: Objs, coordinate_set_factory: CoordinateSetFactory, ID: int, spat_cal=None):        
+    def __init__(self, coordinate_set_factory: CoordinateSetFactory, obj_collection: Objs,  ID: int):
         if spat_cal is None:
             spat_cal = obj_collection.getSpatialCalibration()
             
