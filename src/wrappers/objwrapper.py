@@ -1,11 +1,12 @@
 from __future__ import annotations
 from jpype import JImplements, JOverride # type: ignore
 from scyjava import jimport # type: ignore
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Self
 
 from src.objects.obj import Obj
 from src.objects.volume import Volume
-from src.wrappers.volumewrapper import VolumeFactoryWrapper, VolumeWrapper
+from src.wrappers.volumewrapper import VolumeFactoryWrapper, VolumeWrapper, wrapVolume
+from src.types.JSpatioTemporallyCalibrated import JSpatioTemporallyCalibrated
 
 if TYPE_CHECKING:
     from src.objects.coordinateset import CoordinateSet
@@ -19,7 +20,7 @@ JObjAdaptor = jimport('io.github.mianalysis.mia.python.ObjAdaptor') # type: igno
 JVolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor') # type: ignore
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.ObjI')
-class ObjWrapper(VolumeWrapper):
+class ObjWrapper:
     
     def __init__(self, coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper, obj_collection: ObjsWrapper | None, ID: int):
         if obj_collection is not None:
@@ -55,7 +56,7 @@ class ObjWrapper(VolumeWrapper):
         return self._obj.getID()
 
     @JOverride
-    def setID(self, ID: int) -> ObjWrapper:
+    def setID(self, ID: int) -> Self:
         self._obj.setID(ID)
         return self
 
@@ -64,7 +65,7 @@ class ObjWrapper(VolumeWrapper):
         return self._obj.getT()
 
     @JOverride
-    def setT(self, T: int) -> ObjWrapper:
+    def setT(self, T: int) -> Self:
         self._obj.setT(T)
         return self
 
@@ -140,6 +141,11 @@ class ObjWrapper(VolumeWrapper):
     ## Inherited from VolumeWrapper
 
     @JOverride
+    def createNewVolume(self, coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper, example_volume: VolumeWrapper) -> VolumeWrapper:
+        volume: Volume = self._obj.createNewVolume(coordinate_set_factory_wrapper.getPythonCoordinateSetFactory(), example_volume.getPythonVolume())
+        return wrapVolume(volume)
+
+    @JOverride
     def getCoordinateSetFactory(self) -> CoordinateSetFactoryWrapper:
         coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper = CoordinateSetFactoryWrapper()
         coordinate_set_factory_wrapper.setPythonCoordinateSetFactory(self._obj.getCoordinateSetFactory())
@@ -149,7 +155,7 @@ class ObjWrapper(VolumeWrapper):
     @JOverride
     def getSurface(self, ignoreEdgesXY: bool, ignoreEdgesZ: bool) -> VolumeWrapper:
         volume: Volume = self._obj.getSurface(ignoreEdgesXY, ignoreEdgesZ)
-        return VolumeWrapper.wrapVolume(volume)
+        return wrapVolume(volume)
 
     @JOverride
     def hasCalculatedSurface(self) -> bool:
@@ -158,7 +164,7 @@ class ObjWrapper(VolumeWrapper):
     @JOverride
     def getProjected(self) -> VolumeWrapper:
         volume: Volume = self._obj.getProjected()
-        return VolumeWrapper.wrapVolume(volume)
+        return wrapVolume(volume)
 
     @JOverride
     def hasCalculatedProjection(self) -> bool:
@@ -216,7 +222,93 @@ class ObjWrapper(VolumeWrapper):
     def getCalibratedIterator(self, pixelDistances: bool, matchXY: bool): # To do
         raise Exception('ObjWrapper: Implement getCalibratedIterator')
     
-    
+
+    # From SpatiallyCalibrated
+
+    @JOverride
+    def getWidth(self) -> int:
+        return self._obj.getWidth()
+
+    @JOverride
+    def setWidth(self, width: int): # No return
+        self._obj.setWidth(width)
+
+    @JOverride
+    def getHeight(self) -> int:
+        return self._obj.getHeight()
+
+    @JOverride
+    def setHeight(self, height: int): # No return
+        self._obj.setHeight(height)
+        
+    @JOverride
+    def getNSlices(self) -> int:
+        return self._obj.getNSlices()
+
+    @JOverride
+    def setNSlices(self, n_slices: int): # No return
+        self._obj.setNSlices(n_slices)
+        
+    @JOverride
+    def getDppXY(self) -> float:
+        return self._obj.getDppXY()
+
+    @JOverride
+    def setDppXY(self, dpp_xy: float): # No return
+        self._obj.setDppXY(dpp_xy)
+
+    @JOverride
+    def getDppZ(self) -> float:
+        return self._obj.getDppZ()
+
+    @JOverride
+    def setDppZ(self, dpp_z: float): # No return
+        self._obj.setDppZ(dpp_z)
+
+    @JOverride
+    def getSpatialUnits(self) -> str:
+        return self._obj.getSpatialUnits()
+
+    @JOverride
+    def setSpatialUnits(self, spatial_units: str): # No return
+        self._obj.setSpatialUnits(spatial_units)
+
+
+    # From SpatioTemporallyCalibrated
+
+    @JOverride
+    def getNFrames(self) -> int:
+        return self._obj.getNFrames()
+
+    @JOverride
+    def setNFrames(self, n_frames: int): # No return
+        self._obj.setNFrames(n_frames)
+
+    @JOverride
+    def getFrameInterval(self) -> float:
+        return self._obj.getFrameInterval()
+
+    @JOverride
+    def setFrameInterval(self, frame_interval: float): # No return
+        self._obj.setFrameInterval(frame_interval)  
+
+    @JOverride
+    def getTemporalUnit(self): # To do
+        return self._obj.getTemporalUnit()
+
+    @JOverride
+    def setTemporalUnit(self, time_unit): # To do
+        self._obj.setTemporalUnit(time_unit)
+
+    @JOverride
+    def applySpatioTemporalCalibrationToImage(self, ipl): # To do
+        raise Exception('ObjWrapper: Implement applySpatioTemporalCalibrationToImage')
+
+    @JOverride
+    def setSpatioTemporalCalibrationFromExample(self, example: JSpatioTemporallyCalibrated): # No return
+        raise Exception('ObjWrapper: Implement setSpatioTemporalCalibrationFromExample')
+
+
     # Obj default methods
     
     def addToImage(self, image: ImageWrapper, hue: float):
@@ -233,9 +325,7 @@ class ObjWrapper(VolumeWrapper):
 
     def finaliseSlice(self, z: int): # No return
         self._obj.finaliseSlice(z)
-
-    def getWidth(self) -> int:
-        return self._obj.getWidth()
+        
 
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.ObjFactoryI')
@@ -246,10 +336,13 @@ class ObjFactoryWrapper:
         return "Python object factory"
     
     @JOverride
-    def createObj(self, obj_collection: ObjsWrapper, factory: CoordinateSetFactoryWrapper, ID: int, spat_cal=None) -> ObjWrapper: # To do
-        return ObjWrapper(obj_collection, factory, ID, spat_cal)
-
-    @JOverride
     def duplicate(self) -> ObjFactoryWrapper:
         return ObjFactoryWrapper()
-    
+
+    @JOverride
+    def createObj(self, factory: CoordinateSetFactoryWrapper, obj_collection: ObjsWrapper) -> ObjWrapper: # To do
+        return ObjWrapper(factory, obj_collection, obj_collection.getAndIncrementID())
+
+    @JOverride
+    def createObjWithID(self, factory: CoordinateSetFactoryWrapper, obj_collection: ObjsWrapper, ID: int) -> ObjWrapper: # To do
+        return ObjWrapper(factory, obj_collection, ID)

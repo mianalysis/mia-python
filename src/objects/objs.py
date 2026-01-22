@@ -12,10 +12,22 @@ if TYPE_CHECKING:
     from src.types.types import Point
 
 class Objs():
-    def __init__(self):
+    def __init__(self, name: str, width: int, height: int, n_slices: int, dpp_xy: float, dpp_z: float, spatial_units: str, n_frames: int, frame_interval: float, temporal_unit): # To do
         self._objs: Dict[int, Obj] = {}
         self._max_ID: int = 0
         
+        self._name: str = name
+        self._width: int = width
+        self._height: int = height
+        self._n_slices: int = n_slices
+        self._dpp_xy: float = dpp_xy
+        self._dpp_z: float = dpp_z
+        self._spatial_units: str = spatial_units
+        
+        self._n_frames: int = n_frames
+        self._frame_interval: float = frame_interval
+        self._temporal_unit = temporal_unit
+                
     def createAndAddNewObject(self, factory: CoordinateSetFactory) -> Obj:
         raise Exception('ObjsWrapper: Implement createAndAddNewObject')
     
@@ -27,13 +39,7 @@ class Objs():
     
     def add(self, object: Obj): # No return
         raise Exception('ObjsWrapper: Implement add')
-    
-    def getSpatialCalibration(self): # To do
-        raise Exception('ObjsWrapper: Implement getSpatialCalibration')
-    
-    def setSpatialCalibration(self, spat_cal, update_all_objects: bool): # To do
-        raise Exception('ObjsWrapper: Implement setSpatialCalibration')
-    
+        
     def getAndIncrementID(self) -> int:
         self._max_ID = self._max_ID + 1
         return self._max_ID

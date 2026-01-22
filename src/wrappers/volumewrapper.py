@@ -1,15 +1,15 @@
 from __future__ import annotations
 from jpype import JImplements, JOverride # type: ignore
 from scyjava import jimport # type: ignore
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Self
 
 from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSetFactoryWrapper
 from src.objects.volume import Volume
 from src.types.JSpatiallyCalibrated import JSpatiallyCalibrated
 
 if TYPE_CHECKING:
-    from types.JPointType import JPointType
-    from types.JPype import *
+    from src.types.JPointType import JPointType
+    
 
 JVolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor') # type: ignore
 
@@ -86,7 +86,7 @@ class VolumeWrapper:
         raise Exception('VolumeWrapper: Implement equals')
 
     @JOverride
-    def getCoordinateSet(self: VolumeWrapper) -> CoordinateSetWrapper:
+    def getCoordinateSet(self) -> CoordinateSetWrapper:
         coordinate_set_wrapper: CoordinateSetWrapper = CoordinateSetWrapper()
         coordinate_set_wrapper.setPythonCoordinateSet(self._volume.getCoordinateSet())
 
@@ -97,7 +97,7 @@ class VolumeWrapper:
         raise Exception('VolumeWrapper: Implement setCoordinateSet')
 
     @JOverride
-    def createNewVolume(self, factory: CoordinateSetFactoryWrapper, example_volume: VolumeWrapper):
+    def createNewVolume(self, coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper, example_volume: VolumeWrapper) -> VolumeWrapper:
         raise Exception('VolumeWrapper: Implement createNewVolume')
 
     @JOverride
@@ -118,59 +118,59 @@ class VolumeWrapper:
     # From SpatiallyCalibrated
 
     @JOverride
-    def getWidth(self: VolumeWrapper) -> int:
+    def getWidth(self) -> int:
         return self._volume.getWidth()
 
     @JOverride
-    def setWidth(self: VolumeWrapper, width: int): # No return
+    def setWidth(self, width: int): # No return
         self._volume.setWidth(width)
 
     @JOverride
-    def getHeight(self: VolumeWrapper) -> int:
+    def getHeight(self) -> int:
         return self._volume.getHeight()
 
     @JOverride
-    def setHeight(self: VolumeWrapper, height: int): # No return
+    def setHeight(self, height: int): # No return
         self.height = height
 
     @JOverride
-    def getNSlices(self: VolumeWrapper) -> int:
+    def getNSlices(self) -> int:
         return self._volume.getNSlices()
 
     @JOverride
-    def setNSlices(self: VolumeWrapper, n_slices: int): # No return
+    def setNSlices(self, n_slices: int): # No return
         self.n_slices = n_slices
 
     @JOverride
-    def getDppXY(self: VolumeWrapper) -> float:
+    def getDppXY(self) -> float:
         return self._volume.getDppXY()
 
     @JOverride
-    def setDppXY(self: VolumeWrapper, dpp_xy: float): # No return
+    def setDppXY(self, dpp_xy: float): # No return
         self._dpp_xy = dpp_xy
 
     @JOverride
-    def getDppZ(self: VolumeWrapper) -> float:
+    def getDppZ(self) -> float:
         return self._volume.getDppZ()
 
     @JOverride
-    def setDppZ(self: VolumeWrapper, dpp_z: float): # No return
+    def setDppZ(self, dpp_z: float): # No return
         self._dpp_z = dpp_z
 
     @JOverride
-    def getSpatialUnits(self: VolumeWrapper) -> str:
+    def getSpatialUnits(self) -> str:
         return self._volume.getSpatialUnits()
 
     @JOverride
-    def setSpatialUnits(self: VolumeWrapper, spatial_units: str): # No return
+    def setSpatialUnits(self, spatial_units: str): # No return
         self._spatial_units = spatial_units
 
     @JOverride
-    def applySpatialCalibrationToImage(self: VolumeWrapper, ipl): # To do
+    def applySpatialCalibrationToImage(self, ipl): # To do
         self._volume.applySpatialCalibrationToImage(ipl)
         
     @JOverride
-    def setSpatialCalibrationFromExample(self: VolumeWrapper, example: JSpatiallyCalibrated): # To do
+    def setSpatialCalibrationFromExample(self, example: JSpatiallyCalibrated): # To do
         self._volume.setSpatialCalibrationFromExample(example)
     
 

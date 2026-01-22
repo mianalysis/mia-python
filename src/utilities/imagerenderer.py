@@ -1,8 +1,4 @@
 from jpype import JImplements, JOverride # type: ignore
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from types.JPype import *
     
 @JImplements('io.github.mianalysis.mia.object.image.renderer.ImageRenderer') # type: ignore
 class NotebookImageRenderer:     

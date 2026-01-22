@@ -10,15 +10,13 @@ if TYPE_CHECKING:
     from src.wrappers.imagewrapper import ImageWrapper
     from src.wrappers.objwrapper import ObjWrapper
     from src.wrappers.coordinatesetwrapper import CoordinateSetFactoryWrapper
-    from types.JPointType import JPointType
-    from types.JPype import *
-
+    from src.types.JPointType import JPointType
 
 # @JImplements('io.github.mianalysis.mia.object.ObjsI') # type: ignore
-class ObjsWrapper():      
-    def __init__(self):
-        self._objs: Objs = Objs()
-        
+class ObjsWrapper():     
+    def __init__(self, name: str, width: int, height: int, n_slices: int, dpp_xy: float, dpp_z: float, spatial_units: str, n_frames: int, frame_interval: float, temporal_unit): # To do
+        self._objs: Objs = Objs(name, width, height, n_slices, dpp_xy, dpp_z, spatial_units, n_frames, frame_interval, temporal_unit)
+                
     def getPythonObjs(self) -> Objs:
         return self._objs
     
@@ -40,15 +38,7 @@ class ObjsWrapper():
     @JOverride
     def add(self, object: ObjWrapper): # No return
         raise Exception('ObjsWrapper: Implement add')
-    
-    @JOverride
-    def getSpatialCalibration(self): # To do
-        raise Exception('ObjsWrapper: Implement getSpatialCalibration')
-    
-    @JOverride
-    def setSpatialCalibration(self, spat_cal, update_all_objects: bool): # To do
-        raise Exception('ObjsWrapper: Implement setSpatialCalibration')
-    
+        
     @JOverride
     def getAndIncrementID(self) -> int:
         return self._objs.getAndIncrementID()
@@ -379,16 +369,36 @@ class ObjsFactoryWrapper:
         return "Python objects factory"
     
     @JOverride
-    def createObjs(self, name: str, width: int, height: int, nSlices: int, dppXY: float, dppZ: float, spatialUnits: str, nFrames: int, frameInterval: float, temporalUnit) -> ObjsWrapper: # To do
-        raise Exception('ObjsFactoryWrapper: Implement createObjs 1')
+    def createObjs(self, name: str, width: int, height: int, n_slices: int, dpp_xy: float, dpp_z: float, spatial_units: str, n_frames: int, frame_interval: float, temporal_unit) -> ObjsWrapper: # To do
+        return ObjsWrapper(name, width, height, n_slices, dpp_xy, dpp_z, spatial_units, n_frames, frame_interval, temporal_unit)
 
     @JOverride
     def createFromExample(self, name: str, example_objs: ObjsWrapper) -> ObjsWrapper:
-        raise Exception('ObjsFactoryWrapper: Implement createObjs 2')
+        width: int = example_objs.getWidth()
+        height: int = example_objs.getHeight()
+        n_slices: int = example_objs.getNSlices()
+        dpp_xy: float = example_objs.getDppXY()
+        dpp_z: float = example_objs.getDppZ()
+        spatial_units: str = example_objs.getSpatialUnits()
+        n_frames: int = example_objs.getNFrames()
+        frame_interval: float = example_objs.getFrameInterval()
+        temporal_unit = example_objs.getTemporalUnit()
+        
+        return ObjsWrapper(name, width, height, n_slices, dpp_xy, dpp_z, spatial_units, n_frames, frame_interval, temporal_unit)
 
     @JOverride
-    def createFromImage(self, name: str, imageForCalibration) -> ObjsWrapper: # To do
-        raise Exception('ObjsFactoryWrapper: Implement createObjs 3')
+    def createFromImage(self, name: str, image_for_calibration: ImageWrapper) -> ObjsWrapper: # To do
+        width: int = image_for_calibration.getWidth()
+        height: int = image_for_calibration.getHeight()
+        n_slices: int = image_for_calibration.getNSlices()
+        dpp_xy: float = image_for_calibration.getDppXY()
+        dpp_z: float = image_for_calibration.getDppZ()
+        spatial_units: str = image_for_calibration.getSpatialUnits()
+        n_frames: int = image_for_calibration.getNFrames()
+        frame_interval: float = image_for_calibration.getFrameInterval()
+        temporal_unit = image_for_calibration.getTemporalUnit()
+        
+        return ObjsWrapper(name, width, height, n_slices, dpp_xy, dpp_z, spatial_units, n_frames, frame_interval, temporal_unit)
                 
     @JOverride
     def duplicate(self) -> ObjsFactoryWrapper:

@@ -4,10 +4,8 @@ ij =imagej.init(['io.github.mianalysis:mia-plugin:2.0.0-SNAPSHOT'])
 from jpype import JImplements, JOverride  # type: ignore
 from scyjava import jimport  # type: ignore
 from src.utilities.imagerenderer import NotebookImageRenderer
-from typing import TYPE_CHECKING
 
 import numpy as np
-import PIL
 
 JImage = jimport('io.github.mianalysis.mia.object.image.ImageI')
 
@@ -34,24 +32,44 @@ class ImageWrapper:
         self._renderer = imageRenderer
     
     @JOverride
-    def getWidth(self):
+    def getWidth(self) -> int:
         raise Exception('ImageWrapper: Implement getWidth')
     
     @JOverride
-    def getHeight(self):
+    def getHeight(self) -> int:
         raise Exception('ImageWrapper: Implement getHeight')
     
     @JOverride
-    def getNChannels(self):
+    def getNChannels(self) -> int:
         raise Exception('ImageWrapper: Implement getNChannels')
     
     @JOverride
-    def getNSlices(self):
+    def getNSlices(self) -> int:
         raise Exception('ImageWrapper: Implement getNSlices')
     
     @JOverride
-    def getNFrames(self):
+    def getNFrames(self) -> int:
         raise Exception('ImageWrapper: Implement getNFrames')
+    
+    @JOverride
+    def getDppXY(self) -> float:
+        raise Exception('ImageWrapper: Implement getDppXY')
+    
+    @JOverride
+    def getDppZ(self) -> float:
+        raise Exception('ImageWrapper: Implement getDppZ')
+    
+    @JOverride
+    def getSpatialUnits(self): # To do
+        raise Exception('ImageWrapper: Implement getSpatialUnits')
+    
+    @JOverride
+    def getFrameInterval(self) -> float:
+        raise Exception('ImageWrapper: Implement getFrameInterval')
+
+    @JOverride
+    def getTemporalUnit(self): # To do
+        raise Exception('ImageWrapper: Implement getTemporalUnit')
     
     @JOverride
     def getImagePlus(self):
@@ -95,7 +113,7 @@ class ImageWrapper:
         raise Exception('ImageWrapper: Implement addObjectCentroid')
     
     @JOverride
-    def duplicate(self, outputImageName):
+    def duplicate(self, outputImageName: str):
         raise Exception('ImageWrapper: Implement duplicate')
     
     @JOverride
@@ -127,7 +145,7 @@ class ImageWrapper:
         raise Exception('ImageWrapper: Implement removeMeasurement')
     
     @JOverride
-    def getName(self):
+    def getName(self) -> str:
         return self._name
     
     @JOverride
@@ -141,10 +159,29 @@ class ImageWrapper:
     @JOverride
     def show(self, title, lut, normalise, display_mode, overlay):
         self._renderer.render(self, title, lut, normalise, display_mode, overlay)
+        
+    @JOverride
+    def showWithTitle(self, title: str):
+        self.show(title, None, True, jimport('io.github.mianalysis.mia.object.image.DisplayModes').COLOUR, None)
+
+    @JOverride
+    def showWithLUT(self, lut): # To do
+        self.show(self.getName(), lut, True, jimport('io.github.mianalysis.mia.object.image.DisplayModes').COLOUR, None)
+
+    @JOverride
+    def showAsIs(self):
+        self.show(self.getName(), None, True, jimport('io.github.mianalysis.mia.object.image.DisplayModes').COLOUR, None)
+
+    @JOverride
+    def showWithOverlay(self, overlay): # To do
+        self.show(self.getName(), None, True, jimport('io.github.mianalysis.mia.object.image.DisplayModes').COLOUR, overlay)
+
+    @JOverride
+    def showWithNormalisation(self, normalise: bool):
+        self.show(self.getName(), None, normalise, jimport('io.github.mianalysis.mia.object.image.DisplayModes').COLOUR, None)
 
     @JOverride
     def showMeasurements(self, module):
-        # ImageI.showMeasurements(module)
         raise Exception('ImageWrapper: Implement showMeasurements')
     
     @JOverride
