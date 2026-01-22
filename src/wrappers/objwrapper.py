@@ -22,8 +22,8 @@ JVolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor') # type
 @JImplements('io.github.mianalysis.mia.object.coordinates.ObjI')
 class ObjWrapper:
     
-    def __init__(self, coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper, obj_collection: ObjsWrapper | None, ID: int):
-        if obj_collection is not None:
+    def __init__(self, coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper | None, obj_collection: ObjsWrapper | None, ID: int):
+        if coordinate_set_factory_wrapper is not None and obj_collection is not None:
             self._obj: Obj = Obj(coordinate_set_factory_wrapper.getPythonCoordinateSetFactory(), obj_collection.getPythonObjs(), ID)
 
     def getPythonObj(self) -> Obj:

@@ -23,43 +23,43 @@ class Volume():
         return self._coordinate_set_factory
     
     def getSurface(self, ignore_edges_XY: bool, ignore_edges_Z: bool) -> Volume:
-        raise Exception('VolumeWrapper: Implement getSurface')
+        raise Exception('Volume: Implement getSurface')
 
     def hasCalculatedSurface(self) -> bool:
-        raise Exception('VolumeWrapper: Implement hasCalculatedSurface')
+        raise Exception('Volume: Implement hasCalculatedSurface')
 
     def getProjected(self) -> Volume:
-        raise Exception('VolumeWrapper: Implement getProjected')
+        raise Exception('Volume: Implement getProjected')
 
     def hasCalculatedProjection(self) -> bool:
-        raise Exception('VolumeWrapper: Implement hasCalculatedProjection')
+        raise Exception('Volume: Implement hasCalculatedProjection')
 
     def getMeanCentroid(self, pixel_distances: bool, match_XY: bool) -> Point:
-        raise Exception('VolumeWrapper: Implement getMeanCentroid')
+        raise Exception('Volume: Implement getMeanCentroid')
 
     def hasCalculatedCentroid(self) -> bool:
-        raise Exception('VolumeWrapper: Implement hasCalculatedCentroid')
+        raise Exception('Volume: Implement hasCalculatedCentroid')
 
     def clearAllCoordinates(self): # No return
-        raise Exception('VolumeWrapper: Implement clearAllCoordinates')
+        raise Exception('Volume: Implement clearAllCoordinates')
 
     def clearSurface(self): # No return
-        raise Exception('VolumeWrapper: Implement clearSurface')
+        raise Exception('Volume: Implement clearSurface')
 
     def clearPoints(self): # No return
-        raise Exception('VolumeWrapper: Implement clearPoints')
+        raise Exception('Volume: Implement clearPoints')
 
     def clearProjected(self): # No return
-        raise Exception('VolumeWrapper: Implement clearProjected')
+        raise Exception('Volume: Implement clearProjected')
 
     def clearCentroid(self): # No return
-        raise Exception('VolumeWrapper: Implement clearCentroid')
+        raise Exception('Volume: Implement clearCentroid')
 
     def hashCode(self) -> int:
-        raise Exception('VolumeWrapper: Implement hashCode')
+        raise Exception('Volume: Implement hashCode')
 
     def equals(self, obj: Self) -> bool:
-        raise Exception('VolumeWrapper: Implement equals')
+        raise Exception('Volume: Implement equals')
 
     def getCoordinateSet(self) -> CoordinateSet:
         return self._coordinate_set
@@ -68,10 +68,10 @@ class Volume():
         self._coordinate_set = coordinate_set
 
     def createNewVolume(self, coordinate_set_factory: CoordinateSetFactory, exampleVolume: Volume) -> Volume:
-        raise Exception('VolumeWrapper: Implement createNewVolume')
+        raise Exception('Volume: Implement createNewVolume')
 
     def getCalibratedIterator(self, pixel_distances: bool, match_XY: bool): # To do
-        raise Exception('VolumeWrapper: Implement getCalibratedIterator')
+        raise Exception('Volume: Implement getCalibratedIterator')
 
     # private class VolumeIterator implements Iterator<Point<Double>> {
     #     private Iterator<Point<Integer>> iterator;

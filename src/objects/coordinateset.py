@@ -53,10 +53,10 @@ class CoordinateSet():
         return new_points        
     
     def calculateProjected(self):
-        raise Exception('CoordinateSetWrapper: Implement calculateProjected')
+        raise Exception('CoordinateSet: Implement calculateProjected')
         
     def getSlice(self, slice: int):
-        raise Exception('CoordinateSetWrapper: Implement getSlice')
+        raise Exception('CoordinateSet: Implement getSlice')
 
 
     # From Set
@@ -68,43 +68,43 @@ class CoordinateSet():
         return CoordinateSetIterator(self)
 
     def isEmpty(self) -> bool:
-        raise Exception('CoordinateSetWrapper: Implement isEmpty')
+        raise Exception('CoordinateSet: Implement isEmpty')
         
     def toArray(self, array=None): # To do
-        raise Exception('CoordinateSetWrapper: Implement toArray')
+        raise Exception('CoordinateSet: Implement toArray')
 
     def contains(self, point: Point) -> bool:
-        raise Exception('CoordinateSetWrapper: Implement contains')
+        raise Exception('CoordinateSet: Implement contains')
         
     def containsAll(self, points: Points) -> bool:
-        raise Exception('CoordinateSetWrapper: Implement containsAll')
+        raise Exception('CoordinateSet: Implement containsAll')
     
     def add(self, point: Point) -> bool:
-        raise Exception('CoordinateSetWrapper: Implement add')
+        raise Exception('CoordinateSet: Implement add')
         
     def addAll(self, points: Points) -> bool:
-        raise Exception('CoordinateSetWrapper: Implement addAll')
+        raise Exception('CoordinateSet: Implement addAll')
 
     def retainAll(self, points: Points) -> bool:
-        raise Exception('CoordinateSetWrapper: Implement retainAll')
+        raise Exception('CoordinateSet: Implement retainAll')
 
     def remove(self, point: Point) -> bool:
-        raise Exception('CoordinateSetWrapper: Implement remove')
+        raise Exception('CoordinateSet: Implement remove')
         
     def removeAll(self, points: Points) -> bool:
-        raise Exception('CoordinateSetWrapper: Implement removeAll')
+        raise Exception('CoordinateSet: Implement removeAll')
 
     def clear(self): # No return
-        raise Exception('CoordinateSetWrapper: Implement clear')
+        raise Exception('CoordinateSet: Implement clear')
         
     def equals(self, point: Point) -> bool:
-        raise Exception('CoordinateSetWrapper: Implement equals')
+        raise Exception('CoordinateSet: Implement equals')
 
     def hashCode(self, point: Point) -> int:
-        raise Exception('CoordinateSetWrapper: Implement hashCode')
+        raise Exception('CoordinateSet: Implement hashCode')
 
     def spliterator(self): # To do
-        raise Exception('CoordinateSetWrapper: Implement spliterator')
+        raise Exception('CoordinateSet: Implement spliterator')
 
 
 class CoordinateSetIterator:

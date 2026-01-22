@@ -1,22 +1,25 @@
 from __future__ import annotations
+
 from jpype import JImplements, JOverride # type: ignore
-from typing import Dict
+from typing import Dict, List
 from typing import TYPE_CHECKING
 
 from src.objects.objs import Objs
+from src.wrappers.objwrapper import ObjWrapper
 
 if TYPE_CHECKING:
     from src.objects.obj import Obj
-    from src.wrappers.imagewrapper import ImageWrapper
-    from src.wrappers.objwrapper import ObjWrapper
+    from src.wrappers.imagewrapper import ImageWrapper    
     from src.wrappers.coordinatesetwrapper import CoordinateSetFactoryWrapper
     from src.types.JPointType import JPointType
+    from src.types.JSpatioTemporallyCalibrated import JSpatioTemporallyCalibrated
 
-# @JImplements('io.github.mianalysis.mia.object.ObjsI') # type: ignore
-class ObjsWrapper():     
+@JImplements('io.github.mianalysis.mia.object.ObjsI') # type: ignore
+class ObjsWrapper():
     def __init__(self, name: str, width: int, height: int, n_slices: int, dpp_xy: float, dpp_z: float, spatial_units: str, n_frames: int, frame_interval: float, temporal_unit): # To do
         self._objs: Objs = Objs(name, width, height, n_slices, dpp_xy, dpp_z, spatial_units, n_frames, frame_interval, temporal_unit)
-                
+        print("Created")
+        
     def getPythonObjs(self) -> Objs:
         return self._objs
     
@@ -33,7 +36,7 @@ class ObjsWrapper():
         
     @JOverride
     def getName(self) -> str:
-        raise Exception('ObjsWrapper: Implement getName')
+        return self._objs.getName()
     
     @JOverride
     def add(self, object: ObjWrapper): # No return
@@ -41,6 +44,7 @@ class ObjsWrapper():
         
     @JOverride
     def getAndIncrementID(self) -> int:
+        print("Incrementing")
         return self._objs.getAndIncrementID()
     
     @JOverride
@@ -60,21 +64,33 @@ class ObjsWrapper():
         raise Exception('ObjsWrapper: Implement getObjectsInFrame')
     
     @JOverride
+    def setCalibrationFromExample(self, example: JSpatioTemporallyCalibrated, update_all_objects: bool): # No return
+        raise Exception('ObjsWrapper: Implement setCalibrationFromExample')
+    
+    @JOverride
     def getNFrames(self) -> int:
         raise Exception('ObjsWrapper: Implement getNFrames')
+    
+    @JOverride
+    def setNFrames(self, nFrames: int): # No return
+        raise Exception('ObjsWrapper: Implement setNFrames')
     
     @JOverride
     def getFrameInterval(self) -> float:
         raise Exception('ObjsWrapper: Implement getFrameInterval')
     
     @JOverride
+    def setFrameInterval(self, frame_interval: float): # No return
+        raise Exception('ObjsWrapper: Implement setFrameInterval')
+    
+    @JOverride
     def getTemporalUnit(self): # To do
         raise Exception('ObjsWrapper: Implement getTemporalUnit')
     
     @JOverride
-    def setNFrames(self, nFrames: int): # No return
-        raise Exception('ObjsWrapper: Implement setNFrames')
-    
+    def setTemporalUnit(self, temporal_unit): # No return
+        raise Exception('ObjsWrapper: Implement setTemporalUnit')
+        
     @JOverride
     def duplicate(self, new_objects_name: str, duplicate_relationships: bool, duplicate_measurement: bool,
                   duplicate_metadata: bool, add_original_duplicate_relationship: bool) -> ObjsWrapper:
@@ -85,27 +101,51 @@ class ObjsWrapper():
 
     @JOverride
     def getWidth(self) -> int:
-        raise Exception('ObjsWrapper: Implement getWidth')
+        return self._objs.getWidth()
+    
+    @JOverride
+    def setWidth(self, width: int): # No return
+        self._objs.setWidth(width)
     
     @JOverride
     def getHeight(self) -> int:
-        raise Exception('ObjsWrapper: Implement getHeight')
+        return self._objs.getHeight()
+    
+    @JOverride
+    def setHeight(self, height: int): # No return
+        self._objs.setHeight(height)
     
     @JOverride
     def getNSlices(self) -> int:
-        raise Exception('ObjsWrapper: Implement getNSlices')
+        return self._objs.getNSlices()
+    
+    @JOverride
+    def setNSlices(self, n_slices: int): # No return
+        self._objs.setNSlices(n_slices)
     
     @JOverride
     def getDppXY(self) -> float:
-        raise Exception('ObjsWrapper: Implement getDppXY')
+        return self._objs.getDppXY()
+    
+    @JOverride
+    def setDppXY(self, dpp_xy: float): # No return
+        self._objs.setDppXY(dpp_xy)
     
     @JOverride
     def getDppZ(self) -> float:
-        raise Exception('ObjsWrapper: Implement getDppZ')
+        return self._objs.getDppZ()
+    
+    @JOverride
+    def setDppZ(self, dpp_z: float): # No return
+        self._objs.setDppZ(dpp_z)
     
     @JOverride
     def getSpatialUnits(self) -> str:
-        raise Exception('ObjsWrapper: Implement getSpatialUnits')
+        return self._objs.getSpatialUnits()
+    
+    @JOverride
+    def setSpatialUnits(self, spatial_units: str): # No return
+        self._objs.setSpatialUnits(spatial_units)
     
     @JOverride
     def getFirst(self) -> ObjWrapper:
@@ -236,7 +276,16 @@ class ObjsWrapper():
         
     @JOverride
     def put(self, key: int, value: ObjWrapper) -> ObjWrapper:
-        raise Exception('MapWrapper: Implement put')
+        prevObj: Obj = self._objs.get(key)
+        prevObjWrapper: ObjWrapper | None = None
+        
+        if prevObj is not None:
+            prevObjWrapper = ObjWrapper(None, None, 1)
+            prevObjWrapper.setPythonObj(prevObj)
+            
+        self._objs.put(key, value.getPythonObj())
+        
+        return prevObjWrapper
     
     @JOverride
     def remove(self, key: int) -> ObjWrapper:
@@ -255,8 +304,15 @@ class ObjsWrapper():
         raise Exception('MapWrapper: Implement keySet')
     
     @JOverride
-    def values(self): # To do
-        raise Exception('MapWrapper: Implement values')
+    def values(self) -> List[ObjWrapper]:
+        vals: List[ObjWrapper] = []
+        
+        for obj in self._objs.values():
+            obj_wrapper = ObjWrapper(None, None, 1)
+            obj_wrapper.setPythonObj(obj)
+            vals.append(obj_wrapper)
+        
+        return vals
     
     @JOverride
     def entrySet(self): # To do
@@ -286,7 +342,7 @@ class ObjsWrapper():
     def putIfAbsent(self, key: int, value: ObjWrapper) -> ObjWrapper:
         obj: Obj = self._objs.putIfAbsent(key, value.getPythonObj())
         
-        obj_wrapper = ObjWrapper()
+        obj_wrapper = ObjWrapper(None, None, 1)
         obj_wrapper.setPythonObj(obj)
         
         return obj_wrapper
@@ -370,6 +426,9 @@ class ObjsFactoryWrapper:
     
     @JOverride
     def createObjs(self, name: str, width: int, height: int, n_slices: int, dpp_xy: float, dpp_z: float, spatial_units: str, n_frames: int, frame_interval: float, temporal_unit) -> ObjsWrapper: # To do
+        
+        print("Creating from raw values")
+        
         return ObjsWrapper(name, width, height, n_slices, dpp_xy, dpp_z, spatial_units, n_frames, frame_interval, temporal_unit)
 
     @JOverride
@@ -398,7 +457,10 @@ class ObjsFactoryWrapper:
         frame_interval: float = image_for_calibration.getFrameInterval()
         temporal_unit = image_for_calibration.getTemporalUnit()
         
-        return ObjsWrapper(name, width, height, n_slices, dpp_xy, dpp_z, spatial_units, n_frames, frame_interval, temporal_unit)
+        print("Creating from image")
+        output: ObjsWrapper = ObjsWrapper(name, width, height, n_slices, dpp_xy, dpp_z, spatial_units, n_frames, frame_interval, temporal_unit)
+        print(output)
+        return output
                 
     @JOverride
     def duplicate(self) -> ObjsFactoryWrapper:

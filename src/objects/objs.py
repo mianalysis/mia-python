@@ -29,147 +29,165 @@ class Objs():
         self._temporal_unit = temporal_unit
                 
     def createAndAddNewObject(self, factory: CoordinateSetFactory) -> Obj:
-        raise Exception('ObjsWrapper: Implement createAndAddNewObject')
+        raise Exception('Objs: Implement createAndAddNewObject')
     
     def createAndAddNewObjectWithID(self, factory: CoordinateSetFactory, ID: int) -> Obj:
-        raise Exception('ObjsWrapper: Implement createAndAddNewObjectWithID')
+        raise Exception('Objs: Implement createAndAddNewObjectWithID')
         
     def getName(self) -> str:
-        raise Exception('ObjsWrapper: Implement getName')
+        return self._name
     
     def add(self, object: Obj): # No return
-        raise Exception('ObjsWrapper: Implement add')
+        raise Exception('Objs: Implement add')
         
     def getAndIncrementID(self) -> int:
         self._max_ID = self._max_ID + 1
         return self._max_ID
     
     def resetCollection(self): # No return
-        raise Exception('ObjsWrapper: Implement resetCollection')
+        raise Exception('Objs: Implement resetCollection')
     
     def recalculateMaxID(self): # No return
-        raise Exception('ObjsWrapper: Implement recalculateMaxID')
+        raise Exception('Objs: Implement recalculateMaxID')
     
     def getAsSingleObject(self) -> Obj:
-        raise Exception('ObjsWrapper: Implement getAsSingleObject')
+        raise Exception('Objs: Implement getAsSingleObject')
     
     def getObjectsInFrame(self, output_objects_name: str, frame: int) -> Objs:
-        raise Exception('ObjsWrapper: Implement getObjectsInFrame')
+        raise Exception('Objs: Implement getObjectsInFrame')
     
     def getNFrames(self) -> int:
-        raise Exception('ObjsWrapper: Implement getNFrames')
+        raise Exception('Objs: Implement getNFrames')
     
     def getFrameInterval(self) -> float:
-        raise Exception('ObjsWrapper: Implement getFrameInterval')
+        raise Exception('Objs: Implement getFrameInterval')
     
     def getTemporalUnit(self): # To do
-        raise Exception('ObjsWrapper: Implement getTemporalUnit')
+        raise Exception('Objs: Implement getTemporalUnit')
     
     def setNFrames(self, nFrames: int): # No return
-        raise Exception('ObjsWrapper: Implement setNFrames')
+        raise Exception('Objs: Implement setNFrames')
     
     def duplicate(self, new_objects_name: str, duplicate_relationships: bool, duplicate_measurement: bool,
                   duplicate_metadata: bool, add_original_duplicate_relationship: bool) -> Objs:
-        raise Exception('ObjsWrapper: Implement duplicate')
+        raise Exception('Objs: Implement duplicate')
 
 
     # Default methods
 
     def getWidth(self) -> int:
-        raise Exception('ObjsWrapper: Implement getWidth')
+        return self._width
+    
+    def setWidth(self, width: int): # No return
+        self._width = width
     
     def getHeight(self) -> int:
-        raise Exception('ObjsWrapper: Implement getHeight')
+        return self._height
+    
+    def setHeight(self, height: int): # No return
+        self._height = height
     
     def getNSlices(self) -> int:
-        raise Exception('ObjsWrapper: Implement getNSlices')
+        return self._n_slices
+
+    def setNSlices(self, n_slices: int): # No return
+        self._n_slices = n_slices
     
     def getDppXY(self) -> float:
-        raise Exception('ObjsWrapper: Implement getDppXY')
+        return self._dpp_xy
     
+    def setDppXY(self, dpp_xy: float): # No return
+        self._dpp_xy = dpp_xy
+
     def getDppZ(self) -> float:
-        raise Exception('ObjsWrapper: Implement getDppZ')
+        return self._dpp_z
+
+    def setDppZ(self, dpp_z: float): # No return
+        self._dpp_z = dpp_z
     
     def getSpatialUnits(self) -> str:
-        raise Exception('ObjsWrapper: Implement getSpatialUnits')
-    
+        return self._spatial_units
+
+    def setSpatialUnits(self, spatial_units: str): # No return
+        self._spatial_units = spatial_units
+
     def getFirst(self) -> Obj:
-        raise Exception('ObjsWrapper: Implement getFirst')
+        raise Exception('Objs: Implement getFirst')
     
     def getSpatialExtents(self) -> List[List[int]]:
-        raise Exception('ObjsWrapper: Implement getSpatialExtents')
+        raise Exception('Objs: Implement getSpatialExtents')
     
     def getSpatialLimits(self) -> List[List[int]]:
-        raise Exception('ObjsWrapper: Implement getSpatialLimits')
+        raise Exception('Objs: Implement getSpatialLimits')
     
     def getTemporalLimits(self) -> List[int]:
-        raise Exception('ObjsWrapper: Implement getTemporalLimits')
+        raise Exception('Objs: Implement getTemporalLimits')
     
     def getLargestID(self) -> int:
-        raise Exception('ObjsWrapper: Implement getLargestID')
+        raise Exception('Objs: Implement getLargestID')
         
     def convertToImage(self, output_name: str, hues: Dict[int, float], bit_depth: int, nanBackground: bool, verbose: bool) -> Image:
-        raise Exception('ObjsWrapper: Implement convertToImage')
+        raise Exception('Objs: Implement convertToImage')
     
     def convertToImageRandomColours(self) -> Image:
-        raise Exception('ObjsWrapper: Implement convertToImageRandomColours')
+        raise Exception('Objs: Implement convertToImageRandomColours')
         
     def convertToImageBinary(self, name: str) -> Image:
-        raise Exception('ObjsWrapper: Implement convertToImageBinary')
+        raise Exception('Objs: Implement convertToImageBinary')
     
     def convertToImageIDColours(self) -> Image:
-        raise Exception('ObjsWrapper: Implement convertToImageIDColours')
+        raise Exception('Objs: Implement convertToImageIDColours')
     
     def convertCentroidsToImage(self, output_name: str, hues: Dict[int, float], bit_bepth: int, nan_background: bool) -> Image:
-        raise Exception('ObjsWrapper: Implement convertCentroidsToImage')
+        raise Exception('Objs: Implement convertCentroidsToImage')
     
     def applyCalibration(self, image: Image): # No return
-        raise Exception('ObjsWrapper: Implement applyCalibration')
+        raise Exception('Objs: Implement applyCalibration')
     
     def applyCalibrationFromImagePlus(self, ipl): # To do
-        raise Exception('ObjsWrapper: Implement applyCalibrationFromImagePlus')
+        raise Exception('Objs: Implement applyCalibrationFromImagePlus')
     
     def createImage(self, output_name: str, bit_depth: int) -> Image:
-        raise Exception('ObjsWrapper: Implement createImage')
+        raise Exception('Objs: Implement createImage')
     
     def setNaNBackground(self, ipl): # To do
-        raise Exception('ObjsWrapper: Implement setNaNBackground')
+        raise Exception('Objs: Implement setNaNBackground')
     
     def getByEqualsIgnoreNameAndID(self, reference_obj: Obj) -> Obj:
-        raise Exception('ObjsWrapper: Implement getByEqualsIgnoreNameAndID')
+        raise Exception('Objs: Implement getByEqualsIgnoreNameAndID')
     
     def showMeasurements(self, module, modules): # To do
-        raise Exception('ObjsWrapper: Implement showMeasurements')
+        raise Exception('Objs: Implement showMeasurements')
     
     def showAllMeasurements(self): # No return
-        raise Exception('ObjsWrapper: Implement showAllMeasurements')
+        raise Exception('Objs: Implement showAllMeasurements')
     
     def showMetadata(self, module, modules): # To do
-        raise Exception('ObjsWrapper: Implement showMetadata')
+        raise Exception('Objs: Implement showMetadata')
     
     def showAllMetadata(self): # No return
-        raise Exception('ObjsWrapper: Implement showAllMetadata')
+        raise Exception('Objs: Implement showAllMetadata')
     
     def removeParents(self, parent_objects_name: str): # No return
-        raise Exception('ObjsWrapper: Implement removeParents')
+        raise Exception('Objs: Implement removeParents')
     
     def removeChildren(self, child_objects_name: str): # No return
-        raise Exception('ObjsWrapper: Implement removeChildren')
+        raise Exception('Objs: Implement removeChildren')
     
     def removePartners(self, partner_objects_name: str): # No return
-        raise Exception('ObjsWrapper: Implement removePartners')
+        raise Exception('Objs: Implement removePartners')
     
     def containsPoint(self, point: Point) -> bool:
-        raise Exception('ObjsWrapper: Implement containsPoint')
+        raise Exception('Objs: Implement containsPoint')
     
     def containsCoord(self, x: int, y: int, z: int) -> bool:
-        raise Exception('ObjsWrapper: Implement containsCoord')
+        raise Exception('Objs: Implement containsCoord')
     
     def getLargestObject(self, t: int) -> Obj:
-        raise Exception('ObjsWrapper: Implement getLargestObject')
+        raise Exception('Objs: Implement getLargestObject')
     
     def getSmallestObject(self, t: int) -> Obj:
-        raise Exception('ObjsWrapper: Implement getSmallestObject')
+        raise Exception('Objs: Implement getSmallestObject')
 
 
     # From Map
@@ -186,8 +204,14 @@ class Objs():
     def containsValue(self, value: Obj) -> bool:
         raise Exception('MapWrapper: Implement containsValue')
         
+    def get(self, key: int) -> Obj:
+        return self._objs.get(key)
+    
     def put(self, key: int, value: Obj) -> Obj:
-        raise Exception('MapWrapper: Implement put')
+        prevObj: Obj | None = self._objs.get(key)
+        self._objs[key] = value
+        
+        return prevObj
     
     def remove(self, key: int) -> Obj:
         raise Exception('MapWrapper: Implement remove')
@@ -201,11 +225,16 @@ class Objs():
     def keySet(self) -> List[int]:
         raise Exception('MapWrapper: Implement keySet')
     
-    def values(self) -> List[int]:
-        raise Exception('MapWrapper: Implement values')
+    def values(self) -> List[Obj]:
+        return [obj for obj in self._objs.values()]
     
     def entrySet(self) -> List[Tuple[int,Obj]]:
-        raise Exception('MapWrapper: Implement entrySet')
+        raise Exception('MapWrapper: Implement values')
+        # entry_set: List[Tuple[int,Obj]] = []
+        # for key, value in self._objs.items():
+        #     entry_set.append((key, value))
+            
+        # return entry_set
 
     def equals(self, o: Objs) -> bool:
         raise Exception('MapWrapper: Implement equals')
@@ -222,7 +251,12 @@ class Objs():
     def replaceAll(self, function): # To do
         raise Exception('MapWrapper: Implement replaceAll')
     
-    def putIfAbsent(self, key: int, value: Obj) -> Obj:
+    def putIfAbsent(self, key: int, value: Obj) -> Obj|None:
+        if self._objs.get(key) is None:
+            self._objs[key] = value
+            return None
+        else:
+            return self._objs[key]
         raise Exception('MapWrapper: Implement putIfAbsent')
     
     def replace(self, key: int, value: Obj) -> Obj:
