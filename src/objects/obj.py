@@ -2,12 +2,16 @@ from __future__ import annotations
 from typing import Dict
 from typing import TYPE_CHECKING
 
+from src.objects.volume import Volume
+
+import numpy as np
+
 if TYPE_CHECKING:
     from src.objects.objs import Objs
     from src.objects.coordinateset import CoordinateSetFactory
-    from src.objects.image import Image
-    
-from src.objects.volume import Volume
+    from src.objects.image import Image  
+    from src.types.types import Point
+
 
 class Obj(Volume):
     def __init__(self, coordinate_set_factory: CoordinateSetFactory, obj_collection: Objs, ID: int):
@@ -17,6 +21,11 @@ class Obj(Volume):
         
         self._ID: int = ID
         self._obj_collection: Objs = obj_collection
+        
+        self._n_frames: int = obj_collection.getNFrames()    
+        self._frame_interval: float = obj_collection.getFrameInterval()
+        self._temporal_unit = obj_collection.getTemporalUnit()
+        
         self._T: int = 0
         self._parents: Dict[str, Obj] = {}
         self._children: Dict[str, Objs] = {}
@@ -102,22 +111,22 @@ class Obj(Volume):
     # From SpatioTemporallyCalibrated
 
     def getNFrames(self) -> int:
-        raise Exception('Obj: Implement getNFrames')
+        return self._n_frames
 
     def setNFrames(self, n_frames: int): # No return
-        raise Exception('Obj: Implement setNFrames')
+        self._n_frames = n_frames
 
     def getFrameInterval(self) -> float:
-        raise Exception('Obj: Implement getFrameInterval')
+        return self._frame_interval
 
     def setFrameInterval(self, frame_interval: float): # No return
-        raise Exception('Obj: Implement setFrameInterval')
+        self._frame_interval = frame_interval
 
-    def getTimeUnit(self): # To do
-        raise Exception('Obj: Implement getTimeUnit')
+    def getTemporalUnit(self): # To do
+        return self._temporal_unit
 
-    def setTimeUnit(self, time_unit): # To do
-        raise Exception('Obj: Implement setTimeUnit')
+    def setTemporalUnit(self, temporal_unit): # To do
+        self._temporal_unit = temporal_unit
     
     def applySpatioTemporalCalibrationToImage(self, ipl): # To do
         raise Exception('Obj: Implement applySpatioTemporalCalibrationToImage')
@@ -130,7 +139,23 @@ class Obj(Volume):
     # Obj default methods
     
     def addToImage(self, image: Image, hue: float): # No return
-        raise Exception('Obj: Implement addToImage')
+        np_img: np.ndarray = image.getRawImage()
+        print(self.getCoordinateSet().size())
+        
+        point: Point | None
+        for point in self.getCoordinateSet():
+            print(f'point: {point}')
+            if point is None:
+                continue
+            
+            x: int = point[0]
+            y: int = point[1]
+            z: int = point[2]
+            
+            np_img[y,x,0] = hue
+        
+        if self.getNSlices() > 1 or self.getNFrames() > 1:
+            raise Exception('Obj: Add multidimensional objects to addToImage')
         
     # Volume default methods
     

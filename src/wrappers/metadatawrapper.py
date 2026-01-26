@@ -44,6 +44,12 @@ class MetadataWrapper:
     def __init__(self):
         self._store: Dict[str, Any] = {}
         
+    def getPythonMetadataStore(self) -> Dict[str, Any]:
+        return self._store
+    
+    def setPythonMetadataStore(self, store: Dict[str, Any]):  # No return
+        self._store = store
+        
     @JOverride
     def getFilename(self) -> str:
         return self._store[FILENAME]
@@ -325,3 +331,8 @@ class MetadataWrapper:
     def clone(self) -> MetadataWrapper:
         raise Exception('MetadataWrapper: Implement clone')
         
+def wrapMetadataStore(store: Dict[str, Any]) -> MetadataWrapper:
+    wrapper: MetadataWrapper = MetadataWrapper()
+    wrapper.setPythonMetadataStore(store)
+    
+    return wrapper

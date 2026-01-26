@@ -4,13 +4,10 @@ from jpype import JImplements, JOverride # type: ignore
 from scyjava import jimport # type: ignore
 from src.wrappers.metadatawrapper import MetadataWrapper
 from src.utilities.conversion import py_dict_to_java_map
-from typing import TYPE_CHECKING
 
 from src.wrappers.imagewrapper import ImageWrapper
 from src.wrappers.objwrapper import ObjWrapper
-    
-# if TYPE_CHECKING:
-    
+from src.wrappers.objswrapper import ObjsWrapper
 
 import jpype
 import os
@@ -80,11 +77,11 @@ class WorkspaceWrapper():
         return py_dict_to_java_map(self._objects,'LinkedHashMap')
         
     @JOverride
-    def getObjects(self, name):        
+    def getObjects(self, name: str) -> ObjsWrapper:
         return self._objects[name]
 
     @JOverride
-    def getObjectSet(self,name):
+    def getObjectSet(self,name: str):
         return self._objects[name]
 
     @JOverride

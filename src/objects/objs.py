@@ -5,9 +5,14 @@ from __future__ import annotations
 from typing import Dict, List, Tuple
 from typing import TYPE_CHECKING
 
+from src.objects.image import Image
+from src.utilities.colourfactory import getIDHues
+
+import numpy as np
+
 if TYPE_CHECKING:
     from src.objects.coordinateset import CoordinateSetFactory
-    from src.objects.image import Image
+    
     from src.objects.obj import Obj
     from src.types.types import Point
 
@@ -57,17 +62,23 @@ class Objs():
         raise Exception('Objs: Implement getObjectsInFrame')
     
     def getNFrames(self) -> int:
-        raise Exception('Objs: Implement getNFrames')
+        return self._n_frames
+    
+    def setNFrames(self, n_frames: int): # No return
+        self._n_frames = n_frames
     
     def getFrameInterval(self) -> float:
-        raise Exception('Objs: Implement getFrameInterval')
+        return self._frame_interval
+    
+    def setFrameInterval(self, frame_interval: float): # No return
+        self._frame_interval = frame_interval
     
     def getTemporalUnit(self): # To do
-        raise Exception('Objs: Implement getTemporalUnit')
+        return self._temporal_unit
     
-    def setNFrames(self, nFrames: int): # No return
-        raise Exception('Objs: Implement setNFrames')
-    
+    def setTemporalUnit(self, temporal_unit): # To do
+        self._temporal_unit = temporal_unit
+        
     def duplicate(self, new_objects_name: str, duplicate_relationships: bool, duplicate_measurement: bool,
                   duplicate_metadata: bool, add_original_duplicate_relationship: bool) -> Objs:
         raise Exception('Objs: Implement duplicate')
@@ -127,7 +138,19 @@ class Objs():
         raise Exception('Objs: Implement getLargestID')
         
     def convertToImage(self, output_name: str, hues: Dict[int, float], bit_depth: int, nanBackground: bool, verbose: bool) -> Image:
-        raise Exception('Objs: Implement convertToImage')
+        im: Image = self.createImage(output_name, bit_depth)
+        
+        if nanBackground:
+            np_img = im.getRawImage()
+            np_img.fill(np.nan)
+                   
+        object: Obj
+        for object in self.values(): 
+            object.addToImage(im, hues.get(object.getID(),0.0))
+            
+        print('Objs: Add applySpatioTemporalCalibration to created image (convertToImage)')
+        
+        return im
     
     def convertToImageRandomColours(self) -> Image:
         raise Exception('Objs: Implement convertToImageRandomColours')
@@ -136,7 +159,8 @@ class Objs():
         raise Exception('Objs: Implement convertToImageBinary')
     
     def convertToImageIDColours(self) -> Image:
-        raise Exception('Objs: Implement convertToImageIDColours')
+        hues: Dict[int, float] = getIDHues(self, False)
+        return self.convertToImage(self.getName(), hues, 32, False, False)
     
     def convertCentroidsToImage(self, output_name: str, hues: Dict[int, float], bit_bepth: int, nan_background: bool) -> Image:
         raise Exception('Objs: Implement convertCentroidsToImage')
@@ -148,7 +172,20 @@ class Objs():
         raise Exception('Objs: Implement applyCalibrationFromImagePlus')
     
     def createImage(self, output_name: str, bit_depth: int) -> Image:
-        raise Exception('Objs: Implement createImage')
+        dtype = None
+        if bit_depth == 8:
+            dtype = np.uint8
+        elif bit_depth == 16:
+            dtype = np.uint16
+        elif bit_depth == 32:
+            dtype = np.float32
+        else:
+            raise Exception('Objs: Unsupported bit depth')
+        
+        print("IMPORTANT: Find out dimension order for np_img in Image class, but for now assuming XYCZT")
+        np_img = np.zeros((self._width, self._height, 1, self._n_slices, self._n_frames), dtype=dtype)
+        
+        return Image(output_name, np_img)
     
     def setNaNBackground(self, ipl): # To do
         raise Exception('Objs: Implement setNaNBackground')
@@ -193,7 +230,7 @@ class Objs():
     # From Map
 
     def size(self) -> int:
-        raise Exception('MapWrapper: Implement size')
+        return len(self._objs)
     
     def isEmpty(self) -> bool:
         raise Exception('MapWrapper: Implement isEmpty')
@@ -204,10 +241,10 @@ class Objs():
     def containsValue(self, value: Obj) -> bool:
         raise Exception('MapWrapper: Implement containsValue')
         
-    def get(self, key: int) -> Obj:
+    def get(self, key: int) -> Obj | None:
         return self._objs.get(key)
     
-    def put(self, key: int, value: Obj) -> Obj:
+    def put(self, key: int, value: Obj) -> Obj | None:
         prevObj: Obj | None = self._objs.get(key)
         self._objs[key] = value
         

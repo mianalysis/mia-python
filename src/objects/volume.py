@@ -5,9 +5,7 @@ from jpype import JImplements, JOverride # type: ignore
 if TYPE_CHECKING:
     from src.objects.coordinateset import CoordinateSet, CoordinateSetFactory
     from src.types.types import Point
-    from src.types.JSpatiallyCalibrated import JSpatiallyCalibrated
 
-@JImplements('io.github.mianalysis.mia.object.coordinates.SpatiallyCalibrated')
 class Volume():
     def __init__(self, coordinate_set_factory: CoordinateSetFactory, width: int, height: int, n_slices: int, dpp_xy: float, dpp_z: float, spatial_units: str):
         self._coordinate_set: CoordinateSet = coordinate_set_factory.createCoordinateSet()
@@ -126,59 +124,40 @@ class Volume():
     def finaliseSlice(self, z: int): # No return
         self._coordinate_set.finaliseSlice(z)
 
-    @JOverride
     def getWidth(self) -> int:
         return self._width
 
-    @JOverride
     def setWidth(self, width: int): # No return
         self._width = width
 
-    @JOverride
     def getHeight(self) -> int:
         return self._height
 
-    @JOverride
     def setHeight(self, height: int): # No return
         self.height = height
 
-    @JOverride
     def getNSlices(self) -> int:
         return self._n_slices
 
-    @JOverride
     def setNSlices(self, n_slices: int): # No return
         self.n_slices = n_slices
 
-    @JOverride
     def getDppXY(self) -> float:
         return self._dpp_xy
 
-    @JOverride
     def setDppXY(self, dpp_xy: float): # No return
         self._dpp_xy = dpp_xy
 
-    @JOverride
     def getDppZ(self) -> float:
         return self._dpp_z
 
-    @JOverride
     def setDppZ(self, dpp_z: float): # No return
         self._dpp_z = dpp_z
 
-    @JOverride
     def getSpatialUnits(self) -> str:
         return self._spatial_units
 
-    @JOverride
     def setSpatialUnits(self, spatial_units: str): # No return
         self._spatial_units = spatial_units
 
-    @JOverride
-    def applySpatialCalibrationToImage(self, ipl): # To do
-        raise Exception('SpatiallyCalibrated: Implement applySpatialCalibrationToImage')
-
-    @JOverride    
-    def setSpatialCalibrationFromExample(self, example: JSpatiallyCalibrated): # To do
-        raise Exception('SpatiallyCalibrated: Implement setSpatialCalibrationFromExample')
         

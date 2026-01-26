@@ -1,31 +1,39 @@
-import imagej  # type: ignore
-ij =imagej.init(['io.github.mianalysis:mia-plugin:2.0.0-SNAPSHOT'])
+import imagej
+
+ij = imagej.init(['io.github.mianalysis:mia-plugin:2.0.0-SNAPSHOT'])
 
 from jpype import JImplements, JOverride  # type: ignore
 from scyjava import jimport  # type: ignore
+
+from src.objects.image import Image
 from src.utilities.imagerenderer import NotebookImageRenderer
 
 import numpy as np
 
 JImage = jimport('io.github.mianalysis.mia.object.image.ImageI')
+JDisplayModes = jimport('io.github.mianalysis.mia.object.image.ImageI.DisplayModes')
 
 @JImplements('io.github.mianalysis.mia.object.image.ImageI')
 class ImageWrapper:
-    def __init__(self, name, img):
-        self._name = name
-        self._np_img = img
-        self._renderer = NotebookImageRenderer()
-                
+    def __init__(self):
+        self._renderer = NotebookImageRenderer(ij)
+
+    def getPythonImage(self) -> Image:
+        return self._img
+    
+    def setPythonImage(self, img: Image):  # No return
+        self._img = img
+            
+    @JOverride
+    def clear(self):
+        raise Exception('ImageWrapper: Implement clear')
+    
     @JOverride
     def getRenderer(self):
         if (JImage.getUseGlobalImageRenderer()):
             return JImage.getGlobalImageRenderer()
         else:
-            return self._renderer
-    
-    @JOverride
-    def clear(self):
-        raise Exception('ImageWrapper: Implement clear')
+            return self._img.getRenderer()
     
     @JOverride
     def setRenderer(self, imageRenderer):
@@ -33,39 +41,39 @@ class ImageWrapper:
     
     @JOverride
     def getWidth(self) -> int:
-        raise Exception('ImageWrapper: Implement getWidth')
+        return self._img.getWidth()
     
     @JOverride
     def getHeight(self) -> int:
-        raise Exception('ImageWrapper: Implement getHeight')
+        return self._img.getHeight()
     
     @JOverride
     def getNChannels(self) -> int:
-        raise Exception('ImageWrapper: Implement getNChannels')
+        return self._img.getNChannels()
     
     @JOverride
     def getNSlices(self) -> int:
-        raise Exception('ImageWrapper: Implement getNSlices')
+        return self._img.getNSlices()
     
     @JOverride
     def getNFrames(self) -> int:
-        raise Exception('ImageWrapper: Implement getNFrames')
+        return self._img.getNFrames()
     
     @JOverride
     def getDppXY(self) -> float:
-        raise Exception('ImageWrapper: Implement getDppXY')
+        return self._img.getDppXY()
     
     @JOverride
     def getDppZ(self) -> float:
-        raise Exception('ImageWrapper: Implement getDppZ')
+        return self._img.getDppZ()
     
     @JOverride
     def getSpatialUnits(self): # To do
-        raise Exception('ImageWrapper: Implement getSpatialUnits')
+        return self._img.getSpatialUnits()
     
     @JOverride
     def getFrameInterval(self) -> float:
-        raise Exception('ImageWrapper: Implement getFrameInterval')
+        return self._img.getFrameInterval()
 
     @JOverride
     def getTemporalUnit(self): # To do
@@ -73,14 +81,13 @@ class ImageWrapper:
     
     @JOverride
     def getImagePlus(self):
-        return ij.py.to_imageplus(self._np_img) # type: ignore
+        return ij.py.to_imageplus(self._img.getRawImage()) # type: ignore
     
     @JOverride
     def setImagePlus(self, imagePlus):        
         ij.py.sync_image(imagePlus) # type: ignore
-        self._np_img = ij.py.from_java(imagePlus) # type: ignore
-        raise Exception(self._np_img)
-    
+        self._img.setRawImage(ij.py.from_java(imagePlus)) # type: ignore
+        
     @JOverride
     def getImgPlus(self):
         raise Exception('ImageWrapper: Implement getImgPlus')
@@ -91,14 +98,11 @@ class ImageWrapper:
 
     @JOverride
     def getRawImage(self):
-        return self._np_img
+        return self._img.getRawImage()
     
     @JOverride
-    def setRawImage(self, image):
-        if isinstance(self._np_img,np.ndarray):
-            self._np_img = image
-        else:
-            raise TypeError("Error in ImageWrapper.setRawImage(image).  Image not instance of numpy.ndarray.")
+    def setRawImage(self, image): # To do
+        self._img.setRawImage(image)
     
     @JOverride
     def initialiseEmptyObjs(self, outputObjectsName):
@@ -146,7 +150,7 @@ class ImageWrapper:
     
     @JOverride
     def getName(self) -> str:
-        return self._name
+        return self._img.getName()
     
     @JOverride
     def getMeasurements(self):
@@ -162,23 +166,23 @@ class ImageWrapper:
         
     @JOverride
     def showWithTitle(self, title: str):
-        self.show(title, None, True, jimport('io.github.mianalysis.mia.object.image.DisplayModes').COLOUR, None)
+        self.show(title, None, True, JDisplayModes.COLOUR, None)
 
     @JOverride
     def showWithLUT(self, lut): # To do
-        self.show(self.getName(), lut, True, jimport('io.github.mianalysis.mia.object.image.DisplayModes').COLOUR, None)
+        self.show(self.getName(), lut, True, JDisplayModes.COLOUR, None)
 
     @JOverride
     def showAsIs(self):
-        self.show(self.getName(), None, True, jimport('io.github.mianalysis.mia.object.image.DisplayModes').COLOUR, None)
+        self.show(self.getName(), None, True, JDisplayModes.COLOUR, None)
 
     @JOverride
     def showWithOverlay(self, overlay): # To do
-        self.show(self.getName(), None, True, jimport('io.github.mianalysis.mia.object.image.DisplayModes').COLOUR, overlay)
+        self.show(self.getName(), None, True, JDisplayModes.COLOUR, overlay)
 
     @JOverride
     def showWithNormalisation(self, normalise: bool):
-        self.show(self.getName(), None, normalise, jimport('io.github.mianalysis.mia.object.image.DisplayModes').COLOUR, None)
+        self.show(self.getName(), None, normalise, JDisplayModes.COLOUR, None)
 
     @JOverride
     def showMeasurements(self, module):
@@ -187,4 +191,9 @@ class ImageWrapper:
     @JOverride
     def showAllMeasurements(self):
         raise Exception('ImageWrapper: Implement showAllMeasurements')
-        
+
+def wrapImage(img: Image) -> ImageWrapper:
+    image_wrapper: ImageWrapper = ImageWrapper()
+    image_wrapper.setPythonImage(img)
+    
+    return image_wrapper 

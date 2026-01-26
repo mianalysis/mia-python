@@ -167,11 +167,11 @@ class VolumeWrapper:
 
     @JOverride
     def applySpatialCalibrationToImage(self, ipl): # To do
-        self._volume.applySpatialCalibrationToImage(ipl)
+        raise Exception('VolumeWrapper: Implement applySpatialCalibrationToImage')
         
     @JOverride
     def setSpatialCalibrationFromExample(self, example: JSpatiallyCalibrated): # To do
-        self._volume.setSpatialCalibrationFromExample(example)
+        raise Exception('VolumeWrapper: Implement setSpatialCalibrationFromExample')
     
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.volume.VolumeFactoryI')
@@ -194,9 +194,7 @@ class VolumeFactoryWrapper:
 
 
 def wrapVolume(volume: Volume) -> VolumeWrapper:
-    # Setting empty wrapper, as it will be repopulated immediately with real volume
     volume_wrapper: VolumeWrapper = VolumeWrapper(None,0,0,0,1,1,"px")
-
     volume_wrapper.setPythonVolume(volume)
     
     return volume_wrapper

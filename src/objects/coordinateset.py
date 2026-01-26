@@ -13,7 +13,10 @@ class CoordinateSet():
         self._chunks: list[np.ndarray] = []
         self._current_chunk: Points = np.empty((self._chunk_size, 3), dtype=int)
         self._count: int = 0
-
+        
+    def __iter__(self):
+        return CoordinateSetIterator(self)
+    
     def getPoints(self) -> Points:
         return self._points
 
@@ -112,28 +115,27 @@ class CoordinateSetIterator:
         self._next_idx: int = 0
         self._coordinate_set: CoordinateSet = coordinate_set
 
-    def hasNext(self) -> bool:
-        return self._next_idx < self._coordinate_set.size()
+    # def hasNext(self) -> bool:
+    #     return self._next_idx < self._coordinate_set.size()
         
-    def next(self) -> Point | None:
+    def __next__(self) -> Point | None:
         if self._next_idx == self._coordinate_set.size():
-            print('No such element: the coordinate set has no more elements')
-            return None
+            raise StopIteration
             
         point: Point = self._coordinate_set.getPointAtIndex(self._next_idx)
         self._next_idx = self._next_idx + 1
         
         return point        
 
-    def remove(self) -> Point | None:
-        # Check the iterator has returned a value (i.e. next_idx>0)
-        if self._next_idx == 0:
-            return None
+    # def remove(self) -> Point | None:
+    #     # Check the iterator has returned a value (i.e. next_idx>0)
+    #     if self._next_idx == 0:
+    #         return None
 
-        return self._coordinate_set.getPointAtIndex(self._next_idx-1)
+    #     return self._coordinate_set.getPointAtIndex(self._next_idx-1)
         
-    def forEachRemaining(self, action): # To do
-        raise Exception('CoordinateSetIterator: Implement forEachRemaining')
+    # def forEachRemaining(self, action): # To do
+    #     raise Exception('CoordinateSetIterator: Implement forEachRemaining')
         
 
 class CoordinateSetFactory:

@@ -1,15 +1,17 @@
 from __future__ import annotations
+import re
 
 from jpype import JImplements, JOverride # type: ignore
 from typing import Dict, List
 from typing import TYPE_CHECKING
 
+from src.objects.image import Image
 from src.objects.objs import Objs
-from src.wrappers.objwrapper import ObjWrapper
+from src.wrappers.imagewrapper import wrapImage, ImageWrapper    
+from src.wrappers.objwrapper import ObjWrapper, wrapObj
 
 if TYPE_CHECKING:
-    from src.objects.obj import Obj
-    from src.wrappers.imagewrapper import ImageWrapper    
+    from src.objects.obj import Obj    
     from src.wrappers.coordinatesetwrapper import CoordinateSetFactoryWrapper
     from src.types.JPointType import JPointType
     from src.types.JSpatioTemporallyCalibrated import JSpatioTemporallyCalibrated
@@ -18,7 +20,6 @@ if TYPE_CHECKING:
 class ObjsWrapper():
     def __init__(self, name: str, width: int, height: int, n_slices: int, dpp_xy: float, dpp_z: float, spatial_units: str, n_frames: int, frame_interval: float, temporal_unit): # To do
         self._objs: Objs = Objs(name, width, height, n_slices, dpp_xy, dpp_z, spatial_units, n_frames, frame_interval, temporal_unit)
-        print("Created")
         
     def getPythonObjs(self) -> Objs:
         return self._objs
@@ -168,24 +169,29 @@ class ObjsWrapper():
         raise Exception('ObjsWrapper: Implement getLargestID')
         
     @JOverride
-    def convertToImage(self, outputName: str, hues, bitDepth: int, nanBackground: bool, verbose: bool) -> ImageWrapper: # To do
-        raise Exception('ObjsWrapper: Implement convertToImage')
+    def convertToImage(self, outputName: str, hues: Dict[int, float], bitDepth: int, nanBackground: bool, verbose: bool) -> ImageWrapper:
+        im: Image = self._objs.convertToImage(outputName, hues, bitDepth, nanBackground, verbose)
+        return wrapImage(im)
     
     @JOverride
     def convertToImageRandomColours(self) -> ImageWrapper:
-        raise Exception('ObjsWrapper: Implement convertToImageRandomColours')
+        im:  Image = self._objs.convertToImageRandomColours()
+        return wrapImage(im)
         
     @JOverride
     def convertToImageBinary(self, name: str) -> ImageWrapper:
-        raise Exception('ObjsWrapper: Implement convertToImageBinary')
+        im: Image = self._objs.convertToImageBinary(name)
+        return wrapImage(im)
     
     @JOverride
     def convertToImageIDColours(self) -> ImageWrapper:
-        raise Exception('ObjsWrapper: Implement convertToImageIDColours')
+        im: Image = self._objs.convertToImageIDColours()
+        return wrapImage(im)
     
     @JOverride
-    def convertCentroidsToImage(self, outputName: str, hues, bitDepth: int, nanBackground: bool) -> ImageWrapper: # To do
-        raise Exception('ObjsWrapper: Implement convertCentroidsToImage')
+    def convertCentroidsToImage(self, outputName: str, hues: Dict[int, float], bitDepth: int, nanBackground: bool) -> ImageWrapper:
+        im: Image = self._objs.convertCentroidsToImage(outputName, hues, bitDepth, nanBackground)
+        return wrapImage(im)
     
     @JOverride
     def applyCalibration(self, image: ImageWrapper): # No return
@@ -197,7 +203,8 @@ class ObjsWrapper():
     
     @JOverride
     def createImage(self, outputName: str, bitDepth: int) -> ImageWrapper:
-        raise Exception('ObjsWrapper: Implement createImage')
+        im: Image = self._objs.createImage(outputName, bitDepth)
+        return wrapImage(im)
     
     @JOverride
     def setNaNBackground(self, ipl): # To do
@@ -256,11 +263,11 @@ class ObjsWrapper():
 
     @JOverride
     def get(self, key: int) -> ObjWrapper:
-        raise Exception('MapWrapper: Implement size')
+        raise Exception('MapWrapper: Implement get')
     
     @JOverride
     def size(self) -> int:
-        raise Exception('MapWrapper: Implement size')
+        return self._objs.size()
     
     @JOverride
     def isEmpty(self) -> bool:
@@ -276,13 +283,12 @@ class ObjsWrapper():
         
     @JOverride
     def put(self, key: int, value: ObjWrapper) -> ObjWrapper:
-        prevObj: Obj = self._objs.get(key)
+        prevObj: Obj | None = self._objs.get(key)
         prevObjWrapper: ObjWrapper | None = None
         
         if prevObj is not None:
-            prevObjWrapper = ObjWrapper(None, None, 1)
-            prevObjWrapper.setPythonObj(prevObj)
-            
+            prevObjWrapper = wrapObj(prevObj)
+
         self._objs.put(key, value.getPythonObj())
         
         return prevObjWrapper
@@ -308,9 +314,7 @@ class ObjsWrapper():
         vals: List[ObjWrapper] = []
         
         for obj in self._objs.values():
-            obj_wrapper = ObjWrapper(None, None, 1)
-            obj_wrapper.setPythonObj(obj)
-            vals.append(obj_wrapper)
+            vals.append(wrapObj(obj))
         
         return vals
     
@@ -340,10 +344,11 @@ class ObjsWrapper():
     
     @JOverride
     def putIfAbsent(self, key: int, value: ObjWrapper) -> ObjWrapper:
-        obj: Obj = self._objs.putIfAbsent(key, value.getPythonObj())
+        obj: Obj | None = self._objs.putIfAbsent(key, value.getPythonObj())
         
-        obj_wrapper = ObjWrapper(None, None, 1)
-        obj_wrapper.setPythonObj(obj)
+        obj_wrapper: ObjWrapper| None = None
+        if obj is not None:
+            obj_wrapper = wrapObj(obj)
         
         return obj_wrapper
     
@@ -426,9 +431,6 @@ class ObjsFactoryWrapper:
     
     @JOverride
     def createObjs(self, name: str, width: int, height: int, n_slices: int, dpp_xy: float, dpp_z: float, spatial_units: str, n_frames: int, frame_interval: float, temporal_unit) -> ObjsWrapper: # To do
-        
-        print("Creating from raw values")
-        
         return ObjsWrapper(name, width, height, n_slices, dpp_xy, dpp_z, spatial_units, n_frames, frame_interval, temporal_unit)
 
     @JOverride
@@ -457,12 +459,16 @@ class ObjsFactoryWrapper:
         frame_interval: float = image_for_calibration.getFrameInterval()
         temporal_unit = image_for_calibration.getTemporalUnit()
         
-        print("Creating from image")
         output: ObjsWrapper = ObjsWrapper(name, width, height, n_slices, dpp_xy, dpp_z, spatial_units, n_frames, frame_interval, temporal_unit)
-        print(output)
+        
         return output
                 
     @JOverride
     def duplicate(self) -> ObjsFactoryWrapper:
         return ObjsFactoryWrapper()
         
+def wrapObjs(objs: Objs) -> ObjsWrapper:
+    objs_wrapper = ObjsWrapper("", 0, 0, 0, 0.0, 0.0, "", 0, 0.0, None)
+    objs_wrapper.setPythonObjs(objs)
+    
+    return objs_wrapper

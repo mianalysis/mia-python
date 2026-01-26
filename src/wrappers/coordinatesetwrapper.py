@@ -8,7 +8,6 @@ from src.objects.coordinateset import CoordinateSetFactory
 
 if TYPE_CHECKING:
     from src.types.JPointType import JPointType
-    from src.types.JPype import *
     from src.types.types import Point, Points
 
 JPoint = jimport('io.github.mianalysis.mia.object.coordinates.Point') # type: ignore
@@ -163,4 +162,10 @@ class CoordinateSetFactoryWrapper():
     @JOverride
     def duplicate(self) -> CoordinateSetFactoryWrapper:
         return CoordinateSetFactoryWrapper()
+    
+def wrapCoordinateSet(coordinate_set: CoordinateSet) -> CoordinateSetWrapper:
+    wrapper: CoordinateSetWrapper = CoordinateSetWrapper()
+    wrapper.setPythonCoordinateSet(coordinate_set)
+    
+    return wrapper
         

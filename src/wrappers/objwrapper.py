@@ -38,8 +38,7 @@ class ObjWrapper:
     
     @JOverride
     def getObjectCollection(self) -> ObjsWrapper:
-        objs_wrapper: ObjsWrapper = ObjsWrapper()
-        objs_wrapper.setPythonObjs(self._obj.getObjectCollection())
+        objs_wrapper: ObjsWrapper = ObjsWrapper.wrapObjs(self._obj.getObjectCollection())
 
         return objs_wrapper
 
@@ -327,7 +326,6 @@ class ObjWrapper:
         self._obj.finaliseSlice(z)
         
 
-
 @JImplements('io.github.mianalysis.mia.object.coordinates.ObjFactoryI')
 class ObjFactoryWrapper:
     
@@ -346,3 +344,9 @@ class ObjFactoryWrapper:
     @JOverride
     def createObjWithID(self, factory: CoordinateSetFactoryWrapper, obj_collection: ObjsWrapper, ID: int) -> ObjWrapper: # To do
         return ObjWrapper(factory, obj_collection, ID)
+
+def wrapObj(obj: Obj) -> ObjWrapper:
+    obj_wrapper = ObjWrapper(None, None, 0)
+    obj_wrapper.setPythonObj(obj)
+    
+    return obj_wrapper
