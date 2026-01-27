@@ -45,7 +45,6 @@ class ObjsWrapper():
         
     @JOverride
     def getAndIncrementID(self) -> int:
-        print("Incrementing")
         return self._objs.getAndIncrementID()
     
     @JOverride
@@ -262,8 +261,9 @@ class ObjsWrapper():
     # From Map
 
     @JOverride
-    def get(self, key: int) -> ObjWrapper:
-        raise Exception('MapWrapper: Implement get')
+    def get(self, key: int) -> ObjWrapper | None:
+        obj: Obj | None = self._objs.get(key)
+        return None if obj is None else wrapObj(obj)
     
     @JOverride
     def size(self) -> int:
@@ -460,7 +460,7 @@ class ObjsFactoryWrapper:
         temporal_unit = image_for_calibration.getTemporalUnit()
         
         output: ObjsWrapper = ObjsWrapper(name, width, height, n_slices, dpp_xy, dpp_z, spatial_units, n_frames, frame_interval, temporal_unit)
-        
+
         return output
                 
     @JOverride

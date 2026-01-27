@@ -140,11 +140,9 @@ class Obj(Volume):
     
     def addToImage(self, image: Image, hue: float): # No return
         np_img: np.ndarray = image.getRawImage()
-        print(self.getCoordinateSet().size())
         
         point: Point | None
         for point in self.getCoordinateSet():
-            print(f'point: {point}')
             if point is None:
                 continue
             
