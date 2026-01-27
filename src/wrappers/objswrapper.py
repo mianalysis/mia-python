@@ -1,7 +1,7 @@
 from __future__ import annotations
-import re
 
 from jpype import JImplements, JOverride # type: ignore
+from prettytable import PrettyTable
 from typing import Dict, List
 from typing import TYPE_CHECKING
 
@@ -215,6 +215,26 @@ class ObjsWrapper():
     
     @JOverride
     def showMeasurements(self, module, modules): # To do
+        measurement_refs = module.updateAndGetObjectMeasurementRefs()
+        if measurement_refs is None:
+            return
+                
+        measurement_names: List[str] = [ref.getName() for ref in measurement_refs.values()]
+        measurement_names.insert(0, "Object ID")
+        
+        table = PrettyTable(measurement_names)
+        
+        # obj: ObjWrapper
+        # for obj in self.values():
+        #     row: List[float] = []
+        #     for name in measurement_names:
+        #         measurement_value: float = obj.getMeasurement(name).getValue()
+        #         row.append(measurement_value)
+            
+        #     table.add_row(row)
+            
+        print(table)
+        
         raise Exception('ObjsWrapper: Implement showMeasurements')
     
     @JOverride

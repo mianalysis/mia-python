@@ -31,6 +31,9 @@ class Obj(Volume):
         self._children: Dict[str, Objs] = {}
         self._partners: Dict[str, Objs] = {}
         
+        # To do: Create Measurement class
+        # To do: Create ObjMetadata class
+        
     def getObjectCollection(self) -> Objs:
         return self._obj_collection
 
@@ -82,6 +85,9 @@ class Obj(Volume):
 
     def setMeasurements(self, measurements): # To do
         raise Exception('Obj: Implement setMeasurements')
+    
+    def getMeasurement(self, name: str): # To do:
+        raise Exception('Obj: Implement setMeasurement')
 
     def getMetadata(self): # To do
         raise Exception('Obj: Implement getMetadata')

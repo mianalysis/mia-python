@@ -103,6 +103,10 @@ class ObjWrapper:
     @JOverride
     def setMeasurements(self, measurements): # To do
         raise Exception('ObjWrapper: Implement setMeasurements')
+    
+    @JOverride
+    def getMeasurement(self, name: str) -> float:
+        return self._obj.getMeasurement(name)
 
     @JOverride
     def getMetadata(self): # To do
