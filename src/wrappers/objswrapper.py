@@ -71,27 +71,27 @@ class ObjsWrapper():
     
     @JOverride
     def getNFrames(self) -> int:
-        raise Exception('ObjsWrapper: Implement getNFrames')
+        return self._objs.getNFrames()
     
     @JOverride
-    def setNFrames(self, nFrames: int): # No return
-        raise Exception('ObjsWrapper: Implement setNFrames')
+    def setNFrames(self, n_frames: int): # No return
+        self._objs.setNFrames(n_frames)
     
     @JOverride
     def getFrameInterval(self) -> float:
-        raise Exception('ObjsWrapper: Implement getFrameInterval')
+        return self._objs.getFrameInterval()
     
     @JOverride
     def setFrameInterval(self, frame_interval: float): # No return
-        raise Exception('ObjsWrapper: Implement setFrameInterval')
+        self._objs.setFrameInterval(frame_interval)
     
     @JOverride
     def getTemporalUnit(self): # To do
-        raise Exception('ObjsWrapper: Implement getTemporalUnit')
+        return self._objs.getTemporalUnit()
     
     @JOverride
     def setTemporalUnit(self, temporal_unit): # No return
-        raise Exception('ObjsWrapper: Implement setTemporalUnit')
+        self._objs.setTemporalUnit(temporal_unit)
         
     @JOverride
     def duplicate(self, new_objects_name: str, duplicate_relationships: bool, duplicate_measurement: bool,
@@ -265,6 +265,7 @@ class ObjsWrapper():
     def getSmallestObject(self, t: int) -> ObjWrapper:
         raise Exception('ObjsWrapper: Implement getSmallestObject')
 
+    
 
     # From Map
 
@@ -452,6 +453,8 @@ class ObjsFactoryWrapper:
         n_frames: int = example_objs.getNFrames()
         frame_interval: float = example_objs.getFrameInterval()
         temporal_unit = example_objs.getTemporalUnit()
+        
+        
         
         return ObjsWrapper(name, width, height, n_slices, dpp_xy, dpp_z, spatial_units, n_frames, frame_interval, temporal_unit)
 

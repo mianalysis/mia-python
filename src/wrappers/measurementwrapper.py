@@ -43,7 +43,7 @@ class MeasurementFactoryWrapper:
         return MeasurementFactoryWrapper()
 
     @JOverride
-    def createMeasurement(self, name: str, value: float) -> MeasurementWrapper: # To do
+    def createMeasurement(self, name: str, value: float) -> MeasurementWrapper:
         return MeasurementWrapper(name, value)
 
 

@@ -93,9 +93,6 @@ class Obj(Volume):
     def setMetadata(self, metadata): # To do
         raise Exception('Obj: Implement setMetadata')
 
-    def getRoi(self, z_slice: int): # To do
-        raise Exception('Obj: Implement getRoi')
-
     def getRois(self): # To do
         raise Exception('Obj: Implement getRois')
 

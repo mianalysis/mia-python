@@ -142,6 +142,7 @@ class VolumeWrapper:
         raise Exception('VolumeWrapper: Implement getProjectedArea')
 
     def size(self) -> int:
+        print("No size!")
         raise Exception('VolumeWrapper: Implement size')
 
     def setPoints(self, points): # To do

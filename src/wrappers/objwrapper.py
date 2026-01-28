@@ -118,7 +118,7 @@ class ObjWrapper:
         raise Exception('ObjWrapper: Implement setMetadata')
 
     @JOverride
-    def getRoi(self, z_slice: int): # To do
+    def getRoi(self, slice: int): # To do
         raise Exception('ObjWrapper: Implement getRoi')
 
     @JOverride
@@ -157,8 +157,8 @@ class ObjWrapper:
         return coordinate_set_factory_wrapper
 
     @JOverride
-    def getSurface(self, ignoreEdgesXY: bool, ignoreEdgesZ: bool) -> VolumeWrapper:
-        volume: Volume = self._obj.getSurface(ignoreEdgesXY, ignoreEdgesZ)
+    def getSurface(self, ignore_edges_xy: bool, ignore_edges_z: bool) -> VolumeWrapper:
+        volume: Volume = self._obj.getSurface(ignore_edges_xy, ignore_edges_z)
         return wrapVolume(volume)
 
     @JOverride
@@ -175,7 +175,7 @@ class ObjWrapper:
         return self._obj.hasCalculatedProjection()
 
     @JOverride
-    def getMeanCentroid(self, pixelDistances: bool, matchXY: bool) -> JPointType[float]:
+    def getMeanCentroid(self, pixel_distances: bool, match_xy: bool) -> JPointType[float]:
         raise Exception('ObjWrapper: Implement getMeanCentroid')
 
     @JOverride
@@ -223,7 +223,7 @@ class ObjWrapper:
         raise Exception('ObjWrapper: Implement setCoordinateSet')
 
     @JOverride
-    def getCalibratedIterator(self, pixelDistances: bool, matchXY: bool): # To do
+    def getCalibratedIterator(self, pixel_distances: bool, match_xy: bool): # To do
         raise Exception('ObjWrapper: Implement getCalibratedIterator')
     
 
@@ -405,15 +405,162 @@ class ObjWrapper:
 
 
     # Volume default methods
-    
+            
+    def getCoordinateIterator(self): # To do
+        raise Exception('ObjWrapper: Implement getCoordinateIterator')
+
     def addCoord(self, x: int, y: int, z: int): # No return
         self._obj.addCoord(x,y,z)
         
+    def addPoint(self, point): # To do
+        raise Exception('ObjWrapper: Implement addPoint')
+
+    def addPointsFromRoi(self, roi, z: int): # To do
+        raise Exception('ObjWrapper: Implement addPointsFromRoi')
+
+    def addPointsFromPolygon(self, polygon, z: int): # To do
+        raise Exception('ObjWrapper: Implement addPointsFromPolygon')
+
+    def addPointsFromShape(self, polygon, z: int): # To do
+        raise Exception('ObjWrapper: Implement addPointsFromShape')
+
+    def translateCoords(self, x_offs: int, y_offs: int, zOffs: int):
+        raise Exception('ObjWrapper: Implement translateCoords')
+
     def finalise(self): # No return
         self._obj.finalise()
 
     def finaliseSlice(self, z: int): # No return
         self._obj.finaliseSlice(z)
+
+    def getPoints(self): # To do
+        raise Exception('ObjWrapper: Implement getPoints')
+
+    def getProjectedArea(self, pixel_distances: bool) -> float:
+        raise Exception('ObjWrapper: Implement getProjectedArea')
+
+    def size(self) -> int:
+        return self._obj.size()
+
+    def setPoints(self, points): # To do
+        raise Exception('ObjWrapper: Implement setPoints')
+
+    def isOnEdgeXY(self, p) -> bool: # To do
+        raise Exception('ObjWrapper: Implement isOnEdgeXY')
+
+    def isOnEdgeZ(self, p) -> bool: # To do
+        raise Exception('ObjWrapper: Implement isOnEdgeZ')
+
+    def contains(self, point1) -> bool: # To do
+        raise Exception('ObjWrapper: Implement contains')
+
+    def getNumberOfElements(self) -> int:
+        raise Exception('ObjWrapper: Implement getNumberOfElements')
+
+    def is2D(self) -> bool:
+        return self._obj.is2D()
+
+    def getCalibratedX(self, point) -> float: # To do
+        raise Exception('ObjWrapper: Implement getCalibratedX')
+
+    def getCalibratedY(self, point) -> float: # To do
+        raise Exception('ObjWrapper: Implement getCalibratedY')
+
+    def getXYScaledZ(self, z: float) -> float:
+        raise Exception('ObjWrapper: Implement getXYScaledZ')
+
+    def getCalibratedZ(self, point, match_xy: bool) -> float: # To do
+        raise Exception('ObjWrapper: Implement getCalibratedZ')
+
+    def getExtents(self, pixel_distances: bool, match_xy: bool): # To do
+        self._obj.getExtents(pixel_distances, match_xy)
+
+    def getAsImage(self, imageName: str, t: int, nFrames: int) -> ImageWrapper:
+        raise Exception('ObjWrapper: Implement getAsImage')
+
+    def getAsTightImage(self, imageName: str) -> ImageWrapper:
+        raise Exception('ObjWrapper: Implement getAsTightImage')
+
+    def getAsTightImageWithBorders(self, imageName: str, border_widths) -> ImageWrapper: # To do
+        raise Exception('ObjWrapper: Implement getAsTightImageWithBorders')
+
+    def getContainedVolume(self, pixel_distances: bool) -> float:
+        return self._obj.getContainedVolume(pixel_distances)
+
+    def getOverlap(self, volume2: VolumeWrapper) -> int:
+        raise Exception('ObjWrapper: Implement getOverlap')
+
+    def getX(self, pixel_distances: bool): # To do
+        raise Exception('ObjWrapper: Implement getX')
+
+    def getY(self, pixel_distances: bool): # To do
+        raise Exception('ObjWrapper: Implement getY')
+
+    def getZ(self, pixel_distances: bool, match_xy: bool): # To do
+        raise Exception('ObjWrapper: Implement getZ')
+
+    def getSurfaceXCoords(self): # To do
+        raise Exception('ObjWrapper: Implement getSurfaceXCoords')
+
+    def getSurfaceYCoords(self): # To do
+        raise Exception('ObjWrapper: Implement getSurfaceYCoords')
+
+    def getSurfaceZCoords(self): # To do
+        raise Exception('ObjWrapper: Implement getSurfaceZCoords')
+
+    def getSurfaceX(self, pixel_distances: bool): # To do
+        raise Exception('ObjWrapper: Implement getSurfaceX')
+
+    def getSurfaceY(self, pixel_distances: bool): # To do
+        raise Exception('ObjWrapper: Implement getSurfaceY')
+
+    def getSurfaceZ(self, pixel_distances: bool, match_xy: bool): # To do
+        raise Exception('ObjWrapper: Implement getSurfaceZ')
+
+    def getXMean(self, pixel_distances: bool) -> float:
+        raise Exception('ObjWrapper: Implement getXMean')
+
+    def getYMean(self, pixel_distances: bool) -> float:
+        raise Exception('ObjWrapper: Implement getYMean')
+
+    def getZMean(self, pixel_distances: bool, match_xy: bool) -> float:
+        raise Exception('ObjWrapper: Implement getZMean')
+
+    def getVolumeHeight(self, pixel_distances: bool, match_xy: bool) -> float:
+        raise Exception('ObjWrapper: Implement getVolumeHeight')
+
+    def hasVolume(self) -> bool:
+        raise Exception('ObjWrapper: Implement hasVolume')
+
+    def hasArea(self) -> bool:
+        raise Exception('ObjWrapper: Implement hasArea')
+
+    def calculateAngle2D(self, volume2: VolumeWrapper) -> float:
+        raise Exception('ObjWrapper: Implement calculateAngle2D')
+
+    def calculateAngleToPoint2D(self, point) -> float: # To do
+        raise Exception('ObjWrapper: Implement calculateAngleToPoint2D')
+
+    def calculatePointPointSeparation(self, point1, point2, pixel_distances: bool) -> float: # To do
+        raise Exception('ObjWrapper: Implement calculatePointPointSeparation')
+
+    def getSurfaceSeparation(self, volume2, pixel_distances: bool, force2D: bool, ignore_edges_xy: bool, ignore_edges_z: bool) -> float: # To do
+        raise Exception('ObjWrapper: Implement getSurfaceSeparation')
+
+    def getPointSurfaceSeparation(self, point, pixel_distances: bool, force2D: bool, ignore_edges_xy: bool, ignore_edges_z: bool) -> float: # To do
+        raise Exception('ObjWrapper: Implement getPointSurfaceSeparation')
+
+    def getCentroidSeparation(self, volume2: VolumeWrapper, pixel_distances: bool, force2D: bool) -> float: # To do
+        raise Exception('ObjWrapper: Implement getCentroidSeparation')
+
+    def getOverlappingPoints(self, volume2: VolumeWrapper) -> VolumeWrapper:
+        raise Exception('ObjWrapper: Implement getOverlappingPoints')
+
+    def getSlice(self, slice: int) -> VolumeWrapper:
+        raise Exception('ObjWrapper: Implement getSlice')
+
+    def getRoi(self, slice: int): # To do
+        raise Exception('ObjWrapper: Implement getRoi')
         
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.ObjFactoryI')

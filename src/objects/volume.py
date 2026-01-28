@@ -1,6 +1,8 @@
 from __future__ import annotations
 from typing import Self, TYPE_CHECKING
 
+from src.objects.image import Image
+
 if TYPE_CHECKING:
     from src.objects.coordinateset import CoordinateSet, CoordinateSetFactory
     from src.types.types import Point
@@ -188,7 +190,7 @@ class Volume():
         raise Exception('Volume: Implement getProjectedArea')
 
     def size(self) -> int:
-        raise Exception('Volume: Implement size')
+        return self._coordinate_set.size()
 
     def setPoints(self, points): # To do
         raise Exception('Volume: Implement setPoints')
@@ -206,7 +208,7 @@ class Volume():
         raise Exception('Volume: Implement getNumberOfElements')
 
     def is2D(self) -> bool:
-        raise Exception('Volume: Implement is2D')
+        return self.getNSlices() == 1
 
     def getCalibratedX(self, point) -> float: # To do
         raise Exception('Volume: Implement getCalibratedX')
@@ -223,19 +225,22 @@ class Volume():
     def getExtents(self, pixelDistances: bool, matchXY: bool): # To do
         raise Exception('Volume: Implement getExtents')
 
-    def getAsImage(self, imageName: str, t: int, nFrames: int) -> ImageWrapper:
+    def getAsImage(self, imageName: str, t: int, nFrames: int) -> Image:
         raise Exception('Volume: Implement getAsImage')
 
-    def getAsTightImage(self, imageName: str) -> ImageWrapper:
+    def getAsTightImage(self, imageName: str) -> Image:
         raise Exception('Volume: Implement getAsTightImage')
 
-    def getAsTightImageWithBorders(self, imageName: str, borderWidths) -> ImageWrapper: # To do
+    def getAsTightImageWithBorders(self, imageName: str, borderWidths) -> Image: # To do
         raise Exception('Volume: Implement getAsTightImageWithBorders')
 
     def getContainedVolume(self, pixelDistances: bool) -> float:
-        raise Exception('Volume: Implement getContainedVolume')
-
-    def getOverlap(self, volume2: VolumeWrapper) -> int:
+        if pixelDistances:
+            return self.size() * self.getDppZ() / self.getDppXY()
+        else:
+            return self.size() * self.getDppXY() * self.getDppXY() * self.getDppZ()
+        
+    def getOverlap(self, volume2: Volume) -> int:
         raise Exception('Volume: Implement getOverlap')
 
     def getX(self, pixelDistances: bool): # To do
@@ -283,7 +288,7 @@ class Volume():
     def hasArea(self) -> bool:
         raise Exception('Volume: Implement hasArea')
 
-    def calculateAngle2D(self, volume2: VolumeWrapper) -> float:
+    def calculateAngle2D(self, volume2: Volume) -> float:
         raise Exception('Volume: Implement calculateAngle2D')
 
     def calculateAngleToPoint2D(self, point) -> float: # To do
@@ -298,13 +303,13 @@ class Volume():
     def getPointSurfaceSeparation(self, point, pixelDistances: bool, force2D: bool, ignoreEdgesXY: bool, ignoreEdgesZ: bool) -> float: # To do
         raise Exception('Volume: Implement getPointSurfaceSeparation')
 
-    def getCentroidSeparation(self, volume2: VolumeWrapper, pixelDistances: bool, force2D: bool) -> float: # To do
+    def getCentroidSeparation(self, volume2: Volume, pixelDistances: bool, force2D: bool) -> float: # To do
         raise Exception('Volume: Implement getCentroidSeparation')
 
-    def getOverlappingPoints(self, volume2: VolumeWrapper) -> VolumeWrapper:
+    def getOverlappingPoints(self, volume2: Volume) -> Volume:
         raise Exception('Volume: Implement getOverlappingPoints')
 
-    def getSlice(self, slice: int) -> VolumeWrapper:
+    def getSlice(self, slice: int) -> Volume:
         raise Exception('Volume: Implement getSlice')
 
     def getRoi(self, slice: int): # To do
