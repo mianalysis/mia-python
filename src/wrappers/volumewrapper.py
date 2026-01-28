@@ -4,6 +4,7 @@ from scyjava import jimport # type: ignore
 from typing import TYPE_CHECKING, Self
 
 from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSetFactoryWrapper
+from src.wrappers.imagewrapper import ImageWrapper
 from src.objects.volume import Volume
 from src.types.JSpatiallyCalibrated import JSpatiallyCalibrated
 
@@ -104,15 +105,164 @@ class VolumeWrapper:
     def getCalibratedIterator(self, pixelDistances: bool, matchXY: bool): # To do
         raise Exception('VolumeWrapper: Implement getCalibratedIterator')
 
+
     # Default methods
+        
+    def getCoordinateIterator(self): # To do
+        raise Exception('VolumeWrapper: Implement getCoordinateIterator')
+
     def addCoord(self, x: int, y: int, z: int): # No return
         self._volume.addCoord(x,y,z)
+
+    def addPoint(self, point): # To do
+        raise Exception('VolumeWrapper: Implement addPoint')
+
+    def addPointsFromRoi(self, roi, z: int): # To do
+        raise Exception('VolumeWrapper: Implement addPointsFromRoi')
+
+    def addPointsFromPolygon(self, polygon, z: int): # To do
+        raise Exception('VolumeWrapper: Implement addPointsFromPolygon')
+
+    def addPointsFromShape(self, polygon, z: int): # To do
+        raise Exception('VolumeWrapper: Implement addPointsFromShape')
+
+    def translateCoords(self, xOffs: int, yOffs: int, zOffs: int):
+        raise Exception('VolumeWrapper: Implement translateCoords')
 
     def finalise(self): # No return
         self._volume.finalise()
 
     def finaliseSlice(self, z: int): # No return
         self._volume.finaliseSlice(z)
+
+    def getPoints(self): # To do
+        raise Exception('VolumeWrapper: Implement getPoints')
+
+    def getProjectedArea(self, pixelDistances: bool) -> float:
+        raise Exception('VolumeWrapper: Implement getProjectedArea')
+
+    def size(self) -> int:
+        raise Exception('VolumeWrapper: Implement size')
+
+    def setPoints(self, points): # To do
+        raise Exception('VolumeWrapper: Implement setPoints')
+
+    def isOnEdgeXY(self, p) -> bool: # To do
+        raise Exception('VolumeWrapper: Implement isOnEdgeXY')
+
+    def isOnEdgeZ(self, p) -> bool: # To do
+        raise Exception('VolumeWrapper: Implement isOnEdgeZ')
+
+    def contains(self, point1) -> bool: # To do
+        raise Exception('VolumeWrapper: Implement contains')
+
+    def getNumberOfElements(self) -> int:
+        raise Exception('VolumeWrapper: Implement getNumberOfElements')
+
+    def is2D(self) -> bool:
+        raise Exception('VolumeWrapper: Implement is2D')
+
+    def getCalibratedX(self, point) -> float: # To do
+        raise Exception('VolumeWrapper: Implement getCalibratedX')
+
+    def getCalibratedY(self, point) -> float: # To do
+        raise Exception('VolumeWrapper: Implement getCalibratedY')
+
+    def getXYScaledZ(self, z: float) -> float:
+        raise Exception('VolumeWrapper: Implement getXYScaledZ')
+
+    def getCalibratedZ(self, point, matchXY: bool) -> float: # To do
+        raise Exception('VolumeWrapper: Implement getCalibratedZ')
+
+    def getExtents(self, pixelDistances: bool, matchXY: bool): # To do
+        raise Exception('VolumeWrapper: Implement getExtents')
+
+    def getAsImage(self, imageName: str, t: int, nFrames: int) -> ImageWrapper:
+        raise Exception('VolumeWrapper: Implement getAsImage')
+
+    def getAsTightImage(self, imageName: str) -> ImageWrapper:
+        raise Exception('VolumeWrapper: Implement getAsTightImage')
+
+    def getAsTightImageWithBorders(self, imageName: str, borderWidths) -> ImageWrapper: # To do
+        raise Exception('VolumeWrapper: Implement getAsTightImageWithBorders')
+
+    def getContainedVolume(self, pixelDistances: bool) -> float:
+        raise Exception('VolumeWrapper: Implement getContainedVolume')
+
+    def getOverlap(self, volume2: VolumeWrapper) -> int:
+        raise Exception('VolumeWrapper: Implement getOverlap')
+
+    def getX(self, pixelDistances: bool): # To do
+        raise Exception('VolumeWrapper: Implement getX')
+
+    def getY(self, pixelDistances: bool): # To do
+        raise Exception('VolumeWrapper: Implement getY')
+
+    def getZ(self, pixelDistances: bool, matchXY: bool): # To do
+        raise Exception('VolumeWrapper: Implement getZ')
+
+    def getSurfaceXCoords(self): # To do
+        raise Exception('VolumeWrapper: Implement getSurfaceXCoords')
+
+    def getSurfaceYCoords(self): # To do
+        raise Exception('VolumeWrapper: Implement getSurfaceYCoords')
+
+    def getSurfaceZCoords(self): # To do
+        raise Exception('VolumeWrapper: Implement getSurfaceZCoords')
+
+    def getSurfaceX(self, pixelDistances: bool): # To do
+        raise Exception('VolumeWrapper: Implement getSurfaceX')
+
+    def getSurfaceY(self, pixelDistances: bool): # To do
+        raise Exception('VolumeWrapper: Implement getSurfaceY')
+
+    def getSurfaceZ(self, pixelDistances: bool, matchXY: bool): # To do
+        raise Exception('VolumeWrapper: Implement getSurfaceZ')
+
+    def getXMean(self, pixelDistances: bool) -> float:
+        raise Exception('VolumeWrapper: Implement getXMean')
+
+    def getYMean(self, pixelDistances: bool) -> float:
+        raise Exception('VolumeWrapper: Implement getYMean')
+
+    def getZMean(self, pixelDistances: bool, matchXY: bool) -> float:
+        raise Exception('VolumeWrapper: Implement getZMean')
+
+    def getVolumeHeight(self, pixelDistances: bool, matchXY: bool) -> float:
+        raise Exception('VolumeWrapper: Implement getVolumeHeight')
+
+    def hasVolume(self) -> bool:
+        raise Exception('VolumeWrapper: Implement hasVolume')
+
+    def hasArea(self) -> bool:
+        raise Exception('VolumeWrapper: Implement hasArea')
+
+    def calculateAngle2D(self, volume2: VolumeWrapper) -> float:
+        raise Exception('VolumeWrapper: Implement calculateAngle2D')
+
+    def calculateAngleToPoint2D(self, point) -> float: # To do
+        raise Exception('VolumeWrapper: Implement calculateAngleToPoint2D')
+
+    def calculatePointPointSeparation(self, point1, point2, pixelDistances: bool) -> float: # To do
+        raise Exception('VolumeWrapper: Implement calculatePointPointSeparation')
+
+    def getSurfaceSeparation(self, volume2, pixelDistances: bool, force2D: bool, ignoreEdgesXY: bool, ignoreEdgesZ: bool) -> float: # To do
+        raise Exception('VolumeWrapper: Implement getSurfaceSeparation')
+
+    def getPointSurfaceSeparation(self, point, pixelDistances: bool, force2D: bool, ignoreEdgesXY: bool, ignoreEdgesZ: bool) -> float: # To do
+        raise Exception('VolumeWrapper: Implement getPointSurfaceSeparation')
+
+    def getCentroidSeparation(self, volume2: VolumeWrapper, pixelDistances: bool, force2D: bool) -> float: # To do
+        raise Exception('VolumeWrapper: Implement getCentroidSeparation')
+
+    def getOverlappingPoints(self, volume2: VolumeWrapper) -> VolumeWrapper:
+        raise Exception('VolumeWrapper: Implement getOverlappingPoints')
+
+    def getSlice(self, slice: int) -> VolumeWrapper:
+        raise Exception('VolumeWrapper: Implement getSlice')
+
+    def getRoi(self, slice: int): # To do
+        raise Exception('VolumeWrapper: Implement getRoi')
 
 
     # From SpatiallyCalibrated

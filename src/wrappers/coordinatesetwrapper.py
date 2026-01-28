@@ -163,6 +163,19 @@ class CoordinateSetFactoryWrapper():
     def duplicate(self) -> CoordinateSetFactoryWrapper:
         return CoordinateSetFactoryWrapper()
     
+    @JOverride
+    def calculateSurface(self, is_2D: bool) -> CoordinateSetWrapper:
+        raise Exception('CoordinateSetWrapper: Implement calculateSurface')
+    
+    @JOverride
+    def calculateSurface2D(self) -> CoordinateSetWrapper:
+        raise Exception('CoordinateSetWrapper: Implement calculateSurface2D')
+    
+    @JOverride
+    def calculateSurface3D(self) -> CoordinateSetWrapper:
+        raise Exception('CoordinateSetWrapper: Implement calculateSurface3D')
+    
+    
 def wrapCoordinateSet(coordinate_set: CoordinateSet) -> CoordinateSetWrapper:
     wrapper: CoordinateSetWrapper = CoordinateSetWrapper()
     wrapper.setPythonCoordinateSet(coordinate_set)

@@ -1,18 +1,20 @@
 from __future__ import annotations
 
 from jpype import JImplements, JOverride # type: ignore
-from prettytable import PrettyTable
 from typing import Dict, List
 from typing import TYPE_CHECKING
 
 from src.objects.image import Image
 from src.objects.objs import Objs
 from src.wrappers.imagewrapper import wrapImage, ImageWrapper    
-from src.wrappers.objwrapper import ObjWrapper, wrapObj
+from src.wrappers.measurementwrapper import MeasurementWrapper
+
+import src.wrappers.objwrapper as ow
 
 if TYPE_CHECKING:
     from src.objects.obj import Obj    
     from src.wrappers.coordinatesetwrapper import CoordinateSetFactoryWrapper
+    from src.wrappers.objwrapper import ObjWrapper
     from src.types.JPointType import JPointType
     from src.types.JSpatioTemporallyCalibrated import JSpatioTemporallyCalibrated
 
@@ -219,23 +221,9 @@ class ObjsWrapper():
         if measurement_refs is None:
             return
                 
-        measurement_names: List[str] = [ref.getName() for ref in measurement_refs.values()]
-        measurement_names.insert(0, "Object ID")
+        measurement_names: List[str] = [str(ref.getName()) for ref in measurement_refs.values()]
         
-        table = PrettyTable(measurement_names)
-        
-        # obj: ObjWrapper
-        # for obj in self.values():
-        #     row: List[float] = []
-        #     for name in measurement_names:
-        #         measurement_value: float = obj.getMeasurement(name).getValue()
-        #         row.append(measurement_value)
-            
-        #     table.add_row(row)
-            
-        print(table)
-        
-        raise Exception('ObjsWrapper: Implement showMeasurements')
+        self._objs.showMeasurements(measurement_names)
     
     @JOverride
     def showAllMeasurements(self): # No return
@@ -283,7 +271,7 @@ class ObjsWrapper():
     @JOverride
     def get(self, key: int) -> ObjWrapper | None:
         obj: Obj | None = self._objs.get(key)
-        return None if obj is None else wrapObj(obj)
+        return None if obj is None else ow.wrapObj(obj)
     
     @JOverride
     def size(self) -> int:
@@ -302,12 +290,12 @@ class ObjsWrapper():
         raise Exception('MapWrapper: Implement containsValue')
         
     @JOverride
-    def put(self, key: int, value: ObjWrapper) -> ObjWrapper:
+    def put(self, key: int, value: ObjWrapper) -> ObjWrapper | None:
         prevObj: Obj | None = self._objs.get(key)
         prevObjWrapper: ObjWrapper | None = None
         
         if prevObj is not None:
-            prevObjWrapper = wrapObj(prevObj)
+            prevObjWrapper = ow.wrapObj(prevObj)
 
         self._objs.put(key, value.getPythonObj())
         
@@ -334,7 +322,7 @@ class ObjsWrapper():
         vals: List[ObjWrapper] = []
         
         for obj in self._objs.values():
-            vals.append(wrapObj(obj))
+            vals.append(ow.wrapObj(obj))
         
         return vals
     
@@ -363,12 +351,12 @@ class ObjsWrapper():
         raise Exception('MapWrapper: Implement replaceAll')
     
     @JOverride
-    def putIfAbsent(self, key: int, value: ObjWrapper) -> ObjWrapper:
+    def putIfAbsent(self, key: int, value: ObjWrapper) -> ObjWrapper | None:
         obj: Obj | None = self._objs.putIfAbsent(key, value.getPythonObj())
         
         obj_wrapper: ObjWrapper| None = None
         if obj is not None:
-            obj_wrapper = wrapObj(obj)
+            obj_wrapper = ow.wrapObj(obj)
         
         return obj_wrapper
     

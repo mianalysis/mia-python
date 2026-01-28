@@ -1,12 +1,17 @@
 from __future__ import annotations
 from jpype import JImplements, JOverride # type: ignore
 from scyjava import jimport # type: ignore
+from typing import Dict
 from typing import TYPE_CHECKING, Self
 
+from src.objects.measurement import Measurement
 from src.objects.obj import Obj
 from src.objects.volume import Volume
 from src.wrappers.volumewrapper import VolumeFactoryWrapper, VolumeWrapper, wrapVolume
 from src.types.JSpatioTemporallyCalibrated import JSpatioTemporallyCalibrated
+from src.wrappers.measurementwrapper import MeasurementWrapper, wrapMeasurement
+
+import src.wrappers.objswrapper as osw
 
 if TYPE_CHECKING:
     from src.objects.coordinateset import CoordinateSet
@@ -38,7 +43,7 @@ class ObjWrapper:
     
     @JOverride
     def getObjectCollection(self) -> ObjsWrapper:
-        objs_wrapper: ObjsWrapper = ObjsWrapper.wrapObjs(self._obj.getObjectCollection())
+        objs_wrapper: ObjsWrapper = osw.wrapObjs(self._obj.getObjectCollection())
 
         return objs_wrapper
 
@@ -97,17 +102,13 @@ class ObjWrapper:
         raise Exception('ObjWrapper: Implement removeRelationships')
 
     @JOverride
-    def getMeasurements(self): # To do
+    def getMeasurements(self) -> Dict[str, MeasurementWrapper]:
         raise Exception('ObjWrapper: Implement getMeasurements')
 
     @JOverride
     def setMeasurements(self, measurements): # To do
         raise Exception('ObjWrapper: Implement setMeasurements')
     
-    @JOverride
-    def getMeasurement(self, name: str) -> float:
-        return self._obj.getMeasurement(name)
-
     @JOverride
     def getMetadata(self): # To do
         raise Exception('ObjWrapper: Implement getMetadata')
@@ -314,10 +315,95 @@ class ObjWrapper:
 
     # Obj default methods
     
+    def getParents(self, use_full_hierarchy: bool) -> Dict[str, ObjWrapper]:
+        raise Exception('ObjWrapper: Implement getParents')
+
+    def getParent(self, name: str) -> ObjWrapper:
+        raise Exception('ObjWrapper: Implement getParent')
+
+    def addParent(self, parent: ObjWrapper):
+        raise Exception('ObjWrapper: Implement addParent')
+
+    def removeParent(self, name: str):
+        raise Exception('ObjWrapper: Implement removeParent')
+
+    def getChildren(self, name: str) -> ObjsWrapper:
+        raise Exception('ObjWrapper: Implement getChildren')
+
+    def addChildren(self, child_set: ObjsWrapper):
+        raise Exception('ObjWrapper: Implement addChildren')
+
+    def removeChildren(self, name: str):
+        raise Exception('ObjWrapper: Implement removeChildren')
+
+    def addChild(self, child: ObjWrapper):
+        raise Exception('ObjWrapper: Implement addChild')
+
+    def removeChild(self, child: ObjWrapper):
+        raise Exception('ObjWrapper: Implement removeChild')
+
+    def getPartners(self, name: str) -> ObjsWrapper:
+        raise Exception('ObjWrapper: Implement getPartners')
+
+    def addPartners(self, partner_set: ObjsWrapper):
+        raise Exception('ObjWrapper: Implement addPartners')
+
+    def addPartner(self, partner: ObjWrapper):
+        raise Exception('ObjWrapper: Implement addPartner')
+
+    def removePartner(self, partner: ObjWrapper):
+        raise Exception('ObjWrapper: Implement removePartner')
+
+    def removePartners(self, name: str):
+        raise Exception('ObjWrapper: Implement removePartners')
+
+    def getPreviousPartners(self, name: str) -> ObjsWrapper:
+        raise Exception('ObjWrapper: Implement getPreviousPartners')
+
+    def getSimultaneousPartners(self, name: str) -> ObjsWrapper:
+        raise Exception('ObjWrapper: Implement getSimultaneousPartners')
+
+    def getNextPartners(self, name: str) -> ObjsWrapper:
+        raise Exception('ObjWrapper: Implement getNextPartners')
+
+    def addMetadataItem(self, metadata_item): # To do
+        raise Exception('ObjWrapper: Implement addMetadataItem')
+
+    def getMetadataItem(self, name: str): # To do
+        raise Exception('ObjWrapper: Implement getMetadataItem')
+
+    def removeMetadataItem(self, name: str):
+        raise Exception('ObjWrapper: Implement removeMetadataItem')
+
+    def addMeasurement(self, measurement: MeasurementWrapper):
+        self._obj.addMeasurement(measurement.getPythonMeasurement())
+
+    def getMeasurement(self, name: str) -> MeasurementWrapper | None:
+        measurement: Measurement | None = self._obj.getMeasurement(name)
+        return None if measurement is None else wrapMeasurement(measurement)
+
+    def removeMeasurement(self, name: str):
+        raise Exception('ObjWrapper: Implement removeMeasurement')
+
+    def getAsImage(self, imageName: str, single_timepoint: bool) -> ImageWrapper:
+        raise Exception('ObjWrapper: Implement getAsImage')
+
+    def getCentroidAsImage(self, imageName: str, single_timepoint: bool) -> ImageWrapper:
+        raise Exception('ObjWrapper: Implement getCentroidAsImage')
+
     def addToImage(self, image: ImageWrapper, hue: float):
         raise Exception('ObjWrapper: Implement addToImage')
-        
-        
+
+    def addCentroidToImage(self, image: ImageWrapper, hue: float):
+        raise Exception('ObjWrapper: Implement addCentroidToImage')
+
+    def removeOutOfBoundsCoords(self):
+        raise Exception('ObjWrapper: Implement removeOutOfBoundsCoords')
+
+    def getImgPlusCoordinateIterator(self): # To do
+        raise Exception('ObjWrapper: Implement getImgPlusCoordinateIterator')
+
+
     # Volume default methods
     
     def addCoord(self, x: int, y: int, z: int): # No return

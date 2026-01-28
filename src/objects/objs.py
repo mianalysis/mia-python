@@ -2,13 +2,17 @@
 # the methods?
 
 from __future__ import annotations
+from prettytable import PrettyTable
 from typing import Dict, List, Tuple
 from typing import TYPE_CHECKING
 
-from src.objects.image import Image
-from src.utilities.colourfactory import getIDHues
-
+import math
 import numpy as np
+
+from src.objects.image import Image
+from src.objects.measurement import Measurement
+
+from src.utilities.colourfactory import getIDHues
 
 if TYPE_CHECKING:
     from src.objects.coordinateset import CoordinateSetFactory
@@ -193,8 +197,25 @@ class Objs():
     def getByEqualsIgnoreNameAndID(self, reference_obj: Obj) -> Obj:
         raise Exception('Objs: Implement getByEqualsIgnoreNameAndID')
     
-    def showMeasurements(self, module, modules): # To do
-        raise Exception('Objs: Implement showMeasurements')
+    def showMeasurements(self, measurement_names: List[str]):        
+        table: PrettyTable = PrettyTable()
+        col: List[float] = []
+        obj: Obj
+        for obj in self.values():
+            col.append(obj.getID())
+            
+        table.add_column("OBJECT_ID", col)
+                
+        for measurement_name in measurement_names:
+            col = []
+            obj: Obj
+            for obj in self.values():
+                measurement: Measurement | None = obj.getMeasurement(measurement_name)
+                col.append(math.nan if measurement is None else measurement.getValue())
+                
+            table.add_column(measurement_name, col)
+            
+        print(table)
     
     def showAllMeasurements(self): # No return
         raise Exception('Objs: Implement showAllMeasurements')
