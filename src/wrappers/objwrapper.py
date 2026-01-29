@@ -3,6 +3,7 @@ from jpype import JImplements, JOverride # type: ignore
 from scyjava import jimport # type: ignore
 from typing import Dict, List
 from typing import TYPE_CHECKING, Self
+from weakref import WeakKeyDictionary
 
 from src.objects.measurement import Measurement
 from src.objects.obj import Obj
@@ -25,9 +26,10 @@ JObj = jimport('io.github.mianalysis.mia.object.coordinates.ObjI') # type: ignor
 JObjAdaptor = jimport('io.github.mianalysis.mia.python.ObjAdaptor') # type: ignore
 JVolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor') # type: ignore
 
+_wrapper_cache: WeakKeyDictionary[Obj, ObjWrapper] = WeakKeyDictionary()
+
 @JImplements('io.github.mianalysis.mia.object.coordinates.ObjI')
-class ObjWrapper:
-    
+class ObjWrapper:    
     def __init__(self, coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper | None, obj_collection: ObjsWrapper | None, ID: int):
         if coordinate_set_factory_wrapper is not None and obj_collection is not None:
             self._obj: Obj = Obj(coordinate_set_factory_wrapper.getPythonCoordinateSetFactory(), obj_collection.getPythonObjs(), ID)
@@ -580,7 +582,12 @@ class ObjFactoryWrapper:
         return ObjWrapper(factory, obj_collection, ID)
 
 def wrapObj(obj: Obj) -> ObjWrapper:
-    obj_wrapper = ObjWrapper(None, None, 0)
-    obj_wrapper.setPythonObj(obj)
+    try:
+        return _wrapper_cache[obj]
+    except:        
+        obj_wrapper = ObjWrapper(None, None, 0)
+        obj_wrapper.setPythonObj(obj)
+        _wrapper_cache[obj]  = obj_wrapper
     
-    return obj_wrapper
+        return obj_wrapper
+    

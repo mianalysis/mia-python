@@ -3,6 +3,7 @@ from __future__ import annotations
 from jpype import JImplements, JOverride # type: ignore
 from typing import Dict, List
 from typing import TYPE_CHECKING
+from weakref import WeakKeyDictionary
 
 from src.objects.image import Image
 from src.objects.objs import Objs
@@ -17,6 +18,8 @@ if TYPE_CHECKING:
     from src.wrappers.objwrapper import ObjWrapper
     from src.types.JPointType import JPointType
     from src.types.JSpatioTemporallyCalibrated import JSpatioTemporallyCalibrated
+
+_wrapper_cache: WeakKeyDictionary[Objs, ObjsWrapper] = WeakKeyDictionary()
 
 @JImplements('io.github.mianalysis.mia.object.ObjsI') # type: ignore
 class ObjsWrapper():
@@ -479,7 +482,11 @@ class ObjsFactoryWrapper:
         return ObjsFactoryWrapper()
         
 def wrapObjs(objs: Objs) -> ObjsWrapper:
-    objs_wrapper = ObjsWrapper("", 0, 0, 0, 0.0, 0.0, "", 0, 0.0, None)
-    objs_wrapper.setPythonObjs(objs)
+    try:
+        return _wrapper_cache[objs]
+    except:        
+        objs_wrapper = ObjsWrapper("", 0, 0, 0, 0.0, 0.0, "", 0, 0.0, None)
+        objs_wrapper.setPythonObjs(objs)
+        _wrapper_cache[objs]  = objs_wrapper
     
-    return objs_wrapper
+        return objs_wrapper

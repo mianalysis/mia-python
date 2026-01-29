@@ -2,6 +2,7 @@ from __future__ import annotations
 from jpype import JImplements, JInt, JOverride # type: ignore
 from scyjava import jimport # type: ignore
 from typing import TYPE_CHECKING
+from weakref import WeakKeyDictionary
 
 from src.objects.coordinateset import CoordinateSet, CoordinateSetIterator
 from src.objects.coordinateset import CoordinateSetFactory
@@ -11,6 +12,8 @@ if TYPE_CHECKING:
     from src.types.types import Point, Points
 
 JPoint = jimport('io.github.mianalysis.mia.object.coordinates.Point') # type: ignore
+
+_wrapper_cache: WeakKeyDictionary[CoordinateSet, CoordinateSetWrapper] = WeakKeyDictionary()
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI','java.lang.Iterable')
 class CoordinateSetWrapper():
@@ -197,11 +200,15 @@ class CoordinateSetFactoryWrapper():
     @JOverride
     def calculateSurface3D(self) -> CoordinateSetWrapper:
         raise Exception('CoordinateSetWrapper: Implement calculateSurface3D')
-    
-    
+
+
 def wrapCoordinateSet(coordinate_set: CoordinateSet) -> CoordinateSetWrapper:
-    wrapper: CoordinateSetWrapper = CoordinateSetWrapper()
-    wrapper.setPythonCoordinateSet(coordinate_set)
+    try:
+        return _wrapper_cache[coordinate_set]
+    except:        
+        coordinate_set_wrapper: CoordinateSetWrapper = CoordinateSetWrapper()
+        coordinate_set_wrapper.setPythonCoordinateSet(coordinate_set)
+        _wrapper_cache[coordinate_set]  = coordinate_set_wrapper
     
-    return wrapper
-        
+        return coordinate_set_wrapper
+    

@@ -1,17 +1,21 @@
-import imagej
-
-ij = imagej.init(['io.github.mianalysis:mia-plugin:2.0.0-SNAPSHOT'])
-
+from __future__ import annotations
 from jpype import JImplements, JOverride  # type: ignore
 from scyjava import jimport  # type: ignore
+from weakref import WeakKeyDictionary
 
 from src.objects.image import Image
 from src.utilities.imagerenderer import NotebookImageRenderer
 
+import imagej
 import numpy as np
+
+ij = imagej.init(['io.github.mianalysis:mia-plugin:2.0.0-SNAPSHOT'])
+
 
 JImage = jimport('io.github.mianalysis.mia.object.image.ImageI')
 JDisplayModes = jimport('io.github.mianalysis.mia.object.image.ImageI.DisplayModes')
+
+_wrapper_cache: WeakKeyDictionary[Image, ImageWrapper] = WeakKeyDictionary()
 
 @JImplements('io.github.mianalysis.mia.object.image.ImageI')
 class ImageWrapper:
@@ -192,8 +196,14 @@ class ImageWrapper:
     def showAllMeasurements(self):
         raise Exception('ImageWrapper: Implement showAllMeasurements')
 
+
 def wrapImage(img: Image) -> ImageWrapper:
-    image_wrapper: ImageWrapper = ImageWrapper()
-    image_wrapper.setPythonImage(img)
+    try:
+        return _wrapper_cache[img]
+    except:        
+        image_wrapper: ImageWrapper = ImageWrapper()
+        image_wrapper.setPythonImage(img)
+        _wrapper_cache[img]  = image_wrapper
     
-    return image_wrapper 
+        return image_wrapper
+    

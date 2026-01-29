@@ -38,7 +38,6 @@ TIMELINE_NUMBER: str = JMetadata.TIMELINE_NUMBER
 ACTION_NUMBER: str = JMetadata.ACTION_NUMBER
 AREA_NAME: str = JMetadata.AREA_NAME
 
-
 @JImplements('io.github.mianalysis.mia.object.metadata.MetadataI')
 class MetadataWrapper:
     def __init__(self):
@@ -332,6 +331,7 @@ class MetadataWrapper:
         raise Exception('MetadataWrapper: Implement clone')
         
 def wrapMetadataStore(store: Dict[str, Any]) -> MetadataWrapper:
+    print("MetadataWrapper: Implement caching on wrapMetadataStore once separate Metadata class complete")
     wrapper: MetadataWrapper = MetadataWrapper()
     wrapper.setPythonMetadataStore(store)
     

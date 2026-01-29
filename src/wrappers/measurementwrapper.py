@@ -1,7 +1,10 @@
 from __future__ import annotations
 from jpype import JImplements, JOverride # type: ignore
+from weakref import WeakKeyDictionary
 
 from src.objects.measurement import Measurement
+
+_wrapper_cache: WeakKeyDictionary[Measurement, MeasurementWrapper] = WeakKeyDictionary()
 
 @JImplements('io.github.mianalysis.mia.object.measurements.MeasurementI')
 class MeasurementWrapper:
@@ -48,7 +51,11 @@ class MeasurementFactoryWrapper:
 
 
 def wrapMeasurement(measurement: Measurement) -> MeasurementWrapper:
-    measurement_wrapper: MeasurementWrapper = MeasurementWrapper("",0)
-    measurement_wrapper.setPythonMeasurement(measurement)
+    try:
+        return _wrapper_cache[measurement]
+    except:        
+        measurement_wrapper: MeasurementWrapper = MeasurementWrapper("",0)
+        measurement_wrapper.setPythonMeasurement(measurement)
+        _wrapper_cache[measurement]  = measurement_wrapper
     
-    return measurement_wrapper
+        return measurement_wrapper

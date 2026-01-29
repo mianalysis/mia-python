@@ -2,7 +2,7 @@ from __future__ import annotations
 
 class Measurement:
     def __init__(self, name: str, value: float):
-        print("Measurement: Implement units conversion in __init__")
+        # print("Measurement: Implement units conversion in __init__")
         self._name: str = name
         self._value: float = value
         

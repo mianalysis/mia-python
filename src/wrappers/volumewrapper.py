@@ -1,7 +1,8 @@
 from __future__ import annotations
 from jpype import JImplements, JOverride # type: ignore
 from scyjava import jimport # type: ignore
-from typing import TYPE_CHECKING, Self
+from typing import TYPE_CHECKING
+from weakref import WeakKeyDictionary
 
 from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSetFactoryWrapper
 from src.wrappers.imagewrapper import ImageWrapper
@@ -10,7 +11,8 @@ from src.types.JSpatiallyCalibrated import JSpatiallyCalibrated
 
 if TYPE_CHECKING:
     from src.types.JPointType import JPointType
-    
+
+_wrapper_cache: WeakKeyDictionary[Volume, VolumeWrapper] = WeakKeyDictionary() 
 
 JVolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor') # type: ignore
 
@@ -344,9 +346,12 @@ class VolumeFactoryWrapper:
         return VolumeWrapper(coordinate_set_factory_wrapper, example.getWidth(), example.getHeight(), example.getNSlices(), example.getDppXY(), example.getDppZ(), example.getSpatialUnits())
 
 
-def wrapVolume(volume: Volume) -> VolumeWrapper:
-    volume_wrapper: VolumeWrapper = VolumeWrapper(None,0,0,0,1,1,"px")
-    volume_wrapper.setPythonVolume(volume)
+def wrapVolume(volume: Volume) -> VolumeWrapper:    
+    try:
+        return _wrapper_cache[volume]
+    except:        
+        volume_wrapper: VolumeWrapper = VolumeWrapper(None,0,0,0,1,1,"px")
+        volume_wrapper.setPythonVolume(volume)
+        _wrapper_cache[volume]  = volume_wrapper
     
-    return volume_wrapper
-    
+        return volume_wrapper
