@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Self, TYPE_CHECKING
+from typing import List, Self, TYPE_CHECKING
 
 from src.objects.image import Image
 
@@ -74,13 +74,13 @@ class Volume():
 
     # private class VolumeIterator implements Iterator<Point<Double>> {
     #     private Iterator<Point<Integer>> iterator;
-    #     private boolean pixelDistances;
-    #     private boolean matchXY;
+    #     private boolean pixel_distances;
+    #     private boolean match_xy;
 
-    #     public VolumeIterator(boolean pixelDistances, boolean matchXY) {
-    #         this.pixelDistances = pixelDistances;
+    #     public VolumeIterator(boolean pixel_distances, boolean match_xy) {
+    #         this.pixel_distances = pixel_distances;
     #         this.iterator = coordinateSet.iterator();
-    #         this.matchXY = matchXY;
+    #         this.match_xy = match_xy;
     #     }
 
     #     @Override
@@ -95,9 +95,9 @@ class Volume():
     #         int y = nextPoint.y;
     #         int z = nextPoint.z;
 
-    #         if (pixelDistances && matchXY) {
+    #         if (pixel_distances && match_xy) {
     #             return new Point<>((double) x, (double) y, (double) z * spatCal.dppZ / spatCal.dppXY);
-    #         } else if (pixelDistances & !matchXY) {
+    #         } else if (pixel_distances & !match_xy) {
     #             return new Point<>((double) x, (double) y, (double) z);
     #         } else {
     #             return new Point<>((double) x * spatCal.dppXY, (double) y * spatCal.dppXY, (double) z * spatCal.dppZ);
@@ -174,7 +174,7 @@ class Volume():
     def addPointsFromShape(self, polygon, z: int): # To do
         raise Exception('Volume: Implement addPointsFromShape')
 
-    def translateCoords(self, xOffs: int, yOffs: int, zOffs: int):
+    def translateCoords(self, x_offs: int, y_offs: int, z_offs: int):
         raise Exception('Volume: Implement translateCoords')
 
     def finalise(self): # No return
@@ -186,7 +186,7 @@ class Volume():
     def getPoints(self): # To do
         raise Exception('Volume: Implement getPoints')
 
-    def getProjectedArea(self, pixelDistances: bool) -> float:
+    def getProjectedArea(self, pixel_distances: bool) -> float:
         raise Exception('Volume: Implement getProjectedArea')
 
     def size(self) -> int:
@@ -219,23 +219,60 @@ class Volume():
     def getXYScaledZ(self, z: float) -> float:
         raise Exception('Volume: Implement getXYScaledZ')
 
-    def getCalibratedZ(self, point, matchXY: bool) -> float: # To do
+    def getCalibratedZ(self, point, match_xy: bool) -> float: # To do
         raise Exception('Volume: Implement getCalibratedZ')
 
-    def getExtents(self, pixelDistances: bool, matchXY: bool): # To do
-        raise Exception('Volume: Implement getExtents')
+    def getExtents(self, pixel_distances: bool, match_xy: bool) -> List[List[float]]:
+        if self.size() == 0:
+            return [[0,0],[0,0],[0,0]]
+        
+        minX: float = float('inf')
+        maxX: float = -float('inf')
+        minY: float = float('inf')
+        maxY: float = -float('inf')
+        minZ: float = float('inf')
+        maxZ: float = -float('inf')
+        
+        # Getting XY ranges
+        point: Point
+        for point in self.getCoordinateSet():
+            minX = float(min(minX, point[0]))
+            maxX = float(max(maxX, point[0]))
+            minY = float(min(minY, point[1]))
+            maxY = float(max(maxY, point[1]))
+            minZ = float(min(minZ, point[2]))
+            maxZ = float(max(maxZ, point[2]))
+            
+        # Getting XY ranges
+        if pixel_distances:
+            if match_xy:
+                minZ = self.getXYScaledZ(minZ)
+                maxZ = self.getXYScaledZ(maxZ)
+        else:
+            minX = minX * self.getDppXY()
+            maxX = maxX * self.getDppXY()
+            minY = minY * self.getDppXY()
+            maxY = maxY * self.getDppXY()
+            minZ = minZ * self.getDppZ()
+            maxZ = maxZ * self.getDppZ()
 
-    def getAsImage(self, imageName: str, t: int, nFrames: int) -> Image:
+        if self.is2D():
+            minZ = 0
+            maxZ = 0
+                
+        return [[minX, maxX],[minY, maxY],[minZ, maxZ]]
+       
+    def getAsImage(self, image_name: str, t: int, n_frames: int) -> Image:
         raise Exception('Volume: Implement getAsImage')
 
-    def getAsTightImage(self, imageName: str) -> Image:
+    def getAsTightImage(self, image_name: str) -> Image:
         raise Exception('Volume: Implement getAsTightImage')
 
-    def getAsTightImageWithBorders(self, imageName: str, borderWidths) -> Image: # To do
+    def getAsTightImageWithBorders(self, image_name: str, border_widths) -> Image: # To do
         raise Exception('Volume: Implement getAsTightImageWithBorders')
 
-    def getContainedVolume(self, pixelDistances: bool) -> float:
-        if pixelDistances:
+    def getContainedVolume(self, pixel_distances: bool) -> float:
+        if pixel_distances:
             return self.size() * self.getDppZ() / self.getDppXY()
         else:
             return self.size() * self.getDppXY() * self.getDppXY() * self.getDppZ()
@@ -243,13 +280,13 @@ class Volume():
     def getOverlap(self, volume2: Volume) -> int:
         raise Exception('Volume: Implement getOverlap')
 
-    def getX(self, pixelDistances: bool): # To do
+    def getX(self, pixel_distances: bool): # To do
         raise Exception('Volume: Implement getX')
 
-    def getY(self, pixelDistances: bool): # To do
+    def getY(self, pixel_distances: bool): # To do
         raise Exception('Volume: Implement getY')
 
-    def getZ(self, pixelDistances: bool, matchXY: bool): # To do
+    def getZ(self, pixel_distances: bool, match_xy: bool): # To do
         raise Exception('Volume: Implement getZ')
 
     def getSurfaceXCoords(self): # To do
@@ -261,26 +298,39 @@ class Volume():
     def getSurfaceZCoords(self): # To do
         raise Exception('Volume: Implement getSurfaceZCoords')
 
-    def getSurfaceX(self, pixelDistances: bool): # To do
+    def getSurfaceX(self, pixel_distances: bool): # To do
         raise Exception('Volume: Implement getSurfaceX')
 
-    def getSurfaceY(self, pixelDistances: bool): # To do
+    def getSurfaceY(self, pixel_distances: bool): # To do
         raise Exception('Volume: Implement getSurfaceY')
 
-    def getSurfaceZ(self, pixelDistances: bool, matchXY: bool): # To do
+    def getSurfaceZ(self, pixel_distances: bool, match_xy: bool): # To do
         raise Exception('Volume: Implement getSurfaceZ')
 
-    def getXMean(self, pixelDistances: bool) -> float:
+    def getXMean(self, pixel_distances: bool) -> float:
         raise Exception('Volume: Implement getXMean')
 
-    def getYMean(self, pixelDistances: bool) -> float:
+    def getYMean(self, pixel_distances: bool) -> float:
         raise Exception('Volume: Implement getYMean')
 
-    def getZMean(self, pixelDistances: bool, matchXY: bool) -> float:
+    def getZMean(self, pixel_distances: bool, match_xy: bool) -> float:
         raise Exception('Volume: Implement getZMean')
 
-    def getVolumeHeight(self, pixelDistances: bool, matchXY: bool) -> float:
-        raise Exception('Volume: Implement getVolumeHeight')
+    def getVolumeHeight(self, pixel_distances: bool, match_xy: bool) -> float:
+        minZ: float = float('inf')
+        maxZ: float = -float('inf')
+        
+        point: Point
+        for point in self.getCoordinateSet():
+            minZ = min(minZ, point[2])
+            maxZ = max(maxZ, point[2])
+            
+        height: float = maxZ - minZ
+        
+        if pixel_distances:
+            return self.getXYScaledZ(height) if match_xy else height
+        
+        return height * self.getDppZ()
 
     def hasVolume(self) -> bool:
         raise Exception('Volume: Implement hasVolume')
@@ -294,16 +344,16 @@ class Volume():
     def calculateAngleToPoint2D(self, point) -> float: # To do
         raise Exception('Volume: Implement calculateAngleToPoint2D')
 
-    def calculatePointPointSeparation(self, point1, point2, pixelDistances: bool) -> float: # To do
+    def calculatePointPointSeparation(self, point1, point2, pixel_distances: bool) -> float: # To do
         raise Exception('Volume: Implement calculatePointPointSeparation')
 
-    def getSurfaceSeparation(self, volume2, pixelDistances: bool, force2D: bool, ignoreEdgesXY: bool, ignoreEdgesZ: bool) -> float: # To do
+    def getSurfaceSeparation(self, volume2, pixel_distances: bool, force2D: bool, ignore_edges_xy: bool, ignore_edges_z: bool) -> float: # To do
         raise Exception('Volume: Implement getSurfaceSeparation')
 
-    def getPointSurfaceSeparation(self, point, pixelDistances: bool, force2D: bool, ignoreEdgesXY: bool, ignoreEdgesZ: bool) -> float: # To do
+    def getPointSurfaceSeparation(self, point, pixel_distances: bool, force2D: bool, ignore_edges_xy: bool, ignore_edges_z: bool) -> float: # To do
         raise Exception('Volume: Implement getPointSurfaceSeparation')
 
-    def getCentroidSeparation(self, volume2: Volume, pixelDistances: bool, force2D: bool) -> float: # To do
+    def getCentroidSeparation(self, volume2: Volume, pixel_distances: bool, force_2D: bool) -> float: # To do
         raise Exception('Volume: Implement getCentroidSeparation')
 
     def getOverlappingPoints(self, volume2: Volume) -> Volume:

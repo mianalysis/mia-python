@@ -1,5 +1,5 @@
 from __future__ import annotations
-from jpype import JImplements, JOverride # type: ignore
+from jpype import JImplements, JInt, JOverride # type: ignore
 from scyjava import jimport # type: ignore
 from typing import TYPE_CHECKING
 
@@ -12,11 +12,11 @@ if TYPE_CHECKING:
 
 JPoint = jimport('io.github.mianalysis.mia.object.coordinates.Point') # type: ignore
 
-@JImplements('io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI')
+@JImplements('io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI','java.lang.Iterable')
 class CoordinateSetWrapper():
     def __init__(self):
         self._coordinate_set: CoordinateSet = CoordinateSet()
-        
+                    
     def getPythonCoordinateSet(self) -> CoordinateSet:
         return self._coordinate_set
     
@@ -83,8 +83,8 @@ class CoordinateSetWrapper():
         return self._coordinate_set.size()
 
     @JOverride
-    def iterator(self) -> CoordinateSetIterator:
-        return self._coordinate_set.iterator()
+    def iterator(self) -> CoordinateSetWrapperIterator:
+        return CoordinateSetWrapperIterator(self.getPythonCoordinateSet())
 
     @JOverride
     def isEmpty(self) -> bool:
@@ -139,9 +139,32 @@ class CoordinateSetWrapper():
         raise Exception('CoordinateSetWrapper: Implement spliterator')
 
 
-@JImplements('io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI')
-class CoordinateSetFactoryWrapper():
+@JImplements('java.util.Iterator')
+class CoordinateSetWrapperIterator:
+    def __init__(self, coordinate_set: CoordinateSet):
+        self._next_idx: int = 0
+        self._coordinate_set: CoordinateSet = coordinate_set
     
+    @JOverride
+    def hasNext(self) -> bool:
+        return self._next_idx < self._coordinate_set.size()
+    
+    @JOverride
+    def next(self) -> JPointType: 
+        point: Point = self._coordinate_set.getPointAtIndex(self._next_idx)
+        self._next_idx = self._next_idx + 1
+        
+        return JPoint(JInt(point[0]),JInt(point[1]),JInt(point[2]))
+    
+    @JOverride
+    def remove(self): # No return
+        raise Exception('CoordinateSetWrapperIterator: Implement remove')
+            
+    def forEachRemaining(self, action): # To do
+        raise Exception('CoordinateSetWrapperIterator: Implement forEachRemaining')
+    
+@JImplements('io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI')
+class CoordinateSetFactoryWrapper():    
     def __init__(self):
         self._coordinate_set_factory: CoordinateSetFactory = CoordinateSetFactory()
         

@@ -118,7 +118,7 @@ class CoordinateSetIterator:
     # def hasNext(self) -> bool:
     #     return self._next_idx < self._coordinate_set.size()
         
-    def __next__(self) -> Point | None:
+    def __next__(self) -> Point:
         if self._next_idx == self._coordinate_set.size():
             raise StopIteration
             

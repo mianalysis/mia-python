@@ -1,7 +1,7 @@
 from __future__ import annotations
 from jpype import JImplements, JOverride # type: ignore
 from scyjava import jimport # type: ignore
-from typing import Dict
+from typing import Dict, List
 from typing import TYPE_CHECKING, Self
 
 from src.objects.measurement import Measurement
@@ -9,13 +9,14 @@ from src.objects.obj import Obj
 from src.objects.volume import Volume
 from src.wrappers.volumewrapper import VolumeFactoryWrapper, VolumeWrapper, wrapVolume
 from src.types.JSpatioTemporallyCalibrated import JSpatioTemporallyCalibrated
+from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSetFactoryWrapper
 from src.wrappers.measurementwrapper import MeasurementWrapper, wrapMeasurement
 
+import src.wrappers.coordinatesetwrapper as csw
 import src.wrappers.objswrapper as osw
 
 if TYPE_CHECKING:
-    from src.objects.coordinateset import CoordinateSet
-    from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSetFactoryWrapper
+    from src.objects.coordinateset import CoordinateSet    
     from src.wrappers.imagewrapper import ImageWrapper
     from src.wrappers.objswrapper import ObjsWrapper
     from src.types.JPointType import JPointType
@@ -212,11 +213,7 @@ class ObjWrapper:
 
     @JOverride
     def getCoordinateSet(self) -> CoordinateSetWrapper:
-        coordinate_set: CoordinateSet = self._obj.getCoordinateSet()
-        coordinate_set_wrapper: CoordinateSetWrapper = CoordinateSetWrapper()
-        coordinate_set_wrapper.setPythonCoordinateSet(coordinate_set)
-        
-        return coordinate_set_wrapper
+        return csw.wrapCoordinateSet(self._obj.getCoordinateSet())
 
     @JOverride
     def setCoordinateSet(self, coordinate_set: CoordinateSetWrapper):
@@ -472,8 +469,8 @@ class ObjWrapper:
     def getCalibratedZ(self, point, match_xy: bool) -> float: # To do
         raise Exception('ObjWrapper: Implement getCalibratedZ')
 
-    def getExtents(self, pixel_distances: bool, match_xy: bool): # To do
-        self._obj.getExtents(pixel_distances, match_xy)
+    def getExtents(self, pixel_distances: bool, match_xy: bool) -> List[List[float]]:
+        return self._obj.getExtents(pixel_distances, match_xy)
 
     def getAsImage(self, imageName: str, t: int, nFrames: int) -> ImageWrapper:
         raise Exception('ObjWrapper: Implement getAsImage')
@@ -527,7 +524,7 @@ class ObjWrapper:
         raise Exception('ObjWrapper: Implement getZMean')
 
     def getVolumeHeight(self, pixel_distances: bool, match_xy: bool) -> float:
-        raise Exception('ObjWrapper: Implement getVolumeHeight')
+        return self._obj.getVolumeHeight(pixel_distances, match_xy)
 
     def hasVolume(self) -> bool:
         raise Exception('ObjWrapper: Implement hasVolume')

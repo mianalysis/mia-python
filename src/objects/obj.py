@@ -210,7 +210,7 @@ class Obj(Volume):
 
     def getAsImage(self, imageName: str, single_timepoint: bool) -> Image:
         raise Exception('Obj: Implement getAsImage')
-
+    
     def getCentroidAsImage(self, imageName: str, single_timepoint: bool) -> Image:
         raise Exception('Obj: Implement getCentroidAsImage')
 
