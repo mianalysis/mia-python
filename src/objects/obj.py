@@ -1,6 +1,7 @@
 from __future__ import annotations
 from typing import Dict
 from typing import TYPE_CHECKING
+from xarray import DataArray
 
 from src.objects.measurement import Measurement
 from src.objects.volume import Volume
@@ -215,7 +216,7 @@ class Obj(Volume):
         raise Exception('Obj: Implement getCentroidAsImage')
 
     def addToImage(self, image: Image, hue: float): # No return
-        np_img: np.ndarray = image.getRawImage()
+        np_img: DataArray = image.getRawImage()
         
         point: Point | None
         for point in self.getCoordinateSet():

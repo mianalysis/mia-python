@@ -525,6 +525,9 @@ class ObjWrapper:
     def getZMean(self, pixel_distances: bool, match_xy: bool) -> float:
         raise Exception('ObjWrapper: Implement getZMean')
 
+    def calculateBaseAreaPx(self) -> float:
+        return self._obj.calculateBaseAreaPx()
+    
     def getVolumeHeight(self, pixel_distances: bool, match_xy: bool) -> float:
         return self._obj.getVolumeHeight(pixel_distances, match_xy)
 

@@ -1,15 +1,24 @@
+from typing import Dict
+from xarray import DataArray
+
+from src.objects.coordinateset import CoordinateSetFactory
+from src.objects.measurement import Measurement
+from src.objects.objs import Objs
 from src.utilities.imagerenderer import NotebookImageRenderer
 
-import imagej
-import numpy as np
-
-ij = imagej.init(['io.github.mianalysis:mia-plugin:2.0.0-SNAPSHOT'])
+X: str = "col"
+Y: str = "row"
+C: str = "ch"
+Z: str = "pln"
+T: str = "t"
 
 class Image:
-    def __init__(self, name, np_img: np.ndarray):
+    def __init__(self, name, da_img: DataArray):
         self._name = name
-        self._np_img: np.ndarray = np_img
-        self._renderer = NotebookImageRenderer(ij)
+        self._da_img: DataArray = da_img
+        self._renderer = NotebookImageRenderer()
+        
+        self._measurements: Dict[str, Measurement] = {}
             
     def clear(self):
         raise Exception('Image: Implement clear')
@@ -21,42 +30,55 @@ class Image:
         self._renderer = image_renderer
     
     def getWidth(self) -> int:
-        raise Exception('Image: Implement getWidth')
+        return self.getAxisLength(X)
     
     def getHeight(self) -> int:
-        raise Exception('Image: Implement getHeight')
+        return self.getAxisLength(Y)
     
     def getNChannels(self) -> int:
-        raise Exception('Image: Implement getNChannels')
+        return self.getAxisLength(C)
     
     def getNSlices(self) -> int:
-        raise Exception('Image: Implement getNSlices')
+        return self.getAxisLength(Z)
     
     def getNFrames(self) -> int:
-        raise Exception('Image: Implement getNFrames')
+        return self.getAxisLength(T)
+    
+    def getAxisLength(self, axis_name: str) -> int:
+        if axis_name not in self._da_img.dims:
+            return 1
+        
+        axis_idx: int = self._da_img.get_axis_num(axis_name)
+        return self._da_img.shape[axis_idx]
     
     def getDppXY(self) -> float:
-        raise Exception('Image: Implement getDppXY')
+        # Possibly use the following
+        # return self._da_img.coords[X].diff(X).mean().item()
+        print('Image: Implement getDppXY')
+        return 1.0
     
     def getDppZ(self) -> float:
-        raise Exception('Image: Implement getDppZ')
+        print('Image: Implement getDppZ')
+        return 1.0
     
     def getSpatialUnits(self): # To do
-        raise Exception('Image: Implement getSpatialUnits')
+        print('Image: Implement getSpatialUnits')
+        return "px"
     
     def getFrameInterval(self) -> float:
-        raise Exception('Image: Implement getFrameInterval')
+        print('Image: Implement getFrameInterval')
+        return 1.0
 
     def getTemporalUnit(self): # To do
-        raise Exception('Image: Implement getTemporalUnit')
+        print('Image: Implement getTemporalUnit')
+        return "frames"
     
     def getImagePlus(self):
-        return ij.py.to_imageplus(self._np_img) # type: ignore
+        return ij.py.to_imageplus(self._da_img) # type: ignore
     
     def setImagePlus(self, imagePlus):        
         ij.py.sync_image(imagePlus) # type: ignore
-        self._np_img = ij.py.from_java(imagePlus) # type: ignore
-        raise Exception(self._np_img)
+        self._da_img = ij.py.from_java(imagePlus) # type: ignore
     
     def getImgPlus(self):
         raise Exception('Image: Implement getImgPlus')
@@ -64,11 +86,11 @@ class Image:
     def setImgPlus(self, img):
         raise Exception('Image: Implement setImgPlus')
     
-    def getRawImage(self) -> np.ndarray:
-        return self._np_img
+    def getRawImage(self) -> DataArray:
+        return self._da_img
     
-    def setRawImage(self, python_image: np.ndarray):
-        self._np_img = python_image
+    def setRawImage(self, python_image: DataArray):
+        self._da_img = python_image
     
     def initialiseEmptyObjs(self, output_objects_name):
         raise Exception('Image: Implement initialiseEmptyObjs')
@@ -88,19 +110,22 @@ class Image:
     def setOverlay(self, overlay):
         raise Exception('Image: Implement setOverlay')
         
-    def convertImageToObjects(self, coordinate_set_factory, output_objects_name, single_object):
-        raise Exception('Image: Implement convertImageToObjects')
+    def convertImageToObjects(self, coordinate_set_factory: CoordinateSetFactory, output_objects_name: str, single_object: bool) -> Objs:
+        return self.convertImageToObjectsGeneral(coordinate_set_factory, output_objects_name, single_object, True)
 
-    def convertImageToSingleObjects(self, coordinate_set_factory, output_objects_name, blackBackground):
-        raise Exception('Image: Implement convertImageToSingleObjects')
+    def convertImageToSingleObjects(self, coordinate_set_factory: CoordinateSetFactory, output_objects_name: str, blackBackground: bool) -> Objs:
+        return self.convertImageToObjectsGeneral(coordinate_set_factory, output_objects_name, True, blackBackground)
         
-    def addMeasurement(self, measurement):
-        raise Exception('Image: Implement addMeasurement')
+    def convertImageToObjectsGeneral(self, coordinate_set_factory: CoordinateSetFactory, output_objects_name: str, single_object: bool, blackBackground: bool) -> Objs:
+        raise Exception('ImageWrapper: Implement convertImageToObjects')
     
-    def getMeasurement(self, name):
-        raise Exception('Image: Implement getMeasurement')
+    def addMeasurement(self, measurement: Measurement):
+        self._measurements[measurement.getName()] = measurement
+    
+    def getMeasurement(self, name: str) -> Measurement | None:
+        return self._measurements.get(name)
         
-    def removeMeasurement(self, name):
+    def removeMeasurement(self, name: str):
         raise Exception('Image: Implement removeMeasurement')
     
     def getName(self) -> str:

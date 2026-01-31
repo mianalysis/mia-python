@@ -2,16 +2,18 @@ from __future__ import annotations
 from jpype import JImplements, JOverride  # type: ignore
 from scyjava import jimport  # type: ignore
 from weakref import WeakKeyDictionary
+from xarray import DataArray
 
 from src.objects.image import Image
+from src.objects.measurement import Measurement
+from src.objects.objs import Objs
 from src.utilities.imagerenderer import NotebookImageRenderer
+from src.utilities.store import Store
+from src.wrappers.coordinatesetwrapper import CoordinateSetFactoryWrapper
+from src.wrappers.measurementwrapper import MeasurementWrapper, wrapMeasurement
+from src.wrappers.objswrapper import ObjsWrapper, wrapObjs
 
-import imagej
-import numpy as np
-
-ij = imagej.init(['io.github.mianalysis:mia-plugin:2.0.0-SNAPSHOT'])
-
-
+JImagePlus = jimport('ij.ImagePlus')
 JImage = jimport('io.github.mianalysis.mia.object.image.ImageI')
 JDisplayModes = jimport('io.github.mianalysis.mia.object.image.ImageI.DisplayModes')
 
@@ -19,14 +21,20 @@ _wrapper_cache: WeakKeyDictionary[Image, ImageWrapper] = WeakKeyDictionary()
 
 @JImplements('io.github.mianalysis.mia.object.image.ImageI')
 class ImageWrapper:
-    def __init__(self):
-        self._renderer = NotebookImageRenderer(ij)
+    def __init__(self, name: str, raw_image): # To do (raw_image could be ImagePlus, ImgPlus or DataArray)
+        
+        self._renderer = NotebookImageRenderer()
+        
+        # if raw_image isinstance 
+        Store.ij.py.sync_image(raw_image) # type: ignore
+        da_img: DataArray = Store.ij.py.from_java(raw_image)
+        self._image = Image(name, da_img)
 
     def getPythonImage(self) -> Image:
-        return self._img
+        return self._image
     
     def setPythonImage(self, img: Image):  # No return
-        self._img = img
+        self._image = img
             
     @JOverride
     def clear(self):
@@ -37,7 +45,7 @@ class ImageWrapper:
         if (JImage.getUseGlobalImageRenderer()):
             return JImage.getGlobalImageRenderer()
         else:
-            return self._img.getRenderer()
+            return self._image.getRenderer()
     
     @JOverride
     def setRenderer(self, imageRenderer):
@@ -45,52 +53,52 @@ class ImageWrapper:
     
     @JOverride
     def getWidth(self) -> int:
-        return self._img.getWidth()
+        return self._image.getWidth()
     
     @JOverride
     def getHeight(self) -> int:
-        return self._img.getHeight()
+        return self._image.getHeight()
     
     @JOverride
     def getNChannels(self) -> int:
-        return self._img.getNChannels()
+        return self._image.getNChannels()
     
     @JOverride
     def getNSlices(self) -> int:
-        return self._img.getNSlices()
+        return self._image.getNSlices()
     
     @JOverride
     def getNFrames(self) -> int:
-        return self._img.getNFrames()
+        return self._image.getNFrames()
     
     @JOverride
     def getDppXY(self) -> float:
-        return self._img.getDppXY()
+        return self._image.getDppXY()
     
     @JOverride
     def getDppZ(self) -> float:
-        return self._img.getDppZ()
+        return self._image.getDppZ()
     
     @JOverride
     def getSpatialUnits(self): # To do
-        return self._img.getSpatialUnits()
+        return self._image.getSpatialUnits()
     
     @JOverride
     def getFrameInterval(self) -> float:
-        return self._img.getFrameInterval()
+        return self._image.getFrameInterval()
 
     @JOverride
     def getTemporalUnit(self): # To do
-        raise Exception('ImageWrapper: Implement getTemporalUnit')
+        return self._image.getTemporalUnit()
     
     @JOverride
     def getImagePlus(self):
-        return ij.py.to_imageplus(self._img.getRawImage()) # type: ignore
+        return Store.ij.py.to_imageplus(self._image.getRawImage()) # type: ignore
     
     @JOverride
     def setImagePlus(self, imagePlus):        
-        ij.py.sync_image(imagePlus) # type: ignore
-        self._img.setRawImage(ij.py.from_java(imagePlus)) # type: ignore
+        Store.ij.py.sync_image(imagePlus) # type: ignore
+        self._image.setRawImage(Store.ij.py.from_java(imagePlus)) # type: ignore
         
     @JOverride
     def getImgPlus(self):
@@ -102,11 +110,11 @@ class ImageWrapper:
 
     @JOverride
     def getRawImage(self):
-        return self._img.getRawImage()
+        return self._image.getRawImage()
     
     @JOverride
     def setRawImage(self, image): # To do
-        self._img.setRawImage(image)
+        self._image.setRawImage(image)
     
     @JOverride
     def initialiseEmptyObjs(self, outputObjectsName):
@@ -133,28 +141,31 @@ class ImageWrapper:
         raise Exception('ImageWrapper: Implement setOverlay')
         
     @JOverride
-    def convertImageToObjects(self, coordinate_set_factory, output_objects_name, single_object):
-        raise Exception('ImageWrapper: Implement convertImageToObjects')
-
-    @JOverride
-    def convertImageToSingleObjects(self, coordinate_set_factory, output_objects_name, blackBackground):
-        raise Exception('ImageWrapper: Implement convertImageToSingleObjects')
-        
-    @JOverride
-    def addMeasurement(self, measurement):
-        raise Exception('ImageWrapper: Implement addMeasurement')
+    def convertImageToObjects(self, coordinate_set_factory: CoordinateSetFactoryWrapper, output_objects_name: str, single_object: bool) -> ObjsWrapper:
+        objs: Objs = self._image.convertImageToObjects(coordinate_set_factory.getPythonCoordinateSetFactory(), output_objects_name, single_object)
+        return wrapObjs(objs)
     
     @JOverride
-    def getMeasurement(self, name):
-        raise Exception('ImageWrapper: Implement getMeasurement')
+    def convertImageToSingleObjects(self, coordinate_set_factory: CoordinateSetFactoryWrapper, output_objects_name: str, blackBackground: bool) -> ObjsWrapper:
+        objs: Objs = self._image.convertImageToSingleObjects(coordinate_set_factory.getPythonCoordinateSetFactory(), output_objects_name, blackBackground)
+        return wrapObjs(objs)
+    
+    @JOverride
+    def addMeasurement(self, measurement: MeasurementWrapper): # No return
+        self._image.addMeasurement(measurement.getPythonMeasurement())
+    
+    @JOverride
+    def getMeasurement(self, name: str) -> MeasurementWrapper:
+        measurement: Measurement | None = self._image.getMeasurement(name)
+        return None if measurement is None else wrapMeasurement(measurement)
         
     @JOverride
-    def removeMeasurement(self, name):
+    def removeMeasurement(self, name: str):
         raise Exception('ImageWrapper: Implement removeMeasurement')
     
     @JOverride
     def getName(self) -> str:
-        return self._img.getName()
+        return self._image.getName()
     
     @JOverride
     def getMeasurements(self):
@@ -197,11 +208,26 @@ class ImageWrapper:
         raise Exception('ImageWrapper: Implement showAllMeasurements')
 
 
-def wrapImage(img: Image) -> ImageWrapper:
+@JImplements('io.github.mianalysis.mia.object.image.ImageFactoryI')
+class ImageFactoryWrapper:
+    @JOverride
+    def getName(self) -> str:
+        return "Python image factory"
+    
+    @JOverride
+    def duplicate(self) -> ImageFactoryWrapper:
+        return ImageFactoryWrapper()
+
+    @JOverride
+    def create(self, name: str, raw_image) -> ImageWrapper: # To do (raw_image could be ImagePlus, ImgPlus or DataArray)
+        return ImageWrapper(name, raw_image)
+
+    
+def wrapImage(img: Image) -> ImageWrapper: # To do
     try:
         return _wrapper_cache[img]
     except:        
-        image_wrapper: ImageWrapper = ImageWrapper()
+        image_wrapper: ImageWrapper = ImageWrapper("", None)
         image_wrapper.setPythonImage(img)
         _wrapper_cache[img]  = image_wrapper
     

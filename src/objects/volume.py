@@ -316,6 +316,19 @@ class Volume():
     def getZMean(self, pixel_distances: bool, match_xy: bool) -> float:
         raise Exception('Volume: Implement getZMean')
 
+    def calculateBaseAreaPx(self) -> float:
+        # Getting the lowest slice
+        base_z: int = round(self.getExtents(True, False)[2][0])
+        
+        # Counting the number of pixels in this slice
+        count: int = 0
+        point: Point
+        for point in self.getCoordinateSet():
+            if point[2] == base_z:
+                count = count + 1
+        
+        return count
+    
     def getVolumeHeight(self, pixel_distances: bool, match_xy: bool) -> float:
         minZ: float = float('inf')
         maxZ: float = -float('inf')
