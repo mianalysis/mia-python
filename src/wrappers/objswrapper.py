@@ -7,7 +7,7 @@ from weakref import WeakKeyDictionary
 
 from src.objects.image import Image
 from src.objects.objs import Objs
-from src.wrappers.imagewrapper import wrapImage, ImageWrapper    
+from src.wrappers.imagewrapper import wrapImage
 from src.wrappers.measurementwrapper import MeasurementWrapper
 
 import src.wrappers.objwrapper as ow
@@ -15,6 +15,7 @@ import src.wrappers.objwrapper as ow
 if TYPE_CHECKING:
     from src.objects.obj import Obj    
     from src.wrappers.coordinatesetwrapper import CoordinateSetFactoryWrapper
+    from src.wrappers.imagewrapper import ImageWrapper
     from src.wrappers.objwrapper import ObjWrapper
     from src.types.JPointType import JPointType
     from src.types.JSpatioTemporallyCalibrated import JSpatioTemporallyCalibrated
@@ -300,7 +301,7 @@ class ObjsWrapper():
         
         if prevObj is not None:
             prevObjWrapper = ow.wrapObj(prevObj)
-
+                        
         self._objs.put(key, value.getPythonObj())
         
         return prevObjWrapper

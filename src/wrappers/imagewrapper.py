@@ -1,6 +1,8 @@
 from __future__ import annotations
+
 from jpype import JImplements, JOverride  # type: ignore
 from scyjava import jimport  # type: ignore
+from typing import TYPE_CHECKING
 from weakref import WeakKeyDictionary
 from xarray import DataArray
 
@@ -11,7 +13,9 @@ from src.utilities.imagerenderer import NotebookImageRenderer
 from src.utilities.store import Store
 from src.wrappers.coordinatesetwrapper import CoordinateSetFactoryWrapper
 from src.wrappers.measurementwrapper import MeasurementWrapper, wrapMeasurement
-from src.wrappers.objswrapper import ObjsWrapper, wrapObjs
+
+if TYPE_CHECKING:
+    from src.wrappers.objswrapper import ObjsWrapper
 
 JImagePlus = jimport('ij.ImagePlus')
 JImage = jimport('io.github.mianalysis.mia.object.image.ImageI')
@@ -89,7 +93,7 @@ class ImageWrapper:
 
     @JOverride
     def getTemporalUnit(self): # To do
-        return self._image.getTemporalUnit()
+        return self._image.getTemporalUnits()
     
     @JOverride
     def getImagePlus(self):
@@ -142,14 +146,20 @@ class ImageWrapper:
         
     @JOverride
     def convertImageToObjects(self, coordinate_set_factory: CoordinateSetFactoryWrapper, output_objects_name: str, single_object: bool) -> ObjsWrapper:
+        # This import needs to be here to prevent circular imports
+        from src.wrappers.objswrapper import wrapObjs
+        
         objs: Objs = self._image.convertImageToObjects(coordinate_set_factory.getPythonCoordinateSetFactory(), output_objects_name, single_object)
         return wrapObjs(objs)
     
     @JOverride
     def convertImageToSingleObjects(self, coordinate_set_factory: CoordinateSetFactoryWrapper, output_objects_name: str, blackBackground: bool) -> ObjsWrapper:
+        # This import needs to be here to prevent circular imports
+        from src.wrappers.objswrapper import wrapObjs
+        
         objs: Objs = self._image.convertImageToSingleObjects(coordinate_set_factory.getPythonCoordinateSetFactory(), output_objects_name, blackBackground)
         return wrapObjs(objs)
-    
+
     @JOverride
     def addMeasurement(self, measurement: MeasurementWrapper): # No return
         self._image.addMeasurement(measurement.getPythonMeasurement())

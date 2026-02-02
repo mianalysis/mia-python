@@ -11,17 +11,17 @@ import numpy as np
 
 from src.objects.image import Image
 from src.objects.measurement import Measurement
-
+from src.objects.obj import Obj
 from src.utilities.colourfactory import getIDHues
 
 if TYPE_CHECKING:
     from src.objects.coordinateset import CoordinateSetFactory
     
-    from src.objects.obj import Obj
+    
     from src.types.types import Point
 
 class Objs():
-    def __init__(self, name: str, width: int, height: int, n_slices: int, dpp_xy: float, dpp_z: float, spatial_units: str, n_frames: int, frame_interval: float, temporal_unit): # To do
+    def __init__(self, name: str, width: int, height: int, n_slices: int, dpp_xy: float, dpp_z: float, spatial_units: str, n_frames: int, frame_interval: float, temporal_units: str):
         self._objs: Dict[int, Obj] = {}
         self._max_ID: int = 0
         
@@ -35,20 +35,36 @@ class Objs():
         
         self._n_frames: int = n_frames
         self._frame_interval: float = frame_interval
-        self._temporal_unit = temporal_unit
+        self._temporal_units: str = temporal_units
                 
-    def createAndAddNewObject(self, factory: CoordinateSetFactory) -> Obj:
-        raise Exception('Objs: Implement createAndAddNewObject')
+    def createAndAddNewObject(self, coordinate_set_factory: CoordinateSetFactory) -> Obj:
+        obj: Obj = Obj(coordinate_set_factory, self, self.getAndIncrementID())
+        self.add(obj)
+        
+        return obj
     
-    def createAndAddNewObjectWithID(self, factory: CoordinateSetFactory, ID: int) -> Obj:
-        raise Exception('Objs: Implement createAndAddNewObjectWithID')
+    def createAndAddNewObjectWithID(self, coordinate_set_factory: CoordinateSetFactory, ID: int) -> Obj:
+        obj: Obj = Obj(coordinate_set_factory, self, ID)
+        self.add(obj)
+        
+        # Updating the max_ID if necessary
+        self._max_ID = max(self._max_ID, ID)
+        
+        return obj
+    
+    def createAndAddNewObjectIfMissing(self, coordinate_set_factory: CoordinateSetFactory, ID: int) -> Obj | None:
+        if ID in self._objs.keys():
+            return self._objs.get(ID)
+        else:
+            return self.createAndAddNewObjectWithID(coordinate_set_factory, ID)
         
     def getName(self) -> str:
         return self._name
     
     def add(self, object: Obj): # No return
-        raise Exception('Objs: Implement add')
-        
+        self._max_ID = max(self._max_ID, object.getID())
+        self._objs[object.getID()] = object
+                
     def getAndIncrementID(self) -> int:
         self._max_ID = self._max_ID + 1
         return self._max_ID
@@ -77,11 +93,11 @@ class Objs():
     def setFrameInterval(self, frame_interval: float): # No return
         self._frame_interval = frame_interval
     
-    def getTemporalUnit(self): # To do
-        return self._temporal_unit
+    def getTemporalUnit(self) -> str:
+        return self._temporal_units
     
-    def setTemporalUnit(self, temporal_unit): # To do
-        self._temporal_unit = temporal_unit
+    def setTemporalUnit(self, temporal_unit: str):
+        self._temporal_units = temporal_unit
         
     def duplicate(self, new_objects_name: str, duplicate_relationships: bool, duplicate_measurement: bool,
                   duplicate_metadata: bool, add_original_duplicate_relationship: bool) -> Objs:
@@ -187,7 +203,7 @@ class Objs():
             raise Exception('Objs: Unsupported bit depth')
         
         print("IMPORTANT: Find out dimension order for np_img in Image class, but for now assuming XYCZT")
-        np_img = np.zeros((self._width, self._height, 1, self._n_slices, self._n_frames), dtype=dtype)
+        np_img = np.zeros((self._height, self._width, 1, self._n_slices, self._n_frames), dtype=dtype)
         
         return Image(output_name, np_img)
     
@@ -310,12 +326,13 @@ class Objs():
         raise Exception('MapWrapper: Implement replaceAll')
     
     def putIfAbsent(self, key: int, value: Obj) -> Obj|None:
-        if self._objs.get(key) is None:
+        if self._objs.get(key) is None:         
+            print("None defined")
             self._objs[key] = value
             return None
         else:
+            print("Existing")
             return self._objs[key]
-        raise Exception('MapWrapper: Implement putIfAbsent')
     
     def replace(self, key: int, value: Obj) -> Obj:
         raise Exception('MapWrapper: Implement replace (key, value)')

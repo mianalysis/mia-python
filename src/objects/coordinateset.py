@@ -30,7 +30,7 @@ class CoordinateSet():
             self._count = 0
         self._current_chunk[self._count] = [x, y, z]
         self._count += 1
-        
+                
         return True
 
     def getNumberOfElements(self) -> int:
@@ -41,10 +41,9 @@ class CoordinateSet():
 
     def finalise(self):
         self._points = np.vstack(self._chunks + [self._current_chunk[:self._count]])
-        pass
 
     def finaliseSlice(self, z: int):
-        pass
+        self._points = np.vstack(self._chunks + [self._current_chunk[:self._count]])
 
     def duplicate(self) -> CoordinateSet:
         new_points: CoordinateSet = CoordinateSet()

@@ -1,10 +1,17 @@
-from typing import Dict
+from __future__ import annotations
+
+from typing import Dict, TYPE_CHECKING
 from xarray import DataArray
+
+import numpy as np
 
 from src.objects.coordinateset import CoordinateSetFactory
 from src.objects.measurement import Measurement
-from src.objects.objs import Objs
 from src.utilities.imagerenderer import NotebookImageRenderer
+
+if TYPE_CHECKING:
+    from src.objects.obj import Obj
+    from src.objects.objs import Objs
 
 X: str = "col"
 Y: str = "row"
@@ -69,10 +76,30 @@ class Image:
         print('Image: Implement getFrameInterval')
         return 1.0
 
-    def getTemporalUnit(self): # To do
-        print('Image: Implement getTemporalUnit')
+    def getTemporalUnits(self) -> str:
+        print('Image: Implement getTemporalUnits')
         return "frames"
     
+    def getSlice(self, x: int=-1,y: int=-1,c: int=-1,z: int=-1,t: int=-1):
+        dims = self._da_img.dims
+        indexers = {}
+        if X in dims and x != -1:
+            indexers[X] = x
+        
+        if Y in dims and y != -1:
+            indexers[Y] = y
+            
+        if C in dims and c != -1:
+            indexers[C] = c
+            
+        if Z in dims and z != -1:
+            indexers[Z] = z
+            
+        if T in dims and t != -1:
+            indexers[T] = t
+                    
+        return self._da_img.isel(indexers)
+            
     def getImagePlus(self):
         return ij.py.to_imageplus(self._da_img) # type: ignore
     
@@ -116,8 +143,64 @@ class Image:
     def convertImageToSingleObjects(self, coordinate_set_factory: CoordinateSetFactory, output_objects_name: str, blackBackground: bool) -> Objs:
         return self.convertImageToObjectsGeneral(coordinate_set_factory, output_objects_name, True, blackBackground)
         
-    def convertImageToObjectsGeneral(self, coordinate_set_factory: CoordinateSetFactory, output_objects_name: str, single_object: bool, blackBackground: bool) -> Objs:
-        raise Exception('ImageWrapper: Implement convertImageToObjects')
+    def convertImageToObjectsGeneral(self, coordinate_set_factory: CoordinateSetFactory, output_objects_name: str, single_object: bool, black_background: bool) -> Objs:
+        # This has to go here to prevent circular imports
+        from src.objects.objs import Objs
+        
+        width: int = self.getWidth()
+        height: int = self.getHeight()
+        n_slices: int = self.getNSlices()
+        dpp_xy: float = self.getDppXY()
+        dpp_z: float = self.getDppZ()
+        spatial_units: str = self.getSpatialUnits()
+        n_frames: int = self.getNFrames()
+        frame_interval: float = self.getFrameInterval()
+        temporal_units: str = self.getTemporalUnits()
+        n_channels: int = self.getNChannels()
+        
+        output_objs: Objs = Objs(output_objects_name, width, height, n_slices, dpp_xy, dpp_z, spatial_units, n_frames, frame_interval, temporal_units)
+        
+        c: int
+        z: int
+        t: int
+        for c in range(n_channels):
+            for t in range(n_frames):
+                final_IDs: Dict[int, int] = {}
+                
+                for z in range(n_slices):
+                    slice: np.ndarray = self.getSlice(c=c, z=z, t=t).data
+                    
+                    for x in range(width):
+                        for y in range(height):
+                            image_ID: int = slice[y,x] # This is indexed as row, col
+
+                            if single_object:
+                                image_ID = 1 if (black_background and image_ID != 0) or ( not black_background and image_ID == 0) else 0
+                    
+                            if single_object and image_ID != 0:
+                                image_ID = 1
+                                
+                            if image_ID != 0:
+                                if image_ID not in final_IDs:
+                                    final_IDs[image_ID] = output_objs.getAndIncrementID()
+                                
+                                out_ID = final_IDs[image_ID]
+                                
+                                output_objs.createAndAddNewObjectIfMissing(coordinate_set_factory, out_ID)
+                                output_obj = output_objs.get(out_ID)
+                                                                
+                                if output_obj is not None:
+                                    output_obj.addCoord(x,y,z)
+                                                                         
+                    obj: Obj                 
+                    for obj in output_objs.values():
+                        obj.finaliseSlice(z)
+                        
+        obj: Obj                 
+        for obj in output_objs.values():
+            obj.finalise()
+                    
+        return output_objs
     
     def addMeasurement(self, measurement: Measurement):
         self._measurements[measurement.getName()] = measurement
