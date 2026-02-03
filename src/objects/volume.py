@@ -288,9 +288,7 @@ class Volume():
         
         for point in self.getCoordinateSet():
             tight_im.putPixel(255, x=point[0] - x_offs, y=point[1] - y_offs, z=point[2]-z_offs)
-        
-        tight_im.showAsIs()
-        
+                
         return tight_im
 
     def getContainedVolume(self, pixel_distances: bool) -> float:

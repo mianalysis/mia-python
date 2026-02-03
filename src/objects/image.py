@@ -106,12 +106,12 @@ class Image:
                     
         return self._da_img.isel(indexers)
             
-    def getImagePlus(self):
-        return ij.py.to_imageplus(self._da_img) # type: ignore
+    # def getImagePlus(self):
+    #     return Store.ij.py.to_imageplus(self._da_img) # type: ignore
     
-    def setImagePlus(self, imagePlus):        
-        ij.py.sync_image(imagePlus) # type: ignore
-        self._da_img = ij.py.from_java(imagePlus) # type: ignore
+    # def setImagePlus(self, imagePlus):        
+    #     ij.py.sync_image(imagePlus) # type: ignore
+    #     self._da_img = ij.py.from_java(imagePlus) # type: ignore
     
     def getImgPlus(self):
         raise Exception('Image: Implement getImgPlus')
