@@ -327,11 +327,9 @@ class Objs():
     
     def putIfAbsent(self, key: int, value: Obj) -> Obj|None:
         if self._objs.get(key) is None:         
-            print("None defined")
             self._objs[key] = value
             return None
-        else:
-            print("Existing")
+        else:            
             return self._objs[key]
     
     def replace(self, key: int, value: Obj) -> Obj:

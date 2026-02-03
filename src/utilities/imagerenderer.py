@@ -1,12 +1,12 @@
 from __future__ import annotations
 from typing import TYPE_CHECKING
 from jpype import JImplements, JOverride # type: ignore
+from xarray import DataArray
 
 from src.utilities.store import Store
 
 import matplotlib.pyplot as plt
 import numpy as np
-import xarray as xr
 
 if TYPE_CHECKING:
     from src.objects.image import Image
@@ -17,8 +17,11 @@ class NotebookImageRenderer:
     def render(self, image: Image, title: str, lut, normalise: bool, display_mode, overlay): # To do
         im = image.getRawImage()
         
-        if isinstance(im, np.ndarray):
-            da: xr.DataArray = xr.DataArray(im[:,:,0,0,0],dims=('row','col'),name=image.getName())
+        if isinstance(im, DataArray):
+            da: DataArray = im
+            
+        elif isinstance(im, np.ndarray):
+            da: DataArray = DataArray(im[:,:,0,0,0],dims=('row','col'),name=image.getName())
             
         else:
             Store.ij.py.sync_image(im) # type: ignore

@@ -6,8 +6,10 @@ from weakref import WeakKeyDictionary
 
 from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSetFactoryWrapper
 from src.wrappers.imagewrapper import ImageWrapper
+from src.objects.image import Image
 from src.objects.volume import Volume
 from src.types.JSpatiallyCalibrated import JSpatiallyCalibrated
+from src.utilities.rois import getRoi
 
 if TYPE_CHECKING:
     from src.types.JPointType import JPointType
@@ -265,11 +267,11 @@ class VolumeWrapper:
         raise Exception('VolumeWrapper: Implement getOverlappingPoints')
 
     def getSlice(self, slice: int) -> VolumeWrapper:
-        raise Exception('VolumeWrapper: Implement getSlice')
+        return wrapVolume(self._volume.getSlice(slice))
 
     def getRoi(self, slice: int): # To do
-        raise Exception('VolumeWrapper: Implement getRoi')
-
+        return getRoi(self._volume, slice)
+        
 
     # From SpatiallyCalibrated
 

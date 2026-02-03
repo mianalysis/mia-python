@@ -1,7 +1,9 @@
 from __future__ import annotations
 from typing import List, Self, TYPE_CHECKING
 
-from src.objects.image import Image
+import numpy as np
+
+from src.objects.image import Image, createImage
 
 if TYPE_CHECKING:
     from src.objects.coordinateset import CoordinateSet, CoordinateSetFactory
@@ -266,10 +268,30 @@ class Volume():
         raise Exception('Volume: Implement getAsImage')
 
     def getAsTightImage(self, image_name: str) -> Image:
-        raise Exception('Volume: Implement getAsTightImage')
+        border_widths: List[List[int]] = [[0,0],[0,0],[0,0]]
+        return self.getAsTightImageWithBorders(image_name, border_widths)
 
-    def getAsTightImageWithBorders(self, image_name: str, border_widths) -> Image: # To do
-        raise Exception('Volume: Implement getAsTightImageWithBorders')
+    def getAsTightImageWithBorders(self, image_name: str, border_widths: List[List[int]]) -> Image:
+        if border_widths is None:
+            return self.getAsImage(image_name, 0, 1)
+        
+        extents: List[List[float]] = self.getExtents(True, False)
+        x_offs: int = round(extents[0][0] - border_widths[0][0])
+        y_offs: int = round(extents[1][0] - border_widths[1][0])
+        z_offs: int = round(extents[2][0] - border_widths[2][0])
+        
+        width: int = round(extents[0][1]) - round(extents[0][0]) + border_widths[0][0] + border_widths[0][1] + 1
+        height: int = round(extents[1][1]) - round(extents[1][0]) + border_widths[1][0] + border_widths[1][1] + 1
+        n_slices: int = round(extents[2][1]) - round(extents[2][0]) + border_widths[2][0] + border_widths[2][1] + 1
+        
+        tight_im: Image = createImage(image_name, width=width, height=height, n_slices=n_slices, d_type=np.uint8, dpp_xy=self.getDppXY(), dpp_z=self.getDppZ(), spatial_units=self.getSpatialUnits())
+        
+        for point in self.getCoordinateSet():
+            tight_im.putPixel(255, x=point[0] - x_offs, y=point[1] - y_offs, z=point[2]-z_offs)
+        
+        tight_im.showAsIs()
+        
+        return tight_im
 
     def getContainedVolume(self, pixel_distances: bool) -> float:
         if pixel_distances:
@@ -373,9 +395,15 @@ class Volume():
         raise Exception('Volume: Implement getOverlappingPoints')
 
     def getSlice(self, slice: int) -> Volume:
-        raise Exception('Volume: Implement getSlice')
-
-    def getRoi(self, slice: int): # To do
-        raise Exception('Volume: Implement getRoi')
-
+        width: int = self.getWidth()
+        height: int = self.getHeight()
+        n_slices: int = self.getNSlices()
+        dpp_xy: float = self.getDppXY()
+        dpp_z: float = self.getDppZ()
+        spatial_units: str = self.getSpatialUnits()
+        
+        slice_volume: Volume = Volume(self.getCoordinateSetFactory(), width, height, n_slices, dpp_xy, dpp_z, spatial_units)
+        slice_volume.setCoordinateSet(self.getCoordinateSet().getSlice(slice))
+        
+        return slice_volume
     

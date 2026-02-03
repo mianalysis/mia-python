@@ -58,8 +58,15 @@ class CoordinateSet():
         raise Exception('CoordinateSet: Implement calculateProjected')
         
     def getSlice(self, slice: int):
-        raise Exception('CoordinateSet: Implement getSlice')
-
+        slice_coordinate_set: CoordinateSet = CoordinateSet()
+        
+        for point in self:
+            if point[2] == slice:
+                slice_coordinate_set.add(point)
+                
+        slice_coordinate_set.finalise()
+        
+        return slice_coordinate_set
 
     # From Set
     
@@ -82,7 +89,7 @@ class CoordinateSet():
         raise Exception('CoordinateSet: Implement containsAll')
     
     def add(self, point: Point) -> bool:
-        raise Exception('CoordinateSet: Implement add')
+        return self.addCoord(point[0], point[1], point[2])
         
     def addAll(self, points: Points) -> bool:
         raise Exception('CoordinateSet: Implement addAll')

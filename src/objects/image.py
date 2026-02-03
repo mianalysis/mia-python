@@ -18,6 +18,8 @@ Y: str = "row"
 C: str = "ch"
 Z: str = "pln"
 T: str = "t"
+SPATIAL_UNITS = "spatial_units"
+TEMPORAL_UNITS = "temporal_units"
 
 class Image:
     def __init__(self, name, da_img: DataArray):
@@ -26,7 +28,7 @@ class Image:
         self._renderer = NotebookImageRenderer()
         
         self._measurements: Dict[str, Measurement] = {}
-            
+    
     def clear(self):
         raise Exception('Image: Implement clear')
     
@@ -59,6 +61,10 @@ class Image:
         return self._da_img.shape[axis_idx]
     
     def getDppXY(self) -> float:
+        # This could be stored in self._da_img.attrs, rather than needing to be calculated
+        # We would need to manually set these extra attrs when loading an ImagePlus as these don't seem to be added
+        # When setting DPPXY, we also need to update the coords in da_img
+        #
         # Possibly use the following
         # return self._da_img.coords[X].diff(X).mean().item()
         print('Image: Implement getDppXY')
@@ -119,6 +125,24 @@ class Image:
     def setRawImage(self, python_image: DataArray):
         self._da_img = python_image
     
+    def putPixel(self, val: float, x: int, y: int, c: int=0, z: int=0, t: int=0):
+        dpp_xy: float = self.getDppXY()
+        dpp_z: float = self.getDppZ()
+        frame_interval: float = self.getFrameInterval()
+                
+        indexers = {X: x*dpp_xy, Y: y*dpp_xy}
+        
+        if c > 1 and C in self._da_img.dims:
+            indexers[C] = c
+        
+        if z > 1 and Z in self._da_img.dims:
+            indexers[Z] = z*dpp_z
+            
+        if t > 1 and T in self._da_img.dims:
+            indexers[T] = t*frame_interval
+        
+        self._da_img.loc[indexers] = val
+            
     def initialiseEmptyObjs(self, output_objects_name):
         raise Exception('Image: Implement initialiseEmptyObjs')
     
@@ -243,4 +267,30 @@ class Image:
     
     def showAllMeasurements(self):
         raise Exception('Image: Implement showAllMeasurements')
+
+def createImage(image_name: str, width: int, height: int, n_channels: int = 1, n_slices: int = 1, n_frames: int = 1, d_type: np.dtype = np.uint8, dpp_xy: float = 1, dpp_z: float = 1, spatial_units: str = "", frame_interval: float = 1, temporal_units: str = "") -> Image:
+    # Getting dimensions for array
+    dim_lengths = [height, width]
+    dim_names = [Y, X]
+    coords = {X: np.arange(width)*dpp_xy, Y:np.arange(height)*dpp_xy}
+    attrs = {SPATIAL_UNITS: spatial_units, TEMPORAL_UNITS: temporal_units}
+    
+    if n_channels > 1:
+        dim_lengths.append(n_channels)
+        dim_names.append(C)
+        coords[C] = np.arange(n_channels)
         
+    if n_slices > 1:
+        dim_lengths.append(n_slices)
+        dim_names.append(Z)
+        coords[Z] = np.arange(n_slices)*dpp_z
+        
+    if n_frames > 1:
+        dim_lengths.append(n_frames)
+        dim_names.append(T)
+        coords[T] = np.arange(n_frames)*frame_interval
+    
+    # Creating Numpy array
+    np_arr = np.zeros(tuple(dim_lengths))
+        
+    return Image(image_name, DataArray(data=np_arr, coords=coords, dims=dim_names, name=image_name, attrs=attrs))

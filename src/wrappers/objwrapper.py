@@ -12,6 +12,7 @@ from src.wrappers.volumewrapper import VolumeFactoryWrapper, VolumeWrapper, wrap
 from src.types.JSpatioTemporallyCalibrated import JSpatioTemporallyCalibrated
 from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSetFactoryWrapper
 from src.wrappers.measurementwrapper import MeasurementWrapper, wrapMeasurement
+from src.utilities.rois import getRoi
 
 import src.wrappers.coordinatesetwrapper as csw
 import src.wrappers.objswrapper as osw
@@ -46,9 +47,7 @@ class ObjWrapper:
     
     @JOverride
     def getObjectCollection(self) -> ObjsWrapper:
-        objs_wrapper: ObjsWrapper = osw.wrapObjs(self._obj.getObjectCollection())
-
-        return objs_wrapper
+        return osw.wrapObjs(self._obj.getObjectCollection())
 
     @JOverride
     def setObjectCollection(self, obj_collection: ObjsWrapper): # No return
@@ -119,10 +118,6 @@ class ObjWrapper:
     @JOverride
     def setMetadata(self, metadata): # To do
         raise Exception('ObjWrapper: Implement setMetadata')
-
-    @JOverride
-    def getRoi(self, slice: int): # To do
-        raise Exception('ObjWrapper: Implement getRoi')
 
     @JOverride
     def getRois(self): # To do
@@ -474,9 +469,6 @@ class ObjWrapper:
     def getExtents(self, pixel_distances: bool, match_xy: bool) -> List[List[float]]:
         return self._obj.getExtents(pixel_distances, match_xy)
 
-    def getAsImage(self, imageName: str, t: int, nFrames: int) -> ImageWrapper:
-        raise Exception('ObjWrapper: Implement getAsImage')
-
     def getAsTightImage(self, imageName: str) -> ImageWrapper:
         raise Exception('ObjWrapper: Implement getAsTightImage')
 
@@ -562,7 +554,7 @@ class ObjWrapper:
         raise Exception('ObjWrapper: Implement getSlice')
 
     def getRoi(self, slice: int): # To do
-        raise Exception('ObjWrapper: Implement getRoi')
+        return getRoi(self._obj, slice)
         
 
 @JImplements('io.github.mianalysis.mia.object.coordinates.ObjFactoryI')
