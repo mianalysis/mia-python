@@ -9,7 +9,7 @@ from typing import TYPE_CHECKING
 import math
 import numpy as np
 
-from src.objects.image import Image
+from src.objects.image import Image, createImage
 from src.objects.measurement import Measurement
 from src.objects.obj import Obj
 from src.utilities.colourfactory import getIDHues
@@ -167,7 +167,7 @@ class Objs():
         object: Obj
         for object in self.values(): 
             object.addToImage(im, hues.get(object.getID(),0.0))
-            
+        
         print('Objs: Add applySpatioTemporalCalibration to created image (convertToImage)')
         
         return im
@@ -192,7 +192,7 @@ class Objs():
         raise Exception('Objs: Implement applyCalibrationFromImagePlus')
     
     def createImage(self, output_name: str, bit_depth: int) -> Image:
-        dtype = None
+        dtype: np.dtype
         if bit_depth == 8:
             dtype = np.uint8
         elif bit_depth == 16:
@@ -203,9 +203,7 @@ class Objs():
             raise Exception('Objs: Unsupported bit depth')
         
         print("IMPORTANT: Find out dimension order for np_img in Image class, but for now assuming XYCZT")
-        np_img = np.zeros((self._height, self._width, 1, self._n_slices, self._n_frames), dtype=dtype)
-        
-        return Image(output_name, np_img)
+        return createImage(output_name, self._width, self._height, n_channels=1, n_slices=self._n_slices, n_frames=self._n_frames, d_type=dtype)
     
     def setNaNBackground(self, ipl): # To do
         raise Exception('Objs: Implement setNaNBackground')

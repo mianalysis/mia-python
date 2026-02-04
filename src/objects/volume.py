@@ -1,9 +1,11 @@
 from __future__ import annotations
+import sys
 from typing import List, Self, TYPE_CHECKING
 
 import numpy as np
 
 from src.objects.image import Image, createImage
+from src.types.types import Points
 
 if TYPE_CHECKING:
     from src.objects.coordinateset import CoordinateSet, CoordinateSetFactory
@@ -19,6 +21,8 @@ class Volume():
         self._dpp_xy: float = dpp_xy
         self._dpp_z: float = dpp_z
         self._spatial_units: str = spatial_units
+        
+        self._raw_extents: List[List[int]] | None = None # Stored as pixel units
 
     def getCoordinateSetFactory(self) -> CoordinateSetFactory:
         return self._coordinate_set_factory
@@ -55,6 +59,9 @@ class Volume():
 
     def clearCentroid(self): # No return
         raise Exception('Volume: Implement clearCentroid')
+    
+    def clearExtents(self): # No return
+        self._extents = None
 
     def hashCode(self) -> int:
         raise Exception('Volume: Implement hashCode')
@@ -228,42 +235,54 @@ class Volume():
         if self.size() == 0:
             return [[0,0],[0,0],[0,0]]
         
-        minX: float = float('inf')
-        maxX: float = -float('inf')
-        minY: float = float('inf')
-        maxY: float = -float('inf')
-        minZ: float = float('inf')
-        maxZ: float = -float('inf')
+        # Recalculating raw extents if necessary
+        if self._raw_extents is None:
+            self.calculateRawExtents()
+                
+        min_x: float = 0
+        max_x: float = 0
+        min_y: float = 0
+        max_y: float = 0
+        min_z: float = 0
+        max_z: float = 0
         
-        # Getting XY ranges
-        point: Point
-        for point in self.getCoordinateSet():
-            minX = float(min(minX, point[0]))
-            maxX = float(max(maxX, point[0]))
-            minY = float(min(minY, point[1]))
-            maxY = float(max(maxY, point[1]))
-            minZ = float(min(minZ, point[2]))
-            maxZ = float(max(maxZ, point[2]))
-            
+        raw_extents: List[List[int]] | None = self._raw_extents
+        if raw_extents is None:
+            return [[0,0],[0,0],[0,0]]
+
+        min_x = float(raw_extents[0][0])
+        max_x = float(raw_extents[0][1])
+        min_y = float(raw_extents[1][0])
+        max_y = float(raw_extents[1][1])
+        min_z = float(raw_extents[2][0])
+        max_z = float(raw_extents[2][1])
+        
         # Getting XY ranges
         if pixel_distances:
             if match_xy:
-                minZ = self.getXYScaledZ(minZ)
-                maxZ = self.getXYScaledZ(maxZ)
+                min_z = self.getXYScaledZ(min_z)
+                max_z = self.getXYScaledZ(max_z)
         else:
-            minX = minX * self.getDppXY()
-            maxX = maxX * self.getDppXY()
-            minY = minY * self.getDppXY()
-            maxY = maxY * self.getDppXY()
-            minZ = minZ * self.getDppZ()
-            maxZ = maxZ * self.getDppZ()
+            min_x = min_x * self.getDppXY()
+            max_x = max_x * self.getDppXY()
+            min_y = min_y * self.getDppXY()
+            max_y = max_y * self.getDppXY()
+            min_z = min_z * self.getDppZ()
+            max_z = max_z * self.getDppZ()
 
         if self.is2D():
-            minZ = 0
-            maxZ = 0
+            min_z = 0
+            max_z = 0
                 
-        return [[minX, maxX],[minY, maxY],[minZ, maxZ]]
-       
+        return [[min_x, max_x],[min_y, max_y],[min_z, max_z]]
+            
+    def calculateRawExtents(self):        
+        points: Points = self.getCoordinateSet().getPoints()
+        (raw_min_x, raw_min_y, raw_min_z) = np.min(points,axis=0)
+        (raw_max_x, raw_max_y, raw_max_z) = np.max(points,axis=0)
+        
+        self._raw_extents = [[raw_min_x, raw_max_x],[raw_min_y, raw_max_y],[raw_min_z, raw_max_z]]
+        
     def getAsImage(self, image_name: str, t: int, n_frames: int) -> Image:
         raise Exception('Volume: Implement getAsImage')
 
@@ -350,15 +369,11 @@ class Volume():
         return count
     
     def getVolumeHeight(self, pixel_distances: bool, match_xy: bool) -> float:
-        minZ: float = float('inf')
-        maxZ: float = -float('inf')
-        
-        point: Point
-        for point in self.getCoordinateSet():
-            minZ = min(minZ, point[2])
-            maxZ = max(maxZ, point[2])
-            
-        height: float = maxZ - minZ
+        points: Points = self.getCoordinateSet().getPoints()
+        raw_min_z: int = int(np.min(points[:,2]))
+        raw_max_z: int = int(np.max(points[:,2]))
+                    
+        height: float = float(raw_max_z - raw_min_z)
         
         if pixel_distances:
             return self.getXYScaledZ(height) if match_xy else height

@@ -15,7 +15,7 @@ class CoordinateSet():
         self._count: int = 0
         
     def __iter__(self):
-        return CoordinateSetIterator(self)
+        return iter(self._points)
     
     def getPoints(self) -> Points:
         return self._points
@@ -115,34 +115,6 @@ class CoordinateSet():
     def spliterator(self): # To do
         raise Exception('CoordinateSet: Implement spliterator')
 
-
-class CoordinateSetIterator:
-    def __init__(self, coordinate_set: CoordinateSet):
-        self._next_idx: int = 0
-        self._coordinate_set: CoordinateSet = coordinate_set
-
-    # def hasNext(self) -> bool:
-    #     return self._next_idx < self._coordinate_set.size()
-        
-    def __next__(self) -> Point:
-        if self._next_idx == self._coordinate_set.size():
-            raise StopIteration
-            
-        point: Point = self._coordinate_set.getPointAtIndex(self._next_idx)
-        self._next_idx = self._next_idx + 1
-        
-        return point        
-
-    # def remove(self) -> Point | None:
-    #     # Check the iterator has returned a value (i.e. next_idx>0)
-    #     if self._next_idx == 0:
-    #         return None
-
-    #     return self._coordinate_set.getPointAtIndex(self._next_idx-1)
-        
-    # def forEachRemaining(self, action): # To do
-    #     raise Exception('CoordinateSetIterator: Implement forEachRemaining')
-        
 
 class CoordinateSetFactory:
     def getName(self) -> str:

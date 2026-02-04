@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Dict, TYPE_CHECKING
+from typing import Any, Dict, List, Tuple, TYPE_CHECKING
 from xarray import DataArray
 
 import numpy as np
@@ -28,7 +28,43 @@ class Image:
         self._renderer = NotebookImageRenderer()
         
         self._measurements: Dict[str, Measurement] = {}
-    
+        
+        self._x_idx = -1
+        self._y_idx = -1
+        self._c_idx = -1
+        self._z_idx = -1
+        self._t_idx = -1
+        self._n_indices = 0
+            
+        if da_img is not None:    
+            self.updateAxisIndices()
+                
+    def updateAxisIndices(self):
+        dims = self._da_img.dims
+        n_indices = 0
+        
+        if X in dims:
+            self._x_idx = self._da_img.get_axis_num(X)
+            n_indices = n_indices + 1
+        
+        if Y in dims:
+            self._y_idx = self._da_img.get_axis_num(Y)
+            n_indices = n_indices + 1
+            
+        if C in dims:
+            self._c_idx = self._da_img.get_axis_num(C)
+            n_indices = n_indices + 1
+            
+        if Z in dims:
+            self._z_idx = self._da_img.get_axis_num(Z)
+            n_indices = n_indices + 1
+            
+        if T in dims:
+            self._t_idx = self._da_img.get_axis_num(T)
+            n_indices = n_indices + 1
+            
+        self._n_indices = n_indices
+        
     def clear(self):
         raise Exception('Image: Implement clear')
     
@@ -67,7 +103,7 @@ class Image:
         #
         # Possibly use the following
         # return self._da_img.coords[X].diff(X).mean().item()
-        print('Image: Implement getDppXY')
+        # print('Image: Implement getDppXY')
         return 1.0
     
     def getDppZ(self) -> float:
@@ -124,25 +160,30 @@ class Image:
     
     def setRawImage(self, python_image: DataArray):
         self._da_img = python_image
+        
+        if self._da_img is not None:    
+            self.updateAxisIndices()
     
-    def putPixel(self, val: float, x: int, y: int, c: int=0, z: int=0, t: int=0):
-        dpp_xy: float = self.getDppXY()
-        dpp_z: float = self.getDppZ()
-        frame_interval: float = self.getFrameInterval()
+    def putPixel(self, val: float, x: int, y: int, c: int=0, z: int=0, t: int=0):        
+        indices: List[int] = [0]*self._n_indices
+        if self._x_idx != -1:
+            indices[self._x_idx] = x
+            
+        if self._y_idx != -1:
+            indices[self._y_idx] = y
+        
+        if self._c_idx != -1:
+            indices[self._c_idx] = c
+            
+        if self._z_idx != -1:
+            indices[self._z_idx] = z
+            
+        if self._t_idx != -1:
+            indices[self._t_idx] = t
                 
-        indexers = {X: x*dpp_xy, Y: y*dpp_xy}
-        
-        if c > 1 and C in self._da_img.dims:
-            indexers[C] = c
-        
-        if z > 1 and Z in self._da_img.dims:
-            indexers[Z] = z*dpp_z
-            
-        if t > 1 and T in self._da_img.dims:
-            indexers[T] = t*frame_interval
-        
-        self._da_img.loc[indexers] = val
-            
+        self._da_img.data[tuple(indices)] = val
+
+                    
     def initialiseEmptyObjs(self, output_objects_name):
         raise Exception('Image: Implement initialiseEmptyObjs')
     

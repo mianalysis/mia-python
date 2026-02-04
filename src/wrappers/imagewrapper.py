@@ -26,8 +26,9 @@ _wrapper_cache: WeakKeyDictionary[Image, ImageWrapper] = WeakKeyDictionary()
 @JImplements('io.github.mianalysis.mia.object.image.ImageI')
 class ImageWrapper:
     def __init__(self, name: str, raw_image): # To do (raw_image could be ImagePlus, ImgPlus or DataArray)
-        
         self._renderer = NotebookImageRenderer()
+        
+        print(f'Creating ImageWrapper with {type(raw_image)}')
         
         # if raw_image isinstance 
         Store.ij.py.sync_image(raw_image) # type: ignore
