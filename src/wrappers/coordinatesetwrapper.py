@@ -4,7 +4,7 @@ from scyjava import jimport # type: ignore
 from typing import TYPE_CHECKING
 from weakref import WeakKeyDictionary
 
-from src.objects.coordinateset import CoordinateSet, CoordinateSetIterator
+from src.objects.coordinateset import CoordinateSet
 from src.objects.coordinateset import CoordinateSetFactory
 
 if TYPE_CHECKING:

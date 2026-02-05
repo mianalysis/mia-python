@@ -1,7 +1,7 @@
 from __future__ import annotations
 from jpype import JImplements, JOverride # type: ignore
 from scyjava import jimport # type: ignore
-from typing import TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 from weakref import WeakKeyDictionary
 
 from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSetFactoryWrapper
@@ -174,13 +174,13 @@ class VolumeWrapper:
         raise Exception('VolumeWrapper: Implement getCalibratedY')
 
     def getXYScaledZ(self, z: float) -> float:
-        raise Exception('VolumeWrapper: Implement getXYScaledZ')
+        return self._volume.getXYScaledZ(z)
 
     def getCalibratedZ(self, point, match_xy: bool) -> float: # To do
         raise Exception('VolumeWrapper: Implement getCalibratedZ')
 
-    def getExtents(self, pixel_distances: bool, match_xy: bool): # To do
-        raise Exception('VolumeWrapper: Implement getExtents')
+    def getExtents(self, pixel_distances: bool, match_xy: bool) -> List[List[float]]:
+        return self._volume.getExtents(pixel_distances, match_xy)
 
     def getAsImage(self, imageName: str, t: int, nFrames: int) -> ImageWrapper:
         raise Exception('VolumeWrapper: Implement getAsImage')
@@ -225,13 +225,13 @@ class VolumeWrapper:
         raise Exception('VolumeWrapper: Implement getSurfaceZ')
 
     def getXMean(self, pixel_distances: bool) -> float:
-        raise Exception('VolumeWrapper: Implement getXMean')
+        return self.getXMean(pixel_distances)
 
     def getYMean(self, pixel_distances: bool) -> float:
-        raise Exception('VolumeWrapper: Implement getYMean')
+        return self.getYMean(pixel_distances)
 
     def getZMean(self, pixel_distances: bool, match_xy: bool) -> float:
-        raise Exception('VolumeWrapper: Implement getZMean')
+        return self.getZMean(pixel_distances, match_xy)
 
     def calculateBaseAreaPx(self) -> float:
         return self._volume.calculateBaseAreaPx()

@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Iterator
 
 if TYPE_CHECKING:
     from src.types.types import Point, Points
@@ -14,7 +14,7 @@ class CoordinateSet():
         self._current_chunk: Points = np.empty((self._chunk_size, 3), dtype=int)
         self._count: int = 0
         
-    def __iter__(self):
+    def __iter__(self) -> Iterator:
         return iter(self._points)
     
     def getPoints(self) -> Points:
@@ -24,7 +24,7 @@ class CoordinateSet():
         return self._points[idx]
 
     def addCoord(self, x: int, y: int, z: int) -> bool:        
-        if self._count == len(self._current_chunk):
+        if self._count >= len(self._current_chunk):
             self._chunks.append(self._current_chunk)
             self._current_chunk = np.empty((self._chunk_size, 3), dtype=int)
             self._count = 0
@@ -59,11 +59,7 @@ class CoordinateSet():
         
     def getSlice(self, slice: int):
         slice_coordinate_set: CoordinateSet = CoordinateSet()
-        
-        for point in self:
-            if point[2] == slice:
-                slice_coordinate_set.add(point)
-                
+        slice_coordinate_set.addAll(self._points[self._points[:,2] == slice,:])
         slice_coordinate_set.finalise()
         
         return slice_coordinate_set
@@ -72,9 +68,6 @@ class CoordinateSet():
     
     def size(self) -> int:
         return len(self._points)
-
-    def iterator(self) -> CoordinateSetIterator:
-        return CoordinateSetIterator(self)
 
     def isEmpty(self) -> bool:
         raise Exception('CoordinateSet: Implement isEmpty')
@@ -92,7 +85,8 @@ class CoordinateSet():
         return self.addCoord(point[0], point[1], point[2])
         
     def addAll(self, points: Points) -> bool:
-        raise Exception('CoordinateSet: Implement addAll')
+        self._chunks.append(points)
+        return True
 
     def retainAll(self, points: Points) -> bool:
         raise Exception('CoordinateSet: Implement retainAll')

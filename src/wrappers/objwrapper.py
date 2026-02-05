@@ -9,6 +9,7 @@ from src.objects.measurement import Measurement
 from src.objects.obj import Obj
 from src.objects.volume import Volume
 from src.wrappers.volumewrapper import VolumeFactoryWrapper, VolumeWrapper, wrapVolume
+from src.types.types import Point
 from src.types.JSpatioTemporallyCalibrated import JSpatioTemporallyCalibrated
 from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSetFactoryWrapper
 from src.wrappers.measurementwrapper import MeasurementWrapper, wrapMeasurement
@@ -174,6 +175,8 @@ class ObjWrapper:
 
     @JOverride
     def getMeanCentroid(self, pixel_distances: bool, match_xy: bool) -> JPointType[float]:
+        centroid: Point = self._obj.getMeanCentroid(pixel_distances, match_xy)
+        # Will likely need to create a Point wrapper as the values aren't immutable
         raise Exception('ObjWrapper: Implement getMeanCentroid')
 
     @JOverride
@@ -461,7 +464,7 @@ class ObjWrapper:
         raise Exception('ObjWrapper: Implement getCalibratedY')
 
     def getXYScaledZ(self, z: float) -> float:
-        raise Exception('ObjWrapper: Implement getXYScaledZ')
+        return self._obj.getXYScaledZ(z)
 
     def getCalibratedZ(self, point, match_xy: bool) -> float: # To do
         raise Exception('ObjWrapper: Implement getCalibratedZ')
@@ -481,14 +484,14 @@ class ObjWrapper:
     def getOverlap(self, volume2: VolumeWrapper) -> int:
         raise Exception('ObjWrapper: Implement getOverlap')
 
-    def getX(self, pixel_distances: bool): # To do
-        raise Exception('ObjWrapper: Implement getX')
+    def getX(self, pixel_distances: bool) -> List[float]:
+        return list(self._obj.getX(pixel_distances))
 
-    def getY(self, pixel_distances: bool): # To do
-        raise Exception('ObjWrapper: Implement getY')
+    def getY(self, pixel_distances: bool) -> List[float]:
+        return list(self._obj.getY(pixel_distances))
 
-    def getZ(self, pixel_distances: bool, match_xy: bool): # To do
-        raise Exception('ObjWrapper: Implement getZ')
+    def getZ(self, pixel_distances: bool, match_xy: bool) -> List[float]:
+        return list(self._obj.getZ(pixel_distances, match_xy))
 
     def getSurfaceXCoords(self): # To do
         raise Exception('ObjWrapper: Implement getSurfaceXCoords')
@@ -509,13 +512,13 @@ class ObjWrapper:
         raise Exception('ObjWrapper: Implement getSurfaceZ')
 
     def getXMean(self, pixel_distances: bool) -> float:
-        raise Exception('ObjWrapper: Implement getXMean')
+        return self._obj.getXMean(pixel_distances)
 
     def getYMean(self, pixel_distances: bool) -> float:
-        raise Exception('ObjWrapper: Implement getYMean')
+        return self._obj.getYMean(pixel_distances)
 
     def getZMean(self, pixel_distances: bool, match_xy: bool) -> float:
-        raise Exception('ObjWrapper: Implement getZMean')
+        return self._obj.getZMean(pixel_distances, match_xy)
 
     def calculateBaseAreaPx(self) -> float:
         return self._obj.calculateBaseAreaPx()

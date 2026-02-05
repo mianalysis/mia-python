@@ -3,6 +3,7 @@ import sys
 from typing import List, Self, TYPE_CHECKING
 
 import numpy as np
+import numpy.typing as npt
 
 from src.objects.image import Image, createImage
 from src.types.types import Points
@@ -22,7 +23,8 @@ class Volume():
         self._dpp_z: float = dpp_z
         self._spatial_units: str = spatial_units
         
-        self._raw_extents: List[List[int]] | None = None # Stored as pixel units
+        self._mean_centroid: Point | None = None
+        self._extents: List[List[int]] | None = None # Stored as pixel units
 
     def getCoordinateSetFactory(self) -> CoordinateSetFactory:
         return self._coordinate_set_factory
@@ -39,8 +41,24 @@ class Volume():
     def hasCalculatedProjection(self) -> bool:
         raise Exception('Volume: Implement hasCalculatedProjection')
 
-    def getMeanCentroid(self, pixel_distances: bool, match_XY: bool) -> Point:
-        raise Exception('Volume: Implement getMeanCentroid')
+    def getMeanCentroid(self, pixel_distances: bool, match_xy: bool) -> Point:
+        if self._mean_centroid is None:
+            x_mean: float = np.mean(self.getX(True)).astype(float)
+            y_mean: float = np.mean(self.getY(True)).astype(float)
+            z_mean: float = np.mean(self.getZ(True, False)).astype(float)
+            self._mean_centroid = np.array((x_mean,y_mean,z_mean))
+        
+        x_mean: float = self._mean_centroid[0]
+        y_mean: float = self._mean_centroid[1]
+        z_mean: float = self._mean_centroid[2]
+        
+        if pixel_distances:
+            if match_xy:
+                return np.array((x_mean, y_mean, self.getXYScaledZ(z_mean)))
+            else:
+                return np.array((x_mean, y_mean, z_mean))
+        else:
+            return np.array((x_mean*self.getDppXY(), y_mean*self.getDppXY(), z_mean*self.getDppZ()))
 
     def hasCalculatedCentroid(self) -> bool:
         raise Exception('Volume: Implement hasCalculatedCentroid')
@@ -58,7 +76,7 @@ class Volume():
         raise Exception('Volume: Implement clearProjected')
 
     def clearCentroid(self): # No return
-        raise Exception('Volume: Implement clearCentroid')
+        self._mean_centroid = None
     
     def clearExtents(self): # No return
         self._extents = None
@@ -78,7 +96,7 @@ class Volume():
     def createNewVolume(self, coordinate_set_factory: CoordinateSetFactory, exampleVolume: Volume) -> Volume:
         raise Exception('Volume: Implement createNewVolume')
 
-    def getCalibratedIterator(self, pixel_distances: bool, match_XY: bool): # To do
+    def getCalibratedIterator(self, pixel_distances: bool, match_xy: bool): # To do
         raise Exception('Volume: Implement getCalibratedIterator')
 
     # private class VolumeIterator implements Iterator<Point<Double>> {
@@ -226,7 +244,7 @@ class Volume():
         raise Exception('Volume: Implement getCalibratedY')
 
     def getXYScaledZ(self, z: float) -> float:
-        raise Exception('Volume: Implement getXYScaledZ')
+        return z*self.getDppZ() / self.getDppXY()
 
     def getCalibratedZ(self, point, match_xy: bool) -> float: # To do
         raise Exception('Volume: Implement getCalibratedZ')
@@ -236,7 +254,7 @@ class Volume():
             return [[0,0],[0,0],[0,0]]
         
         # Recalculating raw extents if necessary
-        if self._raw_extents is None:
+        if self._extents is None:
             self.calculateRawExtents()
                 
         min_x: float = 0
@@ -246,7 +264,7 @@ class Volume():
         min_z: float = 0
         max_z: float = 0
         
-        raw_extents: List[List[int]] | None = self._raw_extents
+        raw_extents: List[List[int]] | None = self._extents
         if raw_extents is None:
             return [[0,0],[0,0],[0,0]]
 
@@ -281,7 +299,7 @@ class Volume():
         (raw_min_x, raw_min_y, raw_min_z) = np.min(points,axis=0)
         (raw_max_x, raw_max_y, raw_max_z) = np.max(points,axis=0)
         
-        self._raw_extents = [[raw_min_x, raw_max_x],[raw_min_y, raw_max_y],[raw_min_z, raw_max_z]]
+        self._extents = [[raw_min_x, raw_max_x],[raw_min_y, raw_max_y],[raw_min_z, raw_max_z]]
         
     def getAsImage(self, image_name: str, t: int, n_frames: int) -> Image:
         raise Exception('Volume: Implement getAsImage')
@@ -305,8 +323,8 @@ class Volume():
         
         tight_im: Image = createImage(image_name, width=width, height=height, n_slices=n_slices, d_type=np.uint8, dpp_xy=self.getDppXY(), dpp_z=self.getDppZ(), spatial_units=self.getSpatialUnits())
         
-        for point in self.getCoordinateSet():
-            tight_im.putPixel(255, x=point[0] - x_offs, y=point[1] - y_offs, z=point[2]-z_offs)
+        points: Points = self.getCoordinateSet().getPoints().astype(int)
+        tight_im.putAllPixels(vals=np.ones(self.size(),dtype=np.float32)*255, x=points[:,0]-x_offs, y=points[:,1]-y_offs, z=points[:,2]-z_offs)
                 
         return tight_im
 
@@ -319,14 +337,26 @@ class Volume():
     def getOverlap(self, volume2: Volume) -> int:
         raise Exception('Volume: Implement getOverlap')
 
-    def getX(self, pixel_distances: bool): # To do
-        raise Exception('Volume: Implement getX')
+    def getX(self, pixel_distances: bool) -> npt.NDArray[np.float32] | npt.NDArray[np.uint32]:
+        if pixel_distances:
+            return self._coordinate_set.getPoints()[:,0]
+        else:
+            return self._coordinate_set.getPoints()[:,0]*self.getDppXY()
 
-    def getY(self, pixel_distances: bool): # To do
-        raise Exception('Volume: Implement getY')
+    def getY(self, pixel_distances: bool) -> npt.NDArray[np.float32] | npt.NDArray[np.uint32]:
+        if pixel_distances:
+            return self._coordinate_set.getPoints()[:,1]
+        else:
+            return self._coordinate_set.getPoints()[:,1]*self.getDppXY()
 
-    def getZ(self, pixel_distances: bool, match_xy: bool): # To do
-        raise Exception('Volume: Implement getZ')
+    def getZ(self, pixel_distances: bool, match_xy: bool) -> npt.NDArray[np.float32] | npt.NDArray[np.uint32]:
+        if pixel_distances:
+            if match_xy:
+                return self._coordinate_set.getPoints()[:,2]*self.getDppZ()/self.getDppXY()
+            else:
+                return self._coordinate_set.getPoints()[:,2]
+        else:
+            return self._coordinate_set.getPoints()[:,2]*self.getDppZ()
 
     def getSurfaceXCoords(self): # To do
         raise Exception('Volume: Implement getSurfaceXCoords')
@@ -347,13 +377,13 @@ class Volume():
         raise Exception('Volume: Implement getSurfaceZ')
 
     def getXMean(self, pixel_distances: bool) -> float:
-        raise Exception('Volume: Implement getXMean')
+        return self.getMeanCentroid(pixel_distances, True)[0]
 
     def getYMean(self, pixel_distances: bool) -> float:
-        raise Exception('Volume: Implement getYMean')
+        return self.getMeanCentroid(pixel_distances, True)[1]
 
     def getZMean(self, pixel_distances: bool, match_xy: bool) -> float:
-        raise Exception('Volume: Implement getZMean')
+        return self.getMeanCentroid(pixel_distances, match_xy)[2]
 
     def calculateBaseAreaPx(self) -> float:
         # Getting the lowest slice

@@ -4,6 +4,7 @@ from typing import Any, Dict, List, Tuple, TYPE_CHECKING
 from xarray import DataArray
 
 import numpy as np
+import numpy.typing as npt
 
 from src.objects.coordinateset import CoordinateSetFactory
 from src.objects.measurement import Measurement
@@ -165,25 +166,44 @@ class Image:
             self.updateAxisIndices()
     
     def putPixel(self, val: float, x: int, y: int, c: int=0, z: int=0, t: int=0):        
-        indices: List[int] = [0]*self._n_indices
+        indices: List[List[int]] = [[0]]*self._n_indices
         if self._x_idx != -1:
-            indices[self._x_idx] = x
+            indices[self._x_idx] = [x]
             
         if self._y_idx != -1:
-            indices[self._y_idx] = y
+            indices[self._y_idx] = [y]
         
         if self._c_idx != -1:
-            indices[self._c_idx] = c
+            indices[self._c_idx] = [c]
             
         if self._z_idx != -1:
-            indices[self._z_idx] = z
+            indices[self._z_idx] = [z]
             
         if self._t_idx != -1:
-            indices[self._t_idx] = t
-                
+            indices[self._t_idx] = [t]
+        
         self._da_img.data[tuple(indices)] = val
 
-                    
+    def putAllPixels(self, vals: npt.NDArray[np.float32], x: npt.NDArray[np.int32], y: npt.NDArray[np.int32], c: npt.NDArray[np.int32] | None = None, z: npt.NDArray[np.int32] | None = None, t: npt.NDArray[np.int32] | None = None):
+        indices = np.zeros((self._n_indices,len(x)),dtype=int)
+        
+        if self._x_idx != -1:
+            indices[self._x_idx,:] = np.array(x)
+            
+        if self._y_idx != -1:
+            indices[self._y_idx,:] = np.array(y)
+            
+        if self._c_idx != -1:
+            indices[self._c_idx,:] = np.array(c)
+            
+        if self._z_idx != -1:
+            indices[self._z_idx,:] = np.array(z)
+            
+        if self._t_idx != -1:
+            indices[self._t_idx,:] = np.array(t)
+        
+        self._da_img.data[tuple(indices)] = vals
+        
     def initialiseEmptyObjs(self, output_objects_name):
         raise Exception('Image: Implement initialiseEmptyObjs')
     
@@ -309,7 +329,7 @@ class Image:
     def showAllMeasurements(self):
         raise Exception('Image: Implement showAllMeasurements')
 
-def createImage(image_name: str, width: int, height: int, n_channels: int = 1, n_slices: int = 1, n_frames: int = 1, d_type: np.dtype = np.uint8, dpp_xy: float = 1, dpp_z: float = 1, spatial_units: str = "", frame_interval: float = 1, temporal_units: str = "") -> Image:
+def createImage(image_name: str, width: int, height: int, n_channels: int = 1, n_slices: int = 1, n_frames: int = 1, d_type: npt.DTypeLike = np.uint8, dpp_xy: float = 1, dpp_z: float = 1, spatial_units: str = "", frame_interval: float = 1, temporal_units: str = "") -> Image:
     # Getting dimensions for array
     dim_lengths = [height, width]
     dim_names = [Y, X]
