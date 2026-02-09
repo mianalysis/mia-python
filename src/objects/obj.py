@@ -62,25 +62,52 @@ class Obj(Volume):
         return self
 
     def getAllParents(self) -> Dict[str, Obj]:
-        raise Exception('Obj: Implement getAllParents')
+        return self._parents
 
     def setAllParents(self, parents: Dict[str, Obj]):
         raise Exception('Obj: Implement setAllParents')
 
     def getAllChildren(self) -> Dict[str, Objs]:
-        raise Exception('Obj: Implement getAllChildren')
+        return self._children
 
     def setAllChildren(self, children: Dict[str, Objs]):
         raise Exception('Obj: Implement setAllChildren')
 
     def getAllPartners(self) -> Dict[str, Objs]:
-        raise Exception('Obj: Implement getAllPartners')
+        return self._partners
 
     def setAllPartners(self, partners: Dict[str, Objs]):
         raise Exception('Obj: Implement setAllPartners')
 
     def removeRelationships(self): # No return
-        raise Exception('Obj: Implement removeRelationships')
+        # Removing itself as a child from its parent
+        if self._parents is not None:
+            parent: Obj
+            for parent in self._parents.values():
+                if parent is not None:
+                    parent.removeChild(self)
+        
+        # Removing itself as a parent from any children
+        if self._children is not None:
+            child_set: Objs
+            for child_set in self._children.values():
+                child: Obj
+                for child in child_set.values():
+                    if child.getParent(self.getName()) == self:
+                        child.removeParent(self.getName())
+
+        # Removing itself as a partner from any partners
+        if self._partners is not None:
+            partner_set: Objs
+            for partner_set in self._partners.values():
+                partner: Obj
+                for partner in partner_set.values():
+                    partner.removePartner(self)
+
+        # Clearing children and parents
+        children = {}
+        parents = {}
+        partners = {}
 
     def getMeasurements(self) -> Dict[str, Measurement]:
         return self._measurements
@@ -141,7 +168,29 @@ class Obj(Volume):
     # Obj default methods
             
     def getParents(self, use_full_hierarchy: bool) -> Dict[str, Obj]:
-        raise Exception('Obj: Implement getParents')
+        if not use_full_hierarchy:
+            return self.getAllParents()
+
+        # Adding each parent and then the parent of that
+        parent_hierarchy: Dict[str, Obj] = {}
+        parent: Obj
+        for parent in self.getAllParents().values():
+            parent_hierarchy[parent.getName()] = parent
+
+        # Going through each parent, adding the parents of that.
+        for parent in self.getAllParents().values():
+            if parent is None:
+                continue
+            
+            current_parents: Dict[str, Obj] = parent.getParents(True)
+            if current_parents is None:
+                continue
+            
+            current_parent: Obj
+            for current_parent in current_parents.values():
+                parent_hierarchy[current_parent.getName()] = current_parent
+    
+        return parent_hierarchy
 
     def getParent(self, name: str) -> Obj:
         raise Exception('Obj: Implement getParent')

@@ -1,16 +1,15 @@
 from __future__ import annotations
 
 from jpype import JImplements, JOverride # type: ignore
-from typing import Dict, List
-from typing import TYPE_CHECKING
+from typing import Dict, List, Self, TYPE_CHECKING
 from weakref import WeakKeyDictionary
 
 from src.objects.image import Image
+from src.objects.measurement import Measurement
 from src.objects.objs import Objs
+from src.wrappers.objwrapper import wrapObj
 from src.wrappers.imagewrapper import wrapImage
 from src.wrappers.measurementwrapper import MeasurementWrapper
-
-import src.wrappers.objwrapper as ow
 
 if TYPE_CHECKING:
     from src.objects.obj import Obj    
@@ -18,10 +17,115 @@ if TYPE_CHECKING:
     from src.wrappers.imagewrapper import ImageWrapper
     from src.wrappers.objwrapper import ObjWrapper
     from src.types.JPointType import JPointType
-    from src.types.JSpatioTemporallyCalibrated import JSpatioTemporallyCalibrated
+    from src.types.JSpatioTemporallyCalibratedType import JSpatioTemporallyCalibrated
 
 _wrapper_cache: WeakKeyDictionary[Objs, ObjsWrapper] = WeakKeyDictionary()
+        
+@JImplements('java.util.Iterator')
+class ObjsWrapperIterator:
+    def __init__(self, objs_wrapper: ObjsWrapper):
+        self._objs_wrapper = objs_wrapper
+        self._items: List[Obj] = self._objs_wrapper._objs.values()
+        self._idx = 0
+        self._last_idx = -1
+        
+    @JOverride
+    def hasNext(self):
+        return self._idx < len(self._items)
+    
+    @JOverride
+    def next(self):
+        if not self.hasNext():
+            raise jpype.JClass("java.util.NoSuchElementException")() # type: ignore
+        
+        obj_wrapper: ObjWrapper = wrapObj(self._items[self._idx])
+        
+        self._last_idx = self._idx
+        self._idx += 1        
+        
+        return obj_wrapper
+    
+    @JOverride
+    def remove(self):
+        if self._last_idx == -1:
+            raise jpype.JClass("java.lang.IllegalStateException")() # type: ignore
+        
+        self._objs_wrapper._objs.remove(self._items[self._last_idx].getID())
+        self._last_key = None
+        
+@JImplements('java.util.Collection')
+class ObjsWrapperCollection:
+    def __init__(self, objs_wrapper: ObjsWrapper):
+        self._objs_wrapper: ObjsWrapper = objs_wrapper
+            
+    @JOverride
+    def add(self, obj_wrapper: ObjWrapper) -> bool:
+        return self._objs_wrapper.add(obj_wrapper)
+            
+    @JOverride
+    def addAll(self, collection) -> bool:
+        obj_wrapper: ObjWrapper
+        for obj_wrapper in collection:
+            self._objs_wrapper.add(obj_wrapper)
+            
+        return True
+        
+    @JOverride
+    def clear(self):
+        self._objs_wrapper.clear()
+    
+    @JOverride
+    def contains(self, obj_wrapper: ObjWrapper) -> bool:
+        return self._objs_wrapper.containsValue(obj_wrapper)
+    
+    @JOverride
+    def containsAll(self, collection) -> bool:
+        raise Exception('ValuesCollection: Implement containsAll')
+    
+    @JOverride
+    def equals(self, values_collection: Self) -> bool:
+        raise Exception('ValuesCollection: Implement equals')
+    
+    @JOverride
+    def hashCode(self) -> int:
+        raise Exception('ValuesCollection: Implement hashCode')
+    
+    @JOverride
+    def isEmpty(self) -> bool:
+        return self._objs_wrapper.isEmpty()
+    
+    @JOverride
+    def iterator(self):
+        return ObjsWrapperIterator(self._objs_wrapper)
+    
+    @JOverride
+    def remove(self, obj_wrapper: ObjWrapper) -> bool:
+        if obj_wrapper:
+            self._objs_wrapper.remove(obj_wrapper.getID())
+            
+        return True
+    
+    @JOverride
+    def removeAll(self, collection) -> bool:
+        obj_wrapper: ObjWrapper
+        for obj_wrapper in collection:
+            self.remove(obj_wrapper)
+            
+        return True
+    
+    @JOverride
+    def retainAll(self, collection) -> bool:
+        raise Exception('ValuesCollection: Implement retainAll')
+    
+    @JOverride
+    def size(self) -> int:
+        return self._objs_wrapper._objs.size()
+    
+    @JOverride
+    def toArray(self): # To do
+        raise Exception('ValuesCollection: Implement toArray')
 
+        
 @JImplements('io.github.mianalysis.mia.object.ObjsI') # type: ignore
 class ObjsWrapper():
     def __init__(self, name: str, width: int, height: int, n_slices: int, dpp_xy: float, dpp_z: float, spatial_units: str, n_frames: int, frame_interval: float, temporal_unit): # To do
@@ -231,7 +335,16 @@ class ObjsWrapper():
     
     @JOverride
     def showAllMeasurements(self): # No return
-        raise Exception('ObjsWrapper: Implement showAllMeasurements')
+        measurement_names: List[str] = []
+        obj: Obj
+        for obj in self._objs.values():
+            curr_measurements: Dict[str, Measurement] = obj.getMeasurements()
+            measurement_name: str
+            for measurement_name in curr_measurements.keys():
+                if measurement_name not in measurement_names:
+                    measurement_names.append(str(measurement_name))
+            
+        self._objs.showMeasurements(measurement_names)
     
     @JOverride
     def showMetadata(self, module, modules): # To do
@@ -276,7 +389,7 @@ class ObjsWrapper():
     @JOverride
     def get(self, key: int) -> ObjWrapper | None:
         obj: Obj | None = self._objs.get(key)
-        return None if obj is None else ow.wrapObj(obj)
+        return None if obj is None else wrapObj(obj)
     
     @JOverride
     def size(self) -> int:
@@ -300,7 +413,7 @@ class ObjsWrapper():
         prevObjWrapper: ObjWrapper | None = None
         
         if prevObj is not None:
-            prevObjWrapper = ow.wrapObj(prevObj)
+            prevObjWrapper = wrapObj(prevObj)
                         
         self._objs.put(key, value.getPythonObj())
         
@@ -323,13 +436,8 @@ class ObjsWrapper():
         raise Exception('MapWrapper: Implement keySet')
     
     @JOverride
-    def values(self) -> List[ObjWrapper]:
-        vals: List[ObjWrapper] = []
-        
-        for obj in self._objs.values():
-            vals.append(ow.wrapObj(obj))
-        
-        return vals
+    def values(self): # To do
+        return ObjsWrapperCollection(self)
     
     @JOverride
     def entrySet(self): # To do
@@ -361,7 +469,7 @@ class ObjsWrapper():
         
         obj_wrapper: ObjWrapper| None = None
         if obj is not None:
-            obj_wrapper = ow.wrapObj(obj)
+            obj_wrapper = wrapObj(obj)
         
         return obj_wrapper
     

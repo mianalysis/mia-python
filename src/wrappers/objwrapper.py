@@ -1,22 +1,19 @@
 from __future__ import annotations
 from jpype import JImplements, JOverride # type: ignore
 from scyjava import jimport # type: ignore
-from typing import Dict, List
-from typing import TYPE_CHECKING, Self
+from typing import Dict, List, Self, TYPE_CHECKING
 from weakref import WeakKeyDictionary
 
 from src.objects.measurement import Measurement
 from src.objects.obj import Obj
+from src.objects.objs import Objs
 from src.objects.volume import Volume
-from src.wrappers.volumewrapper import VolumeFactoryWrapper, VolumeWrapper, wrapVolume
 from src.types.types import Point
-from src.types.JSpatioTemporallyCalibrated import JSpatioTemporallyCalibrated
-from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSetFactoryWrapper
-from src.wrappers.measurementwrapper import MeasurementWrapper, wrapMeasurement
+from src.types.JSpatioTemporallyCalibratedType import JSpatioTemporallyCalibrated
 from src.utilities.rois import getRoi
-
-import src.wrappers.coordinatesetwrapper as csw
-import src.wrappers.objswrapper as osw
+from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSetFactoryWrapper, wrapCoordinateSet
+from src.wrappers.measurementwrapper import MeasurementWrapper, wrapMeasurement
+from src.wrappers.volumewrapper import VolumeFactoryWrapper, VolumeWrapper, wrapVolume
 
 if TYPE_CHECKING:
     from src.objects.coordinateset import CoordinateSet    
@@ -24,6 +21,7 @@ if TYPE_CHECKING:
     from src.wrappers.objswrapper import ObjsWrapper
     from src.types.JPointType import JPointType
 
+JLinkedHashMap = jimport('java.util.LinkedHashMap')
 JObj = jimport('io.github.mianalysis.mia.object.coordinates.ObjI') # type: ignore
 JObjAdaptor = jimport('io.github.mianalysis.mia.python.ObjAdaptor') # type: ignore
 JVolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor') # type: ignore
@@ -48,7 +46,8 @@ class ObjWrapper:
     
     @JOverride
     def getObjectCollection(self) -> ObjsWrapper:
-        return osw.wrapObjs(self._obj.getObjectCollection())
+        from src.wrappers.objswrapper import wrapObjs
+        return wrapObjs(self._obj.getObjectCollection())
 
     @JOverride
     def setObjectCollection(self, obj_collection: ObjsWrapper): # No return
@@ -78,7 +77,15 @@ class ObjWrapper:
 
     @JOverride
     def getAllParents(self): # To do
-        raise Exception('ObjWrapper: Implement getAllParents')
+        print("ObjWrapper: Need to implement custom list to handle python object removal")
+        parent_wrappers = JLinkedHashMap()
+        
+        parent: Obj
+        for parent in self._obj.getAllParents().values():
+            parent_wrapper: ObjWrapper = wrapObj(parent)
+            parent_wrappers.put(parent.getName(), parent_wrapper)
+        
+        return parent_wrappers
 
     @JOverride
     def setAllParents(self, parents): # To do
@@ -86,7 +93,17 @@ class ObjWrapper:
 
     @JOverride
     def getAllChildren(self): # To do
-        raise Exception('ObjWrapper: Implement getAllChildren')
+        print("ObjWrapper: Need to implement custom list to handle python object removal")
+        from src.wrappers.objswrapper import wrapObjs
+        
+        all_children_wrappers = JLinkedHashMap()
+        
+        children: Objs
+        for children in self._obj.getAllChildren().values():
+            children_wrappers: ObjsWrapper = wrapObjs(children)
+            all_children_wrappers.put(children.getName(), children_wrappers)
+        
+        return all_children_wrappers
 
     @JOverride
     def setAllChildren(self, children): # To do
@@ -94,19 +111,39 @@ class ObjWrapper:
 
     @JOverride
     def getAllPartners(self): # To do
-        raise Exception('ObjWrapper: Implement getAllPartners')
+        print("ObjWrapper: Need to implement custom list to handle python object removal")
+        from src.wrappers.objswrapper import wrapObjs
+        
+        all_partner_wrappers = JLinkedHashMap()
+        
+        partners: Objs
+        for partners in self._obj.getAllPartners().values():
+            partner_wrappers: ObjsWrapper = wrapObjs(partners)
+            all_partner_wrappers.put(partners.getName(), partner_wrappers)
+        
+        return all_partner_wrappers
 
     @JOverride
     def setAllPartners(self, partners): # To do
         raise Exception('ObjWrapper: Implement setAllPartners')
 
     @JOverride
-    def removeRelationships(self): # To do
-        raise Exception('ObjWrapper: Implement removeRelationships')
+    def removeRelationships(self): # No return
+        self._obj.removeRelationships()
 
     @JOverride
-    def getMeasurements(self) -> Dict[str, MeasurementWrapper]:
-        raise Exception('ObjWrapper: Implement getMeasurements')
+    def getMeasurements(self): # To do
+        print("ObjWrapper: Need to implement custom list to handle python object removal")
+        from src.wrappers.objswrapper import wrapObjs
+        
+        measurement_wrappers = JLinkedHashMap()
+        
+        measurement: Measurement
+        for measurement in self._obj.getMeasurements().values():
+            measurement_wrapper: MeasurementWrapper = wrapMeasurement(measurement)
+            measurement_wrappers.put(measurement.getName(), measurement_wrapper)
+        
+        return measurement_wrappers
 
     @JOverride
     def setMeasurements(self, measurements): # To do
@@ -213,7 +250,7 @@ class ObjWrapper:
 
     @JOverride
     def getCoordinateSet(self) -> CoordinateSetWrapper:
-        return csw.wrapCoordinateSet(self._obj.getCoordinateSet())
+        return wrapCoordinateSet(self._obj.getCoordinateSet())
 
     @JOverride
     def setCoordinateSet(self, coordinate_set: CoordinateSetWrapper):
@@ -312,8 +349,16 @@ class ObjWrapper:
 
     # Obj default methods
     
-    def getParents(self, use_full_hierarchy: bool) -> Dict[str, ObjWrapper]:
-        raise Exception('ObjWrapper: Implement getParents')
+    def getParents(self, use_full_hierarchy: bool): # To do
+        print("ObjWrapper: Need to implement custom list to handle python object removal")
+        parent_wrappers = JLinkedHashMap()
+        
+        parent: Obj
+        for parent in self._obj.getParents(use_full_hierarchy).values():
+            parent_wrapper: ObjWrapper = wrapObj(parent)
+            parent_wrappers.put(parent.getName(), parent_wrapper)
+        
+        return parent_wrappers
 
     def getParent(self, name: str) -> ObjWrapper:
         raise Exception('ObjWrapper: Implement getParent')

@@ -8,7 +8,7 @@ from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSe
 from src.wrappers.imagewrapper import ImageWrapper
 from src.objects.image import Image
 from src.objects.volume import Volume
-from src.types.JSpatiallyCalibrated import JSpatiallyCalibrated
+from src.types.JSpatiallyCalibratedType import JSpatiallyCalibrated
 from src.utilities.rois import getRoi
 
 if TYPE_CHECKING:

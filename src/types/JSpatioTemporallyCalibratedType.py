@@ -1,7 +1,7 @@
 # Listing the methods, but to avoid annotating yet more Java classes (for now), annotating any unknown classes as Any
 from __future__ import annotations
 
-from src.types.JSpatiallyCalibrated import JSpatiallyCalibrated
+from src.types.JSpatiallyCalibratedType import JSpatiallyCalibrated
 
 class JSpatioTemporallyCalibrated(JSpatiallyCalibrated):
     # Methods

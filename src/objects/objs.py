@@ -213,26 +213,39 @@ class Objs():
     
     def showMeasurements(self, measurement_names: List[str]):        
         table: PrettyTable = PrettyTable()
-        col: List[float] = []
+        
+        # Adding fixed values
+        ids_col: List[int] = []
+        x_mean_col: List[float] = []
+        y_mean_col: List[float] = []
+        z_mean_col: List[float] = []
+        timepoint_col: List[int] = []
+        
         obj: Obj
         for obj in self.values():
-            col.append(obj.getID())
+            ids_col.append(obj.getID())
+            x_mean_col.append(obj.getXMean(True))
+            y_mean_col.append(obj.getYMean(True))
+            z_mean_col.append(obj.getZMean(True, False))
+            timepoint_col.append(obj.getT())
             
-        table.add_column("OBJECT_ID", col)
-                
+        table.add_column("OBJECT_ID", ids_col)
+        table.add_column("X_CENTROID (PX)", x_mean_col)
+        table.add_column("Y_CENTROID (PX)", y_mean_col)
+        table.add_column("Z_CENTROID (SLICE)", z_mean_col)
+        table.add_column("TIMEPOINT", timepoint_col)
+        
+        meas_col: List[float] = []
         for measurement_name in measurement_names:
-            col = []
+            meas_col = []
             obj: Obj
             for obj in self.values():
                 measurement: Measurement | None = obj.getMeasurement(measurement_name)
-                col.append(math.nan if measurement is None else measurement.getValue())
+                meas_col.append(math.nan if measurement is None else measurement.getValue())
                 
-            table.add_column(measurement_name, col)
+            table.add_column(measurement_name, meas_col)
             
         print(table)
-    
-    def showAllMeasurements(self): # No return
-        raise Exception('Objs: Implement showAllMeasurements')
     
     def showMetadata(self, module, modules): # To do
         raise Exception('Objs: Implement showMetadata')
@@ -268,13 +281,13 @@ class Objs():
         return len(self._objs)
     
     def isEmpty(self) -> bool:
-        raise Exception('MapWrapper: Implement isEmpty')
+        raise Exception('Objs: Implement isEmpty')
     
     def containsKey(self, key: int) -> bool:
-        raise Exception('MapWrapper: Implement containsKey')
+        raise Exception('Objs: Implement containsKey')
     
     def containsValue(self, value: Obj) -> bool:
-        raise Exception('MapWrapper: Implement containsValue')
+        raise Exception('Objs: Implement containsValue')
         
     def get(self, key: int) -> Obj | None:
         return self._objs.get(key)
@@ -286,22 +299,22 @@ class Objs():
         return prevObj
     
     def remove(self, key: int) -> Obj:
-        raise Exception('MapWrapper: Implement remove')
+        return self._objs.pop(key)
     
     def putAll(self, m: Dict[int, Obj]): # No return
-        raise Exception('MapWrapper: Implement putAll')
+        raise Exception('Objs: Implement putAll')
     
     def clear(self): # No return
-        raise Exception('MapWrapper: Implement clear')
+        raise Exception('Objs: Implement clear')
     
     def keySet(self) -> List[int]:
-        raise Exception('MapWrapper: Implement keySet')
+        raise Exception('Objs: Implement keySet')
     
     def values(self) -> List[Obj]:
         return [obj for obj in self._objs.values()]
     
     def entrySet(self) -> List[Tuple[int,Obj]]:
-        raise Exception('MapWrapper: Implement values')
+        raise Exception('Objs: Implement values')
         # entry_set: List[Tuple[int,Obj]] = []
         # for key, value in self._objs.items():
         #     entry_set.append((key, value))
@@ -309,19 +322,19 @@ class Objs():
         # return entry_set
 
     def equals(self, o: Objs) -> bool:
-        raise Exception('MapWrapper: Implement equals')
+        raise Exception('Objs: Implement equals')
     
     def hashCode(self) -> int:
-        raise Exception('MapWrapper: Implement hashCode')
+        raise Exception('Objs: Implement hashCode')
     
     def getOrDefault(self, key: int, defaultValue: Obj) -> Obj:
-        raise Exception('MapWrapper: Implement getOrDefault')
+        raise Exception('Objs: Implement getOrDefault')
     
     def forEach(self, action): # To do
-        raise Exception('MapWrapper: Implement forEach')
+        raise Exception('Objs: Implement forEach')
     
     def replaceAll(self, function): # To do
-        raise Exception('MapWrapper: Implement replaceAll')
+        raise Exception('Objs: Implement replaceAll')
     
     def putIfAbsent(self, key: int, value: Obj) -> Obj|None:
         if self._objs.get(key) is None:         
@@ -331,19 +344,19 @@ class Objs():
             return self._objs[key]
     
     def replace(self, key: int, value: Obj) -> Obj:
-        raise Exception('MapWrapper: Implement replace (key, value)')
+        raise Exception('Objs: Implement replace (key, value)')
     
     def computeIfAbsent(self, key, mappingFunction): # To do
-        raise Exception('MapWrapper: Implement computeIfAbsent')
+        raise Exception('Objs: Implement computeIfAbsent')
     
     def computeIfPresent(self, key, remappingFunction): # To do
-        raise Exception('MapWrapper: Implement computeIfPresent')
+        raise Exception('Objs: Implement computeIfPresent')
     
     def compute(self, key, remappingFunction): # To do
-        raise Exception('MapWrapper: Implement compute')
+        raise Exception('Objs: Implement compute')
     
     def merge(self, key, value, remappingFunction): # To do
-        raise Exception('MapWrapper: Implement merge')
+        raise Exception('Objs: Implement merge')
 
     # Note: May also need to implement the Entry interface:
 
