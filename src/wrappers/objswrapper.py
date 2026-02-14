@@ -7,7 +7,7 @@ from weakref import WeakKeyDictionary
 from src.objects.image import Image
 from src.objects.measurement import Measurement
 from src.objects.objs import Objs
-from src.wrappers.objwrapper import wrapObj
+from src.wrappers.objwrapper import ObjFactoryWrapper, wrapObj
 from src.wrappers.imagewrapper import wrapImage
 from src.wrappers.measurementwrapper import MeasurementWrapper
 
@@ -60,7 +60,8 @@ class ObjsWrapperCollection:
             
     @JOverride
     def add(self, obj_wrapper: ObjWrapper) -> bool:
-        return self._objs_wrapper.add(obj_wrapper)
+        self._objs_wrapper.add(obj_wrapper)
+        return True
             
     @JOverride
     def addAll(self, collection) -> bool:
@@ -138,20 +139,22 @@ class ObjsWrapper():
         self._objs = objs
         
     @JOverride
-    def createAndAddNewObject(self, factory: CoordinateSetFactoryWrapper) -> ObjWrapper:
-        raise Exception('ObjsWrapper: Implement createAndAddNewObject')
+    def createAndAddNewObject(self, coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper) -> ObjWrapper:
+        new_obj: Obj = self._objs.createAndAddNewObject(coordinate_set_factory_wrapper.getPythonCoordinateSetFactory())
+        return wrapObj(new_obj)
     
     @JOverride
-    def createAndAddNewObjectWithID(self, factory: CoordinateSetFactoryWrapper, ID: int) -> ObjWrapper:
-        raise Exception('ObjsWrapper: Implement createAndAddNewObjectWithID')
+    def createAndAddNewObjectWithID(self, coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper, ID: int) -> ObjWrapper:
+        new_obj: Obj = self._objs.createAndAddNewObjectWithID(coordinate_set_factory_wrapper.getPythonCoordinateSetFactory(), ID)
+        return wrapObj(new_obj)
         
     @JOverride
     def getName(self) -> str:
         return self._objs.getName()
     
     @JOverride
-    def add(self, object: ObjWrapper): # No return
-        raise Exception('ObjsWrapper: Implement add')
+    def add(self, obj_wrapper: ObjWrapper): # No return
+        self._objs.add(obj_wrapper.getPythonObj())
         
     @JOverride
     def getAndIncrementID(self) -> int:
@@ -279,7 +282,12 @@ class ObjsWrapper():
         
     @JOverride
     def convertToImage(self, outputName: str, hues: Dict[int, float], bitDepth: int, nanBackground: bool, verbose: bool) -> ImageWrapper:
-        im: Image = self._objs.convertToImage(outputName, hues, bitDepth, nanBackground, verbose)
+        python_hues: Dict[int, float] = {}
+        key: int
+        for key in hues.keys():
+            python_hues[int(key)] = float(hues[key])
+            
+        im: Image = self._objs.convertToImage(outputName, python_hues, bitDepth, nanBackground, verbose)
         return wrapImage(im)
     
     @JOverride

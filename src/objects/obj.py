@@ -1,6 +1,5 @@
 from __future__ import annotations
-from typing import Dict
-from typing import TYPE_CHECKING
+from typing import Dict, List, TYPE_CHECKING
 from xarray import DataArray
 
 from src.objects.measurement import Measurement
@@ -193,10 +192,29 @@ class Obj(Volume):
         return parent_hierarchy
 
     def getParent(self, name: str) -> Obj:
-        raise Exception('Obj: Implement getParent')
+        # Split name down by " // " tokenizer
+        elements: List[str] = name.split(" // ")
+        
+        # Getting the first parent
+        parent: Obj = self._parents[elements[0]]
+        
+        if len(elements) == 1:
+            return parent
+        
+        new_name: str = ""
+        for i in range(1,len(elements)):
+            new_name = new_name + elements[i]
+            if i != len(elements)-1:
+                new_name = new_name + " // "
+                
+        if parent is None:
+            return None
+        
+        return parent.getParent(new_name)
 
     def addParent(self, parent: Obj):
-        raise Exception('Obj: Implement addParent')
+        if parent:
+            self._parents[parent.getName()] = parent
 
     def removeParent(self, name: str):
         raise Exception('Obj: Implement removeParent')
@@ -211,7 +229,14 @@ class Obj(Volume):
         raise Exception('Obj: Implement removeChildren')
 
     def addChild(self, child: Obj):
-        raise Exception('Obj: Implement addChild')
+        if child is None:
+            return
+        
+        child_name: str = child.getName()
+        if child_name not in self._children:
+            self._children[child_name] = child.getObjectCollection().createNewObjsFromThis(child_name)
+            
+        self._children[child_name].add(child)
 
     def removeChild(self, child: Obj):
         raise Exception('Obj: Implement removeChild')

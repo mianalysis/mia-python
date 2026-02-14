@@ -310,6 +310,13 @@ class ObjWrapper:
     @JOverride
     def setSpatialUnits(self, spatial_units: str): # No return
         self._obj.setSpatialUnits(spatial_units)
+        
+    @JOverride
+    def applySpatialCalibrationToImage(self, ipl): # To do
+        ipl.getCalibration().pixelWidth = self.getDppXY()
+        ipl.getCalibration().pixelHeight = self.getDppXY()
+        ipl.getCalibration().pixelDepth = 1 if self.getNSlices() == 1 else self.getDppZ()
+        ipl.getCalibration().setUnit(self.getSpatialUnits())
 
 
     # From SpatioTemporallyCalibrated
@@ -340,7 +347,10 @@ class ObjWrapper:
 
     @JOverride
     def applySpatioTemporalCalibrationToImage(self, ipl): # To do
-        raise Exception('ObjWrapper: Implement applySpatioTemporalCalibrationToImage')
+        self.applySpatialCalibrationToImage(ipl)
+        
+        ipl.getCalibration().frameInterval = self.getFrameInterval()
+        print("ObjWrapper: applySpatioTemporalCalibrationToImage (Set FPS correctly)")
 
     @JOverride
     def setSpatioTemporalCalibrationFromExample(self, example: JSpatioTemporallyCalibrated): # No return
@@ -360,11 +370,12 @@ class ObjWrapper:
         
         return parent_wrappers
 
-    def getParent(self, name: str) -> ObjWrapper:
-        raise Exception('ObjWrapper: Implement getParent')
+    def getParent(self, name: str) -> ObjWrapper | None:
+        parent: Obj = self._obj.getParent(name)
+        return None if parent is None else wrapObj(parent)        
 
-    def addParent(self, parent: ObjWrapper):
-        raise Exception('ObjWrapper: Implement addParent')
+    def addParent(self, parent: ObjWrapper): # No return
+        self._obj.addParent(parent.getPythonObj())
 
     def removeParent(self, name: str):
         raise Exception('ObjWrapper: Implement removeParent')
@@ -379,7 +390,7 @@ class ObjWrapper:
         raise Exception('ObjWrapper: Implement removeChildren')
 
     def addChild(self, child: ObjWrapper):
-        raise Exception('ObjWrapper: Implement addChild')
+        self._obj.addChild(child.getPythonObj())
 
     def removeChild(self, child: ObjWrapper):
         raise Exception('ObjWrapper: Implement removeChild')

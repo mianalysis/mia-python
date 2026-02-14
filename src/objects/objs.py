@@ -15,9 +15,7 @@ from src.objects.obj import Obj
 from src.utilities.colourfactory import getIDHues
 
 if TYPE_CHECKING:
-    from src.objects.coordinateset import CoordinateSetFactory
-    
-    
+    from src.objects.coordinateset import CoordinateSetFactory   
     from src.types.types import Point
 
 class Objs():
@@ -36,6 +34,9 @@ class Objs():
         self._n_frames: int = n_frames
         self._frame_interval: float = frame_interval
         self._temporal_units: str = temporal_units
+        
+    def createNewObjsFromThis(self, new_objs_name: str) -> Objs:
+        return Objs(new_objs_name, width=self._width, height=self._height, n_slices=self._n_slices, dpp_xy=self._dpp_xy, dpp_z=self._dpp_z, spatial_units=self._spatial_units, n_frames=self._n_frames, frame_interval=self._frame_interval, temporal_units=self._temporal_units)
                 
     def createAndAddNewObject(self, coordinate_set_factory: CoordinateSetFactory) -> Obj:
         obj: Obj = Obj(coordinate_set_factory, self, self.getAndIncrementID())
@@ -163,11 +164,15 @@ class Objs():
         if nanBackground:
             np_img = im.getRawImage()
             np_img.fill(np.nan)
-                   
-        object: Obj
-        for object in self.values(): 
-            object.addToImage(im, hues.get(object.getID(),0.0))
         
+        object: Obj
+        for object in self.values():            
+            hue: float | None = hues[object.getID()]
+            if hue is None:
+                continue
+            
+            object.addToImage(image=im, hue=hue)
+                    
         print('Objs: Add applySpatioTemporalCalibration to created image (convertToImage)')
         
         return im

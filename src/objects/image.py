@@ -270,10 +270,9 @@ class Image:
                                     final_IDs[image_ID] = output_objs.getAndIncrementID()
                                 
                                 out_ID = final_IDs[image_ID]
-                                
                                 output_objs.createAndAddNewObjectIfMissing(coordinate_set_factory, out_ID)
                                 output_obj = output_objs.get(out_ID)
-                                                                
+                                
                                 if output_obj is not None:
                                     output_obj.addCoord(x,y,z)
                                                                          

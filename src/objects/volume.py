@@ -88,6 +88,7 @@ class Volume():
         raise Exception('Volume: Implement equals')
 
     def getCoordinateSet(self) -> CoordinateSet:
+        self.finalise()
         return self._coordinate_set
 
     def setCoordinateSet(self, coordinate_set: CoordinateSet):
