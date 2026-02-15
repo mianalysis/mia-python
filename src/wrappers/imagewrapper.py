@@ -29,9 +29,14 @@ class ImageWrapper:
         self._renderer = NotebookImageRenderer()
                 
         # if raw_image isinstance 
-        Store.ij.py.sync_image(raw_image) # type: ignore
-        da_img: DataArray = Store.ij.py.from_java(raw_image)
-        self._image = Image(name, da_img)
+        if isinstance(raw_image, JImagePlus):
+            calibration = raw_image.getCalibration()
+            Store.ij.py.sync_image(raw_image) # type: ignore
+            da_img: DataArray = Store.ij.py.from_java(raw_image) # type: ignore
+            self._image = Image(name=name, da_img=da_img, dpp_xy=calibration.pixelWidth, dpp_z=calibration.pixelDepth, spatial_units=calibration.getXUnit(), frame_interval=calibration.frameInterval, temporal_units=calibration.getTimeUnit())
+        elif isinstance(raw_image, DataArray):
+            print("ImageWrapper: Add calibration to new Image")
+            self._image = Image(name, raw_image, dpp_xy=1, dpp_z=1, spatial_units="", frame_interval=1, temporal_units="")
 
     def getPythonImage(self) -> Image:
         return self._image

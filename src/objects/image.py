@@ -23,19 +23,25 @@ SPATIAL_UNITS = "spatial_units"
 TEMPORAL_UNITS = "temporal_units"
 
 class Image:
-    def __init__(self, name, da_img: DataArray):
-        self._name = name
+    def __init__(self, name: str, da_img: DataArray, dpp_xy: float, dpp_z: float, spatial_units: str, frame_interval: float, temporal_units: str):
+        self._name: str = name
         self._da_img: DataArray = da_img
+        self._dpp_xy: float = dpp_xy
+        self._dpp_z: float = dpp_z
+        self._spatial_units: str = spatial_units
+        self._frame_interval: float = frame_interval
+        self._temporal_units: str = temporal_units
+        
         self._renderer = NotebookImageRenderer()
         
         self._measurements: Dict[str, Measurement] = {}
         
-        self._x_idx = -1
-        self._y_idx = -1
-        self._c_idx = -1
-        self._z_idx = -1
-        self._t_idx = -1
-        self._n_indices = 0
+        self._x_idx: int = -1
+        self._y_idx: int = -1
+        self._c_idx: int = -1
+        self._z_idx: int = -1
+        self._t_idx: int = -1
+        self._n_indices: int = 0
             
         if da_img is not None:    
             self.updateAxisIndices()
@@ -98,30 +104,19 @@ class Image:
         return self._da_img.shape[axis_idx]
     
     def getDppXY(self) -> float:
-        # This could be stored in self._da_img.attrs, rather than needing to be calculated
-        # We would need to manually set these extra attrs when loading an ImagePlus as these don't seem to be added
-        # When setting DPPXY, we also need to update the coords in da_img
-        #
-        # Possibly use the following
-        # return self._da_img.coords[X].diff(X).mean().item()
-        # print('Image: Implement getDppXY')
-        return 1.0
+        return self._dpp_xy
     
     def getDppZ(self) -> float:
-        print('Image: Implement getDppZ')
-        return 1.0
+        return self._dpp_z
     
     def getSpatialUnits(self): # To do
-        print('Image: Implement getSpatialUnits')
-        return "px"
+        return self._spatial_units
     
     def getFrameInterval(self) -> float:
-        print('Image: Implement getFrameInterval')
-        return 1.0
+        return self._frame_interval
 
     def getTemporalUnits(self) -> str:
-        print('Image: Implement getTemporalUnits')
-        return "frames"
+        return self._temporal_units
     
     def getSlice(self, x: int=-1,y: int=-1,c: int=-1,z: int=-1,t: int=-1):
         dims = self._da_img.dims
@@ -353,4 +348,4 @@ def createImage(image_name: str, width: int, height: int, n_channels: int = 1, n
     # Creating Numpy array
     np_arr = np.zeros(tuple(dim_lengths))
         
-    return Image(image_name, DataArray(data=np_arr, coords=coords, dims=dim_names, name=image_name, attrs=attrs))
+    return Image(image_name, DataArray(data=np_arr, coords=coords, dims=dim_names, name=image_name, attrs=attrs), dpp_xy=dpp_xy, dpp_z=dpp_z, spatial_units=spatial_units, frame_interval=frame_interval, temporal_units=temporal_units)
