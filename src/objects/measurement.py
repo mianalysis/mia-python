@@ -1,8 +1,11 @@
 from __future__ import annotations
+from src.objects.units import replaceSpatialUnits, replaceTemporalUnits
 
 class Measurement:
     def __init__(self, name: str, value: float):
-        # print("Measurement: Implement units conversion in __init__")
+        name = replaceSpatialUnits(name)
+        name = replaceTemporalUnits(name)
+        
         self._name: str = name
         self._value: float = value
         

@@ -3,6 +3,7 @@ from typing import Dict, List, TYPE_CHECKING
 from xarray import DataArray
 
 from src.objects.measurement import Measurement
+from src.objects.units import replaceSpatialUnits, replaceTemporalUnits
 from src.objects.volume import Volume
 
 import numpy as np
@@ -278,6 +279,9 @@ class Obj(Volume):
         self._measurements[measurement.getName()] = measurement
 
     def getMeasurement(self, name: str) -> Measurement | None:
+        name = replaceSpatialUnits(name)
+        name = replaceTemporalUnits(name)
+        
         return self._measurements.get(name)
 
     def removeMeasurement(self, name: str):

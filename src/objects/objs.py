@@ -172,8 +172,6 @@ class Objs():
                 continue
             
             object.addToImage(image=im, hue=hue)
-                    
-        print('Objs: Add applySpatioTemporalCalibration to created image (convertToImage)')
         
         return im
     
@@ -190,11 +188,8 @@ class Objs():
     def convertCentroidsToImage(self, output_name: str, hues: Dict[int, float], bit_bepth: int, nan_background: bool) -> Image:
         raise Exception('Objs: Implement convertCentroidsToImage')
     
-    def applyCalibration(self, image: Image): # No return
-        raise Exception('Objs: Implement applyCalibration')
-    
-    def applyCalibrationFromImagePlus(self, ipl): # To do
-        raise Exception('Objs: Implement applyCalibrationFromImagePlus')
+    def applyCalibrationFromImage(self, image: Image): # No return
+        raise Exception('Objs: Implement applyCalibrationFromImage')
     
     def createImage(self, output_name: str, bit_depth: int) -> Image:
         dtype: np.dtype
@@ -207,8 +202,7 @@ class Objs():
         else:
             raise Exception('Objs: Unsupported bit depth')
         
-        print("IMPORTANT: Find out dimension order for np_img in Image class, but for now assuming XYCZT")
-        return createImage(output_name, self._width, self._height, n_channels=1, n_slices=self._n_slices, n_frames=self._n_frames, d_type=dtype)
+        return createImage(image_name=output_name, width=self._width, height=self._height, n_channels=1, n_slices=self._n_slices, n_frames=self._n_frames, d_type=dtype, dpp_xy=self._dpp_xy, dpp_z=self._dpp_z, spatial_units=self._spatial_units, frame_interval=self._frame_interval, temporal_units=self._temporal_units)
     
     def setNaNBackground(self, ipl): # To do
         raise Exception('Objs: Implement setNaNBackground')

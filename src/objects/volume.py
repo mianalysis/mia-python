@@ -320,9 +320,11 @@ class Volume():
         
         width: int = round(extents[0][1]) - round(extents[0][0]) + border_widths[0][0] + border_widths[0][1] + 1
         height: int = round(extents[1][1]) - round(extents[1][0]) + border_widths[1][0] + border_widths[1][1] + 1
+        n_channels: int = 1
         n_slices: int = round(extents[2][1]) - round(extents[2][0]) + border_widths[2][0] + border_widths[2][1] + 1
+        n_frames: int = 1
         
-        tight_im: Image = createImage(image_name, width=width, height=height, n_slices=n_slices, d_type=np.uint8, dpp_xy=self.getDppXY(), dpp_z=self.getDppZ(), spatial_units=self.getSpatialUnits())
+        tight_im: Image = createImage(image_name, width=width, height=height, n_channels=n_channels, n_slices=n_slices, n_frames=n_frames, d_type=np.uint8, dpp_xy=self.getDppXY(), dpp_z=self.getDppZ(), spatial_units=self.getSpatialUnits(), frame_interval=1, temporal_units="")
         
         points: Points = self.getCoordinateSet().getPoints().astype(int)
         tight_im.putAllPixels(vals=np.ones(self.size(),dtype=np.float32)*255, x=points[:,0]-x_offs, y=points[:,1]-y_offs, z=points[:,2]-z_offs)

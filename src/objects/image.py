@@ -323,7 +323,7 @@ class Image:
     def showAllMeasurements(self):
         raise Exception('Image: Implement showAllMeasurements')
 
-def createImage(image_name: str, width: int, height: int, n_channels: int = 1, n_slices: int = 1, n_frames: int = 1, d_type: npt.DTypeLike = np.uint8, dpp_xy: float = 1, dpp_z: float = 1, spatial_units: str = "", frame_interval: float = 1, temporal_units: str = "") -> Image:
+def createImage(image_name: str, width: int, height: int, n_channels: int, n_slices: int, n_frames: int, d_type: npt.DTypeLike, dpp_xy: float, dpp_z: float, spatial_units: str, frame_interval: float, temporal_units: str) -> Image:
     # Getting dimensions for array
     dim_lengths = [height, width]
     dim_names = [Y, X]
