@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from matplotlib.colors import Colormap
 from typing import Any, Dict, List, Tuple, TYPE_CHECKING
 from xarray import DataArray
 
@@ -31,6 +32,7 @@ class Image:
         self._spatial_units: str = spatial_units
         self._frame_interval: float = frame_interval
         self._temporal_units: str = temporal_units
+        self._colormap: Colormap | str | None = None
         
         self._renderer = NotebookImageRenderer()
         
@@ -117,6 +119,12 @@ class Image:
 
     def getTemporalUnits(self) -> str:
         return self._temporal_units
+    
+    def getColormap(self) -> Colormap | str| None:
+        return self._colormap
+    
+    def setColormap(self, colormap: Colormap | str | None):
+        self._colormap = colormap
     
     def getSlice(self, x: int=-1,y: int=-1,c: int=-1,z: int=-1,t: int=-1):
         dims = self._da_img.dims
@@ -299,23 +307,8 @@ class Image:
     def setMeasurements(self, measurements):
         raise Exception('Image: Implement setMeasurements')
 
-    def show(self, title: str, lut, normalise: bool, display_mode: str, overlay):
-        self._renderer.render(self, title, lut, normalise, display_mode, overlay)
-        
-    def showWithTitle(self, title: str):
-        self.show(title, None, True, 'COLOUR', None)
-
-    def showWithLUT(self, lut): # To do
-        self.show(self.getName(), lut, True, 'COLOUR', None)
-
-    def showAsIs(self):
-        self.show(self.getName(), None, True, 'COLOUR', None)
-
-    def showWithOverlay(self, overlay): # To do
-        self.show(self.getName(), None, True, 'COLOUR', overlay)
-
-    def showWithNormalisation(self, normalise: bool):
-        self.show(self.getName(), None, normalise, 'COLOUR', None)
+    def show(self, title: str, colormap: Colormap | str | None, normalise: bool, display_mode: str, overlay):
+        self._renderer.render(self, title, colormap, normalise, display_mode, overlay)
 
     def showMeasurements(self, module):
         raise Exception('Image: Implement showMeasurements')

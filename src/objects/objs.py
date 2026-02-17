@@ -2,12 +2,15 @@
 # the methods?
 
 from __future__ import annotations
+import matplotlib
+from matplotlib.colors import Colormap
 from prettytable import PrettyTable
 from typing import Dict, List, Tuple
 from typing import TYPE_CHECKING
 
 import math
 import numpy as np
+import src.objects.colormaps as cmaps
 
 from src.objects.image import Image, createImage
 from src.objects.measurement import Measurement
@@ -183,7 +186,10 @@ class Objs():
     
     def convertToImageIDColours(self) -> Image:
         hues: Dict[int, float] = getIDHues(self, False)
-        return self.convertToImage(self.getName(), hues, 32, False, False)
+        image: Image = self.convertToImage(self.getName(), hues, 32, False, False)
+        image.setColormap(colormap=cmaps.Random())
+        
+        return image
     
     def convertCentroidsToImage(self, output_name: str, hues: Dict[int, float], bit_bepth: int, nan_background: bool) -> Image:
         raise Exception('Objs: Implement convertCentroidsToImage')

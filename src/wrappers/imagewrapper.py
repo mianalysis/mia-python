@@ -9,6 +9,7 @@ from xarray import DataArray
 from src.objects.image import Image
 from src.objects.measurement import Measurement
 from src.objects.objs import Objs
+from src.types.JLUT import JLUT
 from src.utilities.imagerenderer import NotebookImageRenderer
 from src.utilities.store import Store
 from src.wrappers.coordinatesetwrapper import CoordinateSetFactoryWrapper
@@ -17,9 +18,10 @@ from src.wrappers.measurementwrapper import MeasurementWrapper, wrapMeasurement
 if TYPE_CHECKING:
     from src.wrappers.objswrapper import ObjsWrapper
 
+JDisplayModes = jimport('io.github.mianalysis.mia.object.image.ImageI.DisplayModes')
 JImagePlus = jimport('ij.ImagePlus')
 JImage = jimport('io.github.mianalysis.mia.object.image.ImageI')
-JDisplayModes = jimport('io.github.mianalysis.mia.object.image.ImageI.DisplayModes')
+
 
 _wrapper_cache: WeakKeyDictionary[Image, ImageWrapper] = WeakKeyDictionary()
 
@@ -190,15 +192,16 @@ class ImageWrapper:
         raise Exception('ImageWrapper: Implement setMeasurements')
 
     @JOverride
-    def show(self, title, lut, normalise, display_mode, overlay):
-        self._renderer.render(self, title, lut, normalise, display_mode, overlay)
+    def show(self, title: str, lut: JLUT | None, normalise, display_mode, overlay):
+        print("ImageWrapper: Implement LUT -> Colormap conversion in show.  For now, setting no LUT")
+        self._image.show(title, None, normalise, display_mode, overlay)
         
     @JOverride
     def showWithTitle(self, title: str):
         self.show(title, None, True, JDisplayModes.COLOUR, None)
 
     @JOverride
-    def showWithLUT(self, lut): # To do
+    def showWithLUT(self, lut: JLUT): # To do
         self.show(self.getName(), lut, True, JDisplayModes.COLOUR, None)
 
     @JOverride

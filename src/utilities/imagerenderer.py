@@ -2,7 +2,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING
 from jpype import JImplements, JOverride # type: ignore
 from matplotlib.widgets import Slider
-from pandas.core import base
+from matplotlib.colors import Colormap
 from xarray import DataArray
 
 from src.utilities.store import Store
@@ -22,7 +22,7 @@ T: str = "t"
 @JImplements('io.github.mianalysis.mia.object.image.renderer.ImageRenderer') # type: ignore
 class NotebookImageRenderer:       
     @JOverride
-    def render(self, image: Image, title: str, lut, normalise: bool, display_mode, overlay): # To do
+    def render(self, image: Image, title: str, colourmap: Colormap | str | None, normalise: bool, display_mode, overlay): # To do
         self._c = 0
         self._z = 0
         self._t = 0
@@ -32,8 +32,8 @@ class NotebookImageRenderer:
     
         # Getting image
         self._da: DataArray = getDataArray(image)
-        
-        self.fig, self.ax = plt.subplots(num='  ')
+            
+        self.fig, self.ax = plt.subplots()
         self.ax.set_axis_off()
         self.fig.tight_layout()        
                    
@@ -88,7 +88,14 @@ class NotebookImageRenderer:
             )
             self._t_slider.on_changed(self.updateT)
             
-        return None
+        if colourmap is not None:
+            self._canvas.set_cmap(colourmap)
+        else:
+            image_colormap: Colormap | str | None = image.getColormap()
+            if image_colormap is not None:
+                self._canvas.set_cmap(image_colormap)
+            else:
+                self._canvas.set_cmap('gray')
     
     def updateC(self, val):
         self._c = int(val)

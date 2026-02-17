@@ -301,15 +301,12 @@ class Obj(Volume):
             if point is None:
                 continue
             
-            image.putPixel(hue,point[0], point[1], z=point[2])
+            image.putPixel(hue, point[0], point[1], z=point[2], t=self.getT())
             # x: int = point[0]
             # y: int = point[1]
             # z: int = point[2]
             
             # np_img[y,x,0] = hue
-        
-        if self.getNSlices() > 1 or self.getNFrames() > 1:
-            raise Exception('Obj: Add multidimensional objects to addToImage')
 
     def addCentroidToImage(self, image: Image, hue: float):
         raise Exception('Obj: Implement addCentroidToImage')
