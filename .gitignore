@@ -1,5 +1,8 @@
 
 # pixi environments
 .pixi
+.ipynb_checkpoints
+.mypy_cache
 *.egg-info
 *.log
+mitosis.tif
