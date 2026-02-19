@@ -24,6 +24,7 @@ class Volume():
         self._spatial_units: str = spatial_units
         
         self._mean_centroid: Point | None = None
+        self._projection: Volume | None = None
         self._extents: List[List[int]] | None = None # Stored as pixel units
 
     def getCoordinateSetFactory(self) -> CoordinateSetFactory:
@@ -36,7 +37,11 @@ class Volume():
         raise Exception('Volume: Implement hasCalculatedSurface')
 
     def getProjected(self) -> Volume:
-        raise Exception('Volume: Implement getProjected')
+        if self._projection is None:
+            self._projection = self.createNewVolume(self._coordinate_set_factory, self)
+            self._projection.setCoordinateSet(self._coordinate_set.calculateProjected())
+            
+        return self._projection
 
     def hasCalculatedProjection(self) -> bool:
         raise Exception('Volume: Implement hasCalculatedProjection')
@@ -73,7 +78,7 @@ class Volume():
         raise Exception('Volume: Implement clearPoints')
 
     def clearProjected(self): # No return
-        raise Exception('Volume: Implement clearProjected')
+        self._projection = None
 
     def clearCentroid(self): # No return
         self._mean_centroid = None
@@ -94,8 +99,14 @@ class Volume():
     def setCoordinateSet(self, coordinate_set: CoordinateSet):
         self._coordinate_set = coordinate_set
 
-    def createNewVolume(self, coordinate_set_factory: CoordinateSetFactory, exampleVolume: Volume) -> Volume:
-        raise Exception('Volume: Implement createNewVolume')
+    def createNewVolume(self, coordinate_set_factory: CoordinateSetFactory, example_volume: Volume) -> Volume:
+        return Volume(coordinate_set_factory = coordinate_set_factory,
+                      width = example_volume.getWidth(), 
+                      height = example_volume.getHeight(), 
+                      n_slices = example_volume.getNSlices(), 
+                      dpp_xy = example_volume.getDppXY(), 
+                      dpp_z = example_volume.getDppZ(), 
+                      spatial_units = example_volume.getSpatialUnits())
 
     def getCalibratedIterator(self, pixel_distances: bool, match_xy: bool): # To do
         raise Exception('Volume: Implement getCalibratedIterator')

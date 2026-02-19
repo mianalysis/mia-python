@@ -218,7 +218,7 @@ class Obj(Volume):
             self._parents[parent.getName()] = parent
 
     def removeParent(self, name: str):
-        raise Exception('Obj: Implement removeParent')
+        self._parents.pop(name)
 
     def getChildren(self, name: str) -> Objs:
         raise Exception('Obj: Implement getChildren')

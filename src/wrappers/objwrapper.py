@@ -254,7 +254,7 @@ class ObjWrapper:
 
     @JOverride
     def setCoordinateSet(self, coordinate_set: CoordinateSetWrapper):
-        raise Exception('ObjWrapper: Implement setCoordinateSet')
+        self._obj.setCoordinateSet(coordinate_set.getPythonCoordinateSet())
 
     @JOverride
     def getCalibratedIterator(self, pixel_distances: bool, match_xy: bool): # To do

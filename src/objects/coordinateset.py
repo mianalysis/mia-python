@@ -17,6 +17,9 @@ class CoordinateSet():
     def __iter__(self) -> Iterator:
         return iter(self._points)
     
+    def getFactory(self) -> CoordinateSetFactory:
+        return CoordinateSetFactory()
+    
     def getPoints(self) -> Points:
         return self._points
 
@@ -54,8 +57,14 @@ class CoordinateSet():
 
         return new_points        
     
-    def calculateProjected(self):
-        raise Exception('CoordinateSet: Implement calculateProjected')
+    def calculateProjected(self) -> CoordinateSet:
+        self.finalise()
+        projected_coordinates: CoordinateSet = self.getFactory().createCoordinateSet()
+        projected_points = np.unique(self._points[:,0:2], axis=0)
+        projected_points =np.pad(projected_points, ((0, 0), (0, 1)), mode="constant")
+        projected_coordinates.addAll(projected_points)
+
+        return projected_coordinates
         
     def getSlice(self, slice: int):
         self.finalise()

@@ -48,7 +48,8 @@ class VolumeWrapper:
 
     @JOverride
     def getProjected(self) -> VolumeWrapper:
-        raise Exception('VolumeWrapper: Implement getProjected')
+        volume: Volume = self._volume.getProjected()
+        return wrapVolume(volume)
 
     @JOverride
     def hasCalculatedProjection(self) -> bool:
@@ -99,7 +100,7 @@ class VolumeWrapper:
 
     @JOverride
     def setCoordinateSet(self, coordinate_set: CoordinateSetWrapper): # No return
-        raise Exception('VolumeWrapper: Implement setCoordinateSet')
+        self._volume.setCoordinateSet(coordinate_set.getPythonCoordinateSet())
 
     @JOverride
     def createNewVolume(self, coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper, example_volume: VolumeWrapper) -> VolumeWrapper:
