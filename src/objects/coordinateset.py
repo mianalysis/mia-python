@@ -80,16 +80,16 @@ class CoordinateSet():
         return len(self._points)
 
     def isEmpty(self) -> bool:
-        raise Exception('CoordinateSet: Implement isEmpty')
+        raise NotImplementedError('CoordinateSet: isEmpty')
         
     def toArray(self, array=None): # To do
-        raise Exception('CoordinateSet: Implement toArray')
+        raise NotImplementedError('CoordinateSet: toArray')
 
     def contains(self, point: Point) -> bool:
-        raise Exception('CoordinateSet: Implement contains')
+        raise NotImplementedError('CoordinateSet: contains')
         
     def containsAll(self, points: Points) -> bool:
-        raise Exception('CoordinateSet: Implement containsAll')
+        raise NotImplementedError('CoordinateSet: containsAll')
     
     def add(self, point: Point) -> bool:
         return self.addCoord(point[0], point[1], point[2])
@@ -99,25 +99,25 @@ class CoordinateSet():
         return True
 
     def retainAll(self, points: Points) -> bool:
-        raise Exception('CoordinateSet: Implement retainAll')
+        raise NotImplementedError('CoordinateSet: retainAll')
 
     def remove(self, point: Point) -> bool:
-        raise Exception('CoordinateSet: Implement remove')
+        raise NotImplementedError('CoordinateSet: remove')
         
     def removeAll(self, points: Points) -> bool:
-        raise Exception('CoordinateSet: Implement removeAll')
+        raise NotImplementedError('CoordinateSet: removeAll')
 
     def clear(self): # No return
-        raise Exception('CoordinateSet: Implement clear')
+        raise NotImplementedError('CoordinateSet: clear')
         
     def equals(self, point: Point) -> bool:
-        raise Exception('CoordinateSet: Implement equals')
+        raise NotImplementedError('CoordinateSet: equals')
 
     def hashCode(self, point: Point) -> int:
-        raise Exception('CoordinateSet: Implement hashCode')
+        raise NotImplementedError('CoordinateSet: hashCode')
 
     def spliterator(self): # To do
-        raise Exception('CoordinateSet: Implement spliterator')
+        raise NotImplementedError('CoordinateSet: spliterator')
 
 
 class CoordinateSetFactory:

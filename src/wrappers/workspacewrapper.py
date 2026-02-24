@@ -42,7 +42,7 @@ class WorkspaceWrapper():
 
     @JOverride
     def removeObjects(self, name: str, retainMeasurements: bool):
-        raise Exception('WorkspaceWrapper: Implement removeObjects')
+        raise NotImplementedError('WorkspaceWrapper: removeObjects')
 
     @JOverride
     def addImage(self, image: ImageWrapper):
@@ -50,23 +50,23 @@ class WorkspaceWrapper():
 
     @JOverride
     def removeImage(self, name: str, retainMeasurements: bool):
-        raise Exception('WorkspaceWrapper: Implement removeImage')
+        raise NotImplementedError('WorkspaceWrapper: removeImage')
 
     @JOverride
     def clearAllImages(self,retainMeasurements: bool):
-        raise Exception('WorkspaceWrapper: Implement clearAllImages')
+        raise NotImplementedError('WorkspaceWrapper: clearAllImages')
 
     @JOverride
     def clearAllObjects(self,retainMeasurements: bool):
-        raise Exception('WorkspaceWrapper: Implement clearAllObjects')
+        raise NotImplementedError('WorkspaceWrapper: clearAllObjects')
 
     @JOverride
     def clearMetadata(self):
-        raise Exception('WorkspaceWrapper: Implement clearMetadata')
+        raise NotImplementedError('WorkspaceWrapper: clearMetadata')
 
     @JOverride
     def showMetadata(self,module=None): # To do
-        raise Exception('WorkspaceWrapper: Implement showMetadata')
+        raise NotImplementedError('WorkspaceWrapper: showMetadata')
     
     @JOverride
     def getImage(self,name: str):
@@ -86,7 +86,7 @@ class WorkspaceWrapper():
 
     @JOverride
     def getSingleTimepointWorkspaces(self):
-        raise Exception('WorkspaceWrapper: Implement getSingleTimepointWorkspaces')
+        raise NotImplementedError('WorkspaceWrapper: getSingleTimepointWorkspaces')
 
     @JOverride
     def setAllObjects(self,objects):
@@ -98,7 +98,7 @@ class WorkspaceWrapper():
 
     @JOverride
     def setImages(self,images): # To do
-        raise Exception('WorkspaceWrapper: Implement setImages')
+        raise NotImplementedError('WorkspaceWrapper: setImages')
 
     @JOverride
     def getMetadata(self) -> MetadataWrapper:
@@ -106,7 +106,7 @@ class WorkspaceWrapper():
 
     @JOverride
     def setMetadata(self,metadata: MetadataWrapper):
-        raise Exception('WorkspaceWrapper: Implement setMetadata')
+        raise NotImplementedError('WorkspaceWrapper: setMetadata')
 
     @JOverride
     def getID(self) -> int:
@@ -114,32 +114,32 @@ class WorkspaceWrapper():
 
     @JOverride
     def getProgress(self) -> float:
-        raise Exception('WorkspaceWrapper: Implement getProgress')
+        raise NotImplementedError('WorkspaceWrapper: getProgress')
 
     @JOverride
     def setProgress(self,progress: float):
-        raise Exception('WorkspaceWrapper: Implement setProgress')
+        raise NotImplementedError('WorkspaceWrapper: setProgress')
 
     @JOverride
     def getStatus(self):
-        raise Exception('WorkspaceWrapper: Implement getStatus')
+        raise NotImplementedError('WorkspaceWrapper: getStatus')
 
     @JOverride
     def setStatus(self,status):
-        raise Exception('WorkspaceWrapper: Implement setStatus')
+        raise NotImplementedError('WorkspaceWrapper: setStatus')
 
     @JOverride
     def exportWorkspace(self) -> bool:
-        raise Exception('WorkspaceWrapper: Implement exportWorkspace')
+        raise NotImplementedError('WorkspaceWrapper: exportWorkspace')
     
     @JOverride
     def setExportWorkspace(self,exportWorkspace):
-        raise Exception('WorkspaceWrapper: Implement setExportWorkspace')
+        raise NotImplementedError('WorkspaceWrapper: setExportWorkspace')
     
     @JOverride
     def getWorkspaces(self):
-        raise Exception('WorkspaceWrapper: Implement getWorkspaces')
+        raise NotImplementedError('WorkspaceWrapper: getWorkspaces')
     
     @JOverride
     def setWorkspaces(self,workspaces):
-        raise Exception('WorkspaceWrapper: Implement setWorkspaces')
+        raise NotImplementedError('WorkspaceWrapper: setWorkspaces')

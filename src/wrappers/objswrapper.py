@@ -36,7 +36,7 @@ class ObjsWrapperIterator:
     @JOverride
     def next(self):
         if not self.hasNext():
-            raise jpype.JClass("java.util.NoSuchElementException")() # type: ignore
+            raise jpype.JClass("java.util.NoSuchElementNotImplementedError")() # type: ignore
         
         obj_wrapper: ObjWrapper = wrapObj(self._items[self._idx])
         
@@ -48,7 +48,7 @@ class ObjsWrapperIterator:
     @JOverride
     def remove(self):
         if self._last_idx == -1:
-            raise jpype.JClass("java.lang.IllegalStateException")() # type: ignore
+            raise jpype.JClass("java.lang.IllegalStateNotImplementedError")() # type: ignore
         
         self._objs_wrapper._objs.remove(self._items[self._last_idx].getID())
         self._last_key = None
@@ -81,15 +81,15 @@ class ObjsWrapperCollection:
     
     @JOverride
     def containsAll(self, collection) -> bool:
-        raise Exception('ValuesCollection: Implement containsAll')
+        raise NotImplementedError('ValuesCollection: containsAll')
     
     @JOverride
     def equals(self, values_collection: Self) -> bool:
-        raise Exception('ValuesCollection: Implement equals')
+        raise NotImplementedError('ValuesCollection: equals')
     
     @JOverride
     def hashCode(self) -> int:
-        raise Exception('ValuesCollection: Implement hashCode')
+        raise NotImplementedError('ValuesCollection: hashCode')
     
     @JOverride
     def isEmpty(self) -> bool:
@@ -116,7 +116,7 @@ class ObjsWrapperCollection:
     
     @JOverride
     def retainAll(self, collection) -> bool:
-        raise Exception('ValuesCollection: Implement retainAll')
+        raise NotImplementedError('ValuesCollection: retainAll')
     
     @JOverride
     def size(self) -> int:
@@ -124,7 +124,7 @@ class ObjsWrapperCollection:
     
     @JOverride
     def toArray(self): # To do
-        raise Exception('ValuesCollection: Implement toArray')
+        raise NotImplementedError('ValuesCollection: toArray')
 
         
 @JImplements('io.github.mianalysis.mia.object.ObjsI') # type: ignore
@@ -162,23 +162,23 @@ class ObjsWrapper():
     
     @JOverride
     def resetCollection(self): # No return
-        raise Exception('ObjsWrapper: Implement resetCollection')
+        raise NotImplementedError('ObjsWrapper: resetCollection')
     
     @JOverride
     def recalculateMaxID(self): # No return
-        raise Exception('ObjsWrapper: Implement recalculateMaxID')
+        raise NotImplementedError('ObjsWrapper: recalculateMaxID')
     
     @JOverride
     def getAsSingleObject(self) -> ObjWrapper:
-        raise Exception('ObjsWrapper: Implement getAsSingleObject')
+        raise NotImplementedError('ObjsWrapper: getAsSingleObject')
     
     @JOverride
     def getObjectsInFrame(self, output_objects_name: str, frame: int) -> ObjsWrapper:
-        raise Exception('ObjsWrapper: Implement getObjectsInFrame')
+        raise NotImplementedError('ObjsWrapper: getObjectsInFrame')
     
     @JOverride
     def setCalibrationFromExample(self, example: JSpatioTemporallyCalibrated, update_all_objects: bool): # No return
-        raise Exception('ObjsWrapper: Implement setCalibrationFromExample')
+        raise NotImplementedError('ObjsWrapper: setCalibrationFromExample')
     
     @JOverride
     def getNFrames(self) -> int:
@@ -207,7 +207,7 @@ class ObjsWrapper():
     @JOverride
     def duplicate(self, new_objects_name: str, duplicate_relationships: bool, duplicate_measurement: bool,
                   duplicate_metadata: bool, add_original_duplicate_relationship: bool) -> ObjsWrapper:
-        raise Exception('ObjsWrapper: Implement duplicate')
+        raise NotImplementedError('ObjsWrapper: duplicate')
 
 
     # Default methods
@@ -262,23 +262,23 @@ class ObjsWrapper():
     
     @JOverride
     def getFirst(self) -> ObjWrapper:
-        raise Exception('ObjsWrapper: Implement getFirst')
+        raise NotImplementedError('ObjsWrapper: getFirst')
     
     @JOverride
     def getSpatialExtents(self): # To do
-        raise Exception('ObjsWrapper: Implement getSpatialExtents')
+        raise NotImplementedError('ObjsWrapper: getSpatialExtents')
     
     @JOverride
     def getSpatialLimits(self): # To do
-        raise Exception('ObjsWrapper: Implement getSpatialLimits')
+        raise NotImplementedError('ObjsWrapper: getSpatialLimits')
     
     @JOverride
     def getTemporalLimits(self): # To do
-        raise Exception('ObjsWrapper: Implement getTemporalLimits')
+        raise NotImplementedError('ObjsWrapper: getTemporalLimits')
     
     @JOverride
     def getLargestID(self) -> int:
-        raise Exception('ObjsWrapper: Implement getLargestID')
+        raise NotImplementedError('ObjsWrapper: getLargestID')
         
     @JOverride
     def convertToImage(self, outputName: str, hues: Dict[int, float], bitDepth: int, nanBackground: bool, verbose: bool) -> ImageWrapper:
@@ -312,11 +312,11 @@ class ObjsWrapper():
     
     @JOverride
     def applyCalibration(self, image: ImageWrapper): # No return
-        raise Exception('ObjsWrapper: Implement applyCalibration')
+        raise NotImplementedError('ObjsWrapper: applyCalibration')
     
     @JOverride
     def applyCalibrationFromImagePlus(self, ipl): # To do
-        raise Exception('ObjsWrapper: Implement applyCalibrationFromImagePlus')
+        raise NotImplementedError('ObjsWrapper: applyCalibrationFromImagePlus')
     
     @JOverride
     def createImage(self, outputName: str, bitDepth: int) -> ImageWrapper:
@@ -325,11 +325,11 @@ class ObjsWrapper():
     
     @JOverride
     def setNaNBackground(self, ipl): # To do
-        raise Exception('ObjsWrapper: Implement setNaNBackground')
+        raise NotImplementedError('ObjsWrapper: setNaNBackground')
     
     @JOverride
     def getByEqualsIgnoreNameAndID(self, referenceObj: ObjWrapper) -> ObjWrapper:
-        raise Exception('ObjsWrapper: Implement getByEqualsIgnoreNameAndID')
+        raise NotImplementedError('ObjsWrapper: getByEqualsIgnoreNameAndID')
     
     @JOverride
     def showMeasurements(self, module, modules): # To do
@@ -356,39 +356,39 @@ class ObjsWrapper():
     
     @JOverride
     def showMetadata(self, module, modules): # To do
-        raise Exception('ObjsWrapper: Implement showMetadata')
+        raise NotImplementedError('ObjsWrapper: showMetadata')
     
     @JOverride
     def showAllMetadata(self): # No return
-        raise Exception('ObjsWrapper: Implement showAllMetadata')
+        raise NotImplementedError('ObjsWrapper: showAllMetadata')
     
     @JOverride
     def removeParents(self, parentObjectsName: str): # No return
-        raise Exception('ObjsWrapper: Implement removeParents')
+        raise NotImplementedError('ObjsWrapper: removeParents')
     
     @JOverride
     def removeChildren(self, childObjectsName: str): # No return
-        raise Exception('ObjsWrapper: Implement removeChildren')
+        raise NotImplementedError('ObjsWrapper: removeChildren')
     
     @JOverride
     def removePartners(self, partnerObjectsName: str): # No return
-        raise Exception('ObjsWrapper: Implement removePartners')
+        raise NotImplementedError('ObjsWrapper: removePartners')
     
     @JOverride
     def containsPoint(self, point: JPointType[int]) -> bool:
-        raise Exception('ObjsWrapper: Implement containsPoint')
+        raise NotImplementedError('ObjsWrapper: containsPoint')
     
     @JOverride
     def containsCoord(self, x: int, y: int, z: int) -> bool:
-        raise Exception('ObjsWrapper: Implement containsCoord')
+        raise NotImplementedError('ObjsWrapper: containsCoord')
     
     @JOverride
     def getLargestObject(self, t: int) -> ObjWrapper:
-        raise Exception('ObjsWrapper: Implement getLargestObject')
+        raise NotImplementedError('ObjsWrapper: getLargestObject')
     
     @JOverride
     def getSmallestObject(self, t: int) -> ObjWrapper:
-        raise Exception('ObjsWrapper: Implement getSmallestObject')
+        raise NotImplementedError('ObjsWrapper: getSmallestObject')
 
     
 
@@ -405,15 +405,15 @@ class ObjsWrapper():
     
     @JOverride
     def isEmpty(self) -> bool:
-        raise Exception('MapWrapper: Implement isEmpty')
+        raise NotImplementedError('MapWrapper: isEmpty')
     
     @JOverride
     def containsKey(self, key: int) -> bool:
-        raise Exception('MapWrapper: Implement containsKey')
+        raise NotImplementedError('MapWrapper: containsKey')
     
     @JOverride
     def containsValue(self, value: ObjWrapper) -> bool:
-        raise Exception('MapWrapper: Implement containsValue')
+        raise NotImplementedError('MapWrapper: containsValue')
         
     @JOverride
     def put(self, key: int, value: ObjWrapper) -> ObjWrapper | None:
@@ -429,19 +429,19 @@ class ObjsWrapper():
     
     @JOverride
     def remove(self, key: int) -> ObjWrapper:
-        raise Exception('MapWrapper: Implement remove')
+        raise NotImplementedError('MapWrapper: remove')
     
     @JOverride
     def putAll(self, m: Dict[int, Obj]): # No return
-        raise Exception('MapWrapper: Implement putAll')
+        raise NotImplementedError('MapWrapper: putAll')
     
     @JOverride
     def clear(self): # No return
-        raise Exception('MapWrapper: Implement clear')
+        raise NotImplementedError('MapWrapper: clear')
     
     @JOverride
     def keySet(self): # To do
-        raise Exception('MapWrapper: Implement keySet')
+        raise NotImplementedError('MapWrapper: keySet')
     
     @JOverride
     def values(self): # To do
@@ -449,27 +449,27 @@ class ObjsWrapper():
     
     @JOverride
     def entrySet(self): # To do
-        raise Exception('MapWrapper: Implement entrySet')
+        raise NotImplementedError('MapWrapper: entrySet')
 
     @JOverride
     def equals(self, o: ObjsWrapper) -> bool:
-        raise Exception('MapWrapper: Implement equals')
+        raise NotImplementedError('MapWrapper: equals')
     
     @JOverride
     def hashCode(self) -> int:
-        raise Exception('MapWrapper: Implement hashCode')
+        raise NotImplementedError('MapWrapper: hashCode')
     
     @JOverride
     def getOrDefault(self, key: int, defaultValue: ObjWrapper) -> ObjWrapper:
-        raise Exception('MapWrapper: Implement getOrDefault')
+        raise NotImplementedError('MapWrapper: getOrDefault')
     
     @JOverride
     def forEach(self, action): # To do
-        raise Exception('MapWrapper: Implement forEach')
+        raise NotImplementedError('MapWrapper: forEach')
     
     @JOverride
     def replaceAll(self, function): # To do
-        raise Exception('MapWrapper: Implement replaceAll')
+        raise NotImplementedError('MapWrapper: replaceAll')
     
     @JOverride
     def putIfAbsent(self, key: int, value: ObjWrapper) -> ObjWrapper | None:
@@ -483,71 +483,71 @@ class ObjsWrapper():
     
     # @JOverride
     # def removeKeyValue(self, key, value):
-    #     raise Exception('MapWrapper: Implement remove (key, value)')
+    #     raise NotImplementedError('MapWrapper: remove (key, value)')
     
     # @JOverride
     # def replaceKeyValue(self, key, oldValue, newValue):
-    #     raise Exception('MapWrapper: Implement replace (key, oldValue, newValue)')
+    #     raise NotImplementedError('MapWrapper: replace (key, oldValue, newValue)')
     
     @JOverride
     def replace(self, key: int, value: ObjWrapper) -> bool:
-        raise Exception('MapWrapper: Implement replace (key, value)')
+        raise NotImplementedError('MapWrapper: replace (key, value)')
     
     @JOverride
     def computeIfAbsent(self, key, mapping_function): # To do
-        raise Exception('MapWrapper: Implement computeIfAbsent')
+        raise NotImplementedError('MapWrapper: computeIfAbsent')
     
     @JOverride
     def computeIfPresent(self, key, remappingFunction): # To do
-        raise Exception('MapWrapper: Implement computeIfPresent')
+        raise NotImplementedError('MapWrapper: computeIfPresent')
     
     @JOverride
     def compute(self, key, remappingFunction): # To do
-        raise Exception('MapWrapper: Implement compute')
+        raise NotImplementedError('MapWrapper: compute')
     
     @JOverride
     def merge(self, key, value, remappingFunction): # To do
-        raise Exception('MapWrapper: Implement merge')
+        raise NotImplementedError('MapWrapper: merge')
 
     # Note: May also need to implement the Entry interface:
 
     # @JOverride
     # def getKey(self):
-    #     raise Exception('EntryWrapper: Implement getKey')
+    #     raise NotImplementedError('EntryWrapper: getKey')
     
     # @JOverride
     # def getValue(self):
-    #     raise Exception('EntryWrapper: Implement getValue')
+    #     raise NotImplementedError('EntryWrapper: getValue')
     
     # @JOverride
     # def setValue(self, value):
-    #     raise Exception('EntryWrapper: Implement setValue')
+    #     raise NotImplementedError('EntryWrapper: setValue')
     
     # @JOverride
     # def equals(self, o):
-    #     raise Exception('EntryWrapper: Implement equals')
+    #     raise NotImplementedError('EntryWrapper: equals')
     
     # @JOverride
     # def hashCode(self):
-    #     raise Exception('EntryWrapper: Implement hashCode')
+    #     raise NotImplementedError('EntryWrapper: hashCode')
     
     # # Static comparator methods (if relevant to expose)
     
     # @staticmethod
     # def comparingByKey():
-    #     raise Exception('EntryWrapper: Implement comparingByKey')
+    #     raise NotImplementedError('EntryWrapper: comparingByKey')
     
     # @staticmethod
     # def comparingByValue():
-    #     raise Exception('EntryWrapper: Implement comparingByValue')
+    #     raise NotImplementedError('EntryWrapper: comparingByValue')
     
     # @staticmethod
     # def comparingByKeyWithComparator(cmp):
-    #     raise Exception('EntryWrapper: Implement comparingByKey with comparator')
+    #     raise NotImplementedError('EntryWrapper: comparingByKey with comparator')
     
     # @staticmethod
     # def comparingByValueWithComparator(cmp):
-    #     raise Exception('EntryWrapper: Implement comparingByValue with comparator')
+    #     raise NotImplementedError('EntryWrapper: comparingByValue with comparator')
 
 
 

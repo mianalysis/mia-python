@@ -75,7 +75,7 @@ class Image:
         self._n_indices = n_indices
         
     def clear(self):
-        raise Exception('Image: Implement clear')
+        raise NotImplementedError('Image: clear')
     
     def getRenderer(self):
         return self._renderer
@@ -154,10 +154,10 @@ class Image:
     #     self._da_img = ij.py.from_java(imagePlus) # type: ignore
     
     def getImgPlus(self):
-        raise Exception('Image: Implement getImgPlus')
+        raise NotImplementedError('Image: getImgPlus')
     
     def setImgPlus(self, img):
-        raise Exception('Image: Implement setImgPlus')
+        raise NotImplementedError('Image: setImgPlus')
     
     def getRawImage(self) -> DataArray:
         return self._da_img
@@ -208,22 +208,22 @@ class Image:
         self._da_img.data[tuple(indices)] = vals
         
     def initialiseEmptyObjs(self, output_objects_name):
-        raise Exception('Image: Implement initialiseEmptyObjs')
+        raise NotImplementedError('Image: initialiseEmptyObjs')
     
     def addObject(self, obj, hue):
-        raise Exception('Image: Implement addObject')
+        raise NotImplementedError('Image: addObject')
     
     def addObjectCentroid(self, obj, hue):
-        raise Exception('Image: Implement addObjectCentroid')
+        raise NotImplementedError('Image: addObjectCentroid')
     
     def duplicate(self, output_image_name: str):
-        raise Exception('Image: Implement duplicate')
+        raise NotImplementedError('Image: duplicate')
     
     def getOverlay(self):
-        raise Exception('Image: Implement getOverlay')
+        raise NotImplementedError('Image: getOverlay')
     
     def setOverlay(self, overlay):
-        raise Exception('Image: Implement setOverlay')
+        raise NotImplementedError('Image: setOverlay')
         
     def convertImageToObjects(self, coordinate_set_factory: CoordinateSetFactory, output_objects_name: str, single_object: bool) -> Objs:
         return self.convertImageToObjectsGeneral(coordinate_set_factory, output_objects_name, single_object, True)
@@ -296,25 +296,25 @@ class Image:
         return self._measurements.get(name)
         
     def removeMeasurement(self, name: str):
-        raise Exception('Image: Implement removeMeasurement')
+        raise NotImplementedError('Image: removeMeasurement')
     
     def getName(self) -> str:
         return self._name
     
     def getMeasurements(self):
-        raise Exception('Image: Implement getMeasurements')
+        raise NotImplementedError('Image: getMeasurements')
     
     def setMeasurements(self, measurements):
-        raise Exception('Image: Implement setMeasurements')
+        raise NotImplementedError('Image: setMeasurements')
 
     def show(self, title: str, colormap: Colormap | str | None, normalise: bool, display_mode: str, overlay):
         self._renderer.render(self, title, colormap, normalise, display_mode, overlay)
 
     def showMeasurements(self, module):
-        raise Exception('Image: Implement showMeasurements')
+        raise NotImplementedError('Image: showMeasurements')
     
     def showAllMeasurements(self):
-        raise Exception('Image: Implement showAllMeasurements')
+        raise NotImplementedError('Image: showAllMeasurements')
 
 def createImage(image_name: str, width: int, height: int, n_channels: int, n_slices: int, n_frames: int, d_type: npt.DTypeLike, dpp_xy: float, dpp_z: float, spatial_units: str, frame_interval: float, temporal_units: str) -> Image:
     # Getting dimensions for array

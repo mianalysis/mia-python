@@ -48,7 +48,7 @@ class ImageWrapper:
             
     @JOverride
     def clear(self):
-        raise Exception('ImageWrapper: Implement clear')
+        raise NotImplementedError('ImageWrapper: clear')
     
     @JOverride
     def getRenderer(self):
@@ -112,11 +112,11 @@ class ImageWrapper:
         
     @JOverride
     def getImgPlus(self):
-        raise Exception('ImageWrapper: Implement getImgPlus')
+        raise NotImplementedError('ImageWrapper: getImgPlus')
     
     @JOverride
     def setImgPlus(self, img):
-        raise Exception('ImageWrapper: Implement setImgPlus')
+        raise NotImplementedError('ImageWrapper: setImgPlus')
 
     @JOverride
     def getRawImage(self):
@@ -128,27 +128,27 @@ class ImageWrapper:
     
     @JOverride
     def initialiseEmptyObjs(self, outputObjectsName):
-        raise Exception('ImageWrapper: Implement initialiseEmptyObjs')
+        raise NotImplementedError('ImageWrapper: initialiseEmptyObjs')
     
     @JOverride
     def addObject(self, obj, hue):
-        raise Exception('ImageWrapper: Implement addObject')
+        raise NotImplementedError('ImageWrapper: addObject')
     
     @JOverride
     def addObjectCentroid(self, obj, hue):
-        raise Exception('ImageWrapper: Implement addObjectCentroid')
+        raise NotImplementedError('ImageWrapper: addObjectCentroid')
     
     @JOverride
     def duplicate(self, outputImageName: str):
-        raise Exception('ImageWrapper: Implement duplicate')
+        raise NotImplementedError('ImageWrapper: duplicate')
     
     @JOverride
     def getOverlay(self):
-        raise Exception('ImageWrapper: Implement getOverlay')
+        raise NotImplementedError('ImageWrapper: getOverlay')
     
     @JOverride
     def setOverlay(self, overlay):
-        raise Exception('ImageWrapper: Implement setOverlay')
+        raise NotImplementedError('ImageWrapper: setOverlay')
         
     @JOverride
     def convertImageToObjects(self, coordinate_set_factory: CoordinateSetFactoryWrapper, output_objects_name: str, single_object: bool) -> ObjsWrapper:
@@ -177,7 +177,7 @@ class ImageWrapper:
         
     @JOverride
     def removeMeasurement(self, name: str):
-        raise Exception('ImageWrapper: Implement removeMeasurement')
+        raise NotImplementedError('ImageWrapper: removeMeasurement')
     
     @JOverride
     def getName(self) -> str:
@@ -185,15 +185,15 @@ class ImageWrapper:
     
     @JOverride
     def getMeasurements(self):
-        raise Exception('ImageWrapper: Implement getMeasurements')
+        raise NotImplementedError('ImageWrapper: getMeasurements')
     
     @JOverride
     def setMeasurements(self, measurements):
-        raise Exception('ImageWrapper: Implement setMeasurements')
+        raise NotImplementedError('ImageWrapper: setMeasurements')
 
     @JOverride
     def show(self, title: str, lut: JLUT | None, normalise, display_mode, overlay):
-        print("ImageWrapper: Implement LUT -> Colormap conversion in show.  For now, setting no LUT")
+        print("ImageWrapper: LUT -> Colormap conversion in show.  For now, setting no LUT")
         self._image.show(title, None, normalise, display_mode, overlay)
         
     @JOverride
@@ -218,11 +218,11 @@ class ImageWrapper:
 
     @JOverride
     def showMeasurements(self, module):
-        raise Exception('ImageWrapper: Implement showMeasurements')
+        raise NotImplementedError('ImageWrapper: showMeasurements')
     
     @JOverride
     def showAllMeasurements(self):
-        raise Exception('ImageWrapper: Implement showAllMeasurements')
+        raise NotImplementedError('ImageWrapper: showAllMeasurements')
 
 
 @JImplements('io.github.mianalysis.mia.object.image.ImageFactoryI')

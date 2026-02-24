@@ -65,19 +65,19 @@ class Obj(Volume):
         return self._parents
 
     def setAllParents(self, parents: Dict[str, Obj]):
-        raise Exception('Obj: Implement setAllParents')
+        raise NotImplementedError('Obj: setAllParents')
 
     def getAllChildren(self) -> Dict[str, Objs]:
         return self._children
 
     def setAllChildren(self, children: Dict[str, Objs]):
-        raise Exception('Obj: Implement setAllChildren')
+        raise NotImplementedError('Obj: setAllChildren')
 
     def getAllPartners(self) -> Dict[str, Objs]:
         return self._partners
 
     def setAllPartners(self, partners: Dict[str, Objs]):
-        raise Exception('Obj: Implement setAllPartners')
+        raise NotImplementedError('Obj: setAllPartners')
 
     def removeRelationships(self): # No return
         # Removing itself as a child from its parent
@@ -116,22 +116,22 @@ class Obj(Volume):
         self._measurements = measurements
     
     def getMetadata(self): # To do
-        raise Exception('Obj: Implement getMetadata')
+        raise NotImplementedError('Obj: getMetadata')
 
     def setMetadata(self, metadata): # To do
-        raise Exception('Obj: Implement setMetadata')
+        raise NotImplementedError('Obj: setMetadata')
 
     def getRois(self): # To do
-        raise Exception('Obj: Implement getRois')
+        raise NotImplementedError('Obj: getRois')
 
     def clearROIs(self): # No return
-        raise Exception('Obj: Implement clearROIs')
+        raise NotImplementedError('Obj: clearROIs')
 
     def duplicate(self, new_collection: Objs, duplicate_relationships: bool, duplicate_measurements: bool, duplicate_metadata: bool) -> Obj:
-        raise Exception('Obj: Implement duplicate')
+        raise NotImplementedError('Obj: duplicate')
 
     def equalsIgnoreNameAndID(self, obj: Obj) -> bool:
-        raise Exception('Obj: Implement equalsIgnoreNameAndID')
+        raise NotImplementedError('Obj: equalsIgnoreNameAndID')
 
     def toString(self) -> str:
         return f"Object \"{self.getName()}\", ID = {self.getID()}, frame = {self.getT()}"
@@ -158,11 +158,11 @@ class Obj(Volume):
         self._temporal_unit = temporal_unit
     
     def applySpatioTemporalCalibrationToImage(self, ipl): # To do
-        raise Exception('Obj: Implement applySpatioTemporalCalibrationToImage')
+        raise NotImplementedError('Obj: applySpatioTemporalCalibrationToImage')
     
     def setSpatioTemporalCalibrationFromExample(self, example): # To do
         # This should just use Python objects
-        raise Exception('Obj: Implement setSpatioTemporalCalibrationFromExample')
+        raise NotImplementedError('Obj: setSpatioTemporalCalibrationFromExample')
 
 
     # Obj default methods
@@ -221,13 +221,13 @@ class Obj(Volume):
         self._parents.pop(name)
 
     def getChildren(self, name: str) -> Objs:
-        raise Exception('Obj: Implement getChildren')
+        raise NotImplementedError('Obj: getChildren')
 
     def addChildren(self, child_set: Objs):
-        raise Exception('Obj: Implement addChildren')
+        raise NotImplementedError('Obj: addChildren')
 
     def removeChildren(self, name: str):
-        raise Exception('Obj: Implement removeChildren')
+        raise NotImplementedError('Obj: removeChildren')
 
     def addChild(self, child: Obj):
         if child is None:
@@ -240,40 +240,40 @@ class Obj(Volume):
         self._children[child_name].add(child)
 
     def removeChild(self, child: Obj):
-        raise Exception('Obj: Implement removeChild')
+        raise NotImplementedError('Obj: removeChild')
 
     def getPartners(self, name: str) -> Objs:
-        raise Exception('Obj: Implement getPartners')
+        raise NotImplementedError('Obj: getPartners')
 
     def addPartners(self, partner_set: Objs):
-        raise Exception('Obj: Implement addPartners')
+        raise NotImplementedError('Obj: addPartners')
 
     def addPartner(self, partner: Obj):
-        raise Exception('Obj: Implement addPartner')
+        raise NotImplementedError('Obj: addPartner')
 
     def removePartner(self, partner: Obj):
-        raise Exception('Obj: Implement removePartner')
+        raise NotImplementedError('Obj: removePartner')
 
     def removePartners(self, name: str):
-        raise Exception('Obj: Implement removePartners')
+        raise NotImplementedError('Obj: removePartners')
 
     def getPreviousPartners(self, name: str) -> Objs:
-        raise Exception('Obj: Implement getPreviousPartners')
+        raise NotImplementedError('Obj: getPreviousPartners')
 
     def getSimultaneousPartners(self, name: str) -> Objs:
-        raise Exception('Obj: Implement getSimultaneousPartners')
+        raise NotImplementedError('Obj: getSimultaneousPartners')
 
     def getNextPartners(self, name: str) -> Objs:
-        raise Exception('Obj: Implement getNextPartners')
+        raise NotImplementedError('Obj: getNextPartners')
 
     def addMetadataItem(self, metadata_item): # To do
-        raise Exception('Obj: Implement addMetadataItem')
+        raise NotImplementedError('Obj: addMetadataItem')
 
     def getMetadataItem(self, name: str): # To do
-        raise Exception('Obj: Implement getMetadataItem')
+        raise NotImplementedError('Obj: getMetadataItem')
 
     def removeMetadataItem(self, name: str):
-        raise Exception('Obj: Implement removeMetadataItem')
+        raise NotImplementedError('Obj: removeMetadataItem')
 
     def addMeasurement(self, measurement: Measurement):
         self._measurements[measurement.getName()] = measurement
@@ -285,13 +285,13 @@ class Obj(Volume):
         return self._measurements.get(name)
 
     def removeMeasurement(self, name: str):
-        raise Exception('Obj: Implement removeMeasurement')
+        raise NotImplementedError('Obj: removeMeasurement')
 
     def getAsImage(self, imageName: str, single_timepoint: bool) -> Image:
-        raise Exception('Obj: Implement getAsImage')
+        raise NotImplementedError('Obj: getAsImage')
     
     def getCentroidAsImage(self, imageName: str, single_timepoint: bool) -> Image:
-        raise Exception('Obj: Implement getCentroidAsImage')
+        raise NotImplementedError('Obj: getCentroidAsImage')
 
     def addToImage(self, image: Image, hue: float): # No return
         # np_img: DataArray = image.getRawImage()
@@ -309,13 +309,13 @@ class Obj(Volume):
             # np_img[y,x,0] = hue
 
     def addCentroidToImage(self, image: Image, hue: float):
-        raise Exception('Obj: Implement addCentroidToImage')
+        raise NotImplementedError('Obj: addCentroidToImage')
 
     def removeOutOfBoundsCoords(self):
-        raise Exception('Obj: Implement removeOutOfBoundsCoords')
+        raise NotImplementedError('Obj: removeOutOfBoundsCoords')
 
     def getImgPlusCoordinateIterator(self): # To do
-        raise Exception('Obj: Implement getImgPlusCoordinateIterator')
+        raise NotImplementedError('Obj: getImgPlusCoordinateIterator')
 
         
     # Volume default methods

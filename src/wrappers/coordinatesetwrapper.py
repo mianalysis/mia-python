@@ -72,11 +72,11 @@ class CoordinateSetWrapper():
     
     @JOverride
     def calculateProjected(self) -> CoordinateSetWrapper:
-        raise Exception('CoordinateSetWrapper: Implement calculateProjected')
+        raise NotImplementedError('CoordinateSetWrapper: calculateProjected')
         
     @JOverride
     def getSlice(self, slice: int) -> CoordinateSetWrapper:
-        raise Exception('CoordinateSetWrapper: Implement getSlice')
+        raise NotImplementedError('CoordinateSetWrapper: getSlice')
 
 
     # From Set
@@ -139,7 +139,7 @@ class CoordinateSetWrapper():
 
     @JOverride
     def spliterator(self): # To do
-        raise Exception('CoordinateSetWrapper: Implement spliterator')
+        raise NotImplementedError('CoordinateSetWrapper: spliterator')
 
 
 @JImplements('java.util.Iterator')
@@ -161,10 +161,10 @@ class CoordinateSetWrapperIterator:
     
     @JOverride
     def remove(self): # No return
-        raise Exception('CoordinateSetWrapperIterator: Implement remove')
+        raise NotImplementedError('CoordinateSetWrapperIterator: remove')
             
     def forEachRemaining(self, action): # To do
-        raise Exception('CoordinateSetWrapperIterator: Implement forEachRemaining')
+        raise NotImplementedError('CoordinateSetWrapperIterator: forEachRemaining')
     
 @JImplements('io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI')
 class CoordinateSetFactoryWrapper():    
@@ -191,15 +191,15 @@ class CoordinateSetFactoryWrapper():
     
     @JOverride
     def calculateSurface(self, is_2D: bool) -> CoordinateSetWrapper:
-        raise Exception('CoordinateSetWrapper: Implement calculateSurface')
+        raise NotImplementedError('CoordinateSetWrapper: calculateSurface')
     
     @JOverride
     def calculateSurface2D(self) -> CoordinateSetWrapper:
-        raise Exception('CoordinateSetWrapper: Implement calculateSurface2D')
+        raise NotImplementedError('CoordinateSetWrapper: calculateSurface2D')
     
     @JOverride
     def calculateSurface3D(self) -> CoordinateSetWrapper:
-        raise Exception('CoordinateSetWrapper: Implement calculateSurface3D')
+        raise NotImplementedError('CoordinateSetWrapper: calculateSurface3D')
 
 
 def wrapCoordinateSet(coordinate_set: CoordinateSet) -> CoordinateSetWrapper:

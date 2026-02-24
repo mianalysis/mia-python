@@ -31,10 +31,10 @@ class Volume():
         return self._coordinate_set_factory
     
     def getSurface(self, ignore_edges_XY: bool, ignore_edges_Z: bool) -> Volume:
-        raise Exception('Volume: Implement getSurface')
+        raise NotImplementedError('Volume: getSurface')
 
     def hasCalculatedSurface(self) -> bool:
-        raise Exception('Volume: Implement hasCalculatedSurface')
+        raise NotImplementedError('Volume: hasCalculatedSurface')
 
     def getProjected(self) -> Volume:
         if self._projection is None:
@@ -44,7 +44,7 @@ class Volume():
         return self._projection
 
     def hasCalculatedProjection(self) -> bool:
-        raise Exception('Volume: Implement hasCalculatedProjection')
+        raise NotImplementedError('Volume: hasCalculatedProjection')
 
     def getMeanCentroid(self, pixel_distances: bool, match_xy: bool) -> Point:
         if self._mean_centroid is None:
@@ -66,16 +66,16 @@ class Volume():
             return np.array((x_mean*self.getDppXY(), y_mean*self.getDppXY(), z_mean*self.getDppZ()))
 
     def hasCalculatedCentroid(self) -> bool:
-        raise Exception('Volume: Implement hasCalculatedCentroid')
+        raise NotImplementedError('Volume: hasCalculatedCentroid')
 
     def clearAllCoordinates(self): # No return
-        raise Exception('Volume: Implement clearAllCoordinates')
+        raise NotImplementedError('Volume: clearAllCoordinates')
 
     def clearSurface(self): # No return
-        raise Exception('Volume: Implement clearSurface')
+        raise NotImplementedError('Volume: clearSurface')
 
     def clearPoints(self): # No return
-        raise Exception('Volume: Implement clearPoints')
+        raise NotImplementedError('Volume: clearPoints')
 
     def clearProjected(self): # No return
         self._projection = None
@@ -87,10 +87,10 @@ class Volume():
         self._extents = None
 
     def hashCode(self) -> int:
-        raise Exception('Volume: Implement hashCode')
+        raise NotImplementedError('Volume: hashCode')
 
     def equals(self, obj: Self) -> bool:
-        raise Exception('Volume: Implement equals')
+        raise NotImplementedError('Volume: equals')
 
     def getCoordinateSet(self) -> CoordinateSet:
         self.finalise()
@@ -109,7 +109,7 @@ class Volume():
                       spatial_units = example_volume.getSpatialUnits())
 
     def getCalibratedIterator(self, pixel_distances: bool, match_xy: bool): # To do
-        raise Exception('Volume: Implement getCalibratedIterator')
+        raise NotImplementedError('Volume: getCalibratedIterator')
 
     # private class VolumeIterator implements Iterator<Point<Double>> {
     #     private Iterator<Point<Integer>> iterator;
@@ -186,7 +186,7 @@ class Volume():
     # Default methods
 
     def getCoordinateIterator(self): # To do
-        raise Exception('Volume: Implement getCoordinateIterator')
+        raise NotImplementedError('Volume: getCoordinateIterator')
 
     def addCoord(self, x: int, y: int, z: int): # No return
         if x < 0 or x >= self._width:
@@ -202,19 +202,19 @@ class Volume():
         self._coordinate_set.addCoord(x, y, z)
 
     def addPoint(self, point): # To do
-        raise Exception('Volume: Implement addPoint')
+        raise NotImplementedError('Volume: addPoint')
 
     def addPointsFromRoi(self, roi, z: int): # To do
-        raise Exception('Volume: Implement addPointsFromRoi')
+        raise NotImplementedError('Volume: addPointsFromRoi')
 
     def addPointsFromPolygon(self, polygon, z: int): # To do
-        raise Exception('Volume: Implement addPointsFromPolygon')
+        raise NotImplementedError('Volume: addPointsFromPolygon')
 
     def addPointsFromShape(self, polygon, z: int): # To do
-        raise Exception('Volume: Implement addPointsFromShape')
+        raise NotImplementedError('Volume: addPointsFromShape')
 
     def translateCoords(self, x_offs: int, y_offs: int, z_offs: int):
-        raise Exception('Volume: Implement translateCoords')
+        raise NotImplementedError('Volume: translateCoords')
 
     def finalise(self): # No return
         self._coordinate_set.finalise()
@@ -223,43 +223,43 @@ class Volume():
         self._coordinate_set.finaliseSlice(z)
 
     def getPoints(self): # To do
-        raise Exception('Volume: Implement getPoints')
+        raise NotImplementedError('Volume: getPoints')
 
     def getProjectedArea(self, pixel_distances: bool) -> float:
-        raise Exception('Volume: Implement getProjectedArea')
+        raise NotImplementedError('Volume: getProjectedArea')
 
     def size(self) -> int:
         return self._coordinate_set.size()
 
     def setPoints(self, points): # To do
-        raise Exception('Volume: Implement setPoints')
+        raise NotImplementedError('Volume: setPoints')
 
     def isOnEdgeXY(self, p) -> bool: # To do
-        raise Exception('Volume: Implement isOnEdgeXY')
+        raise NotImplementedError('Volume: isOnEdgeXY')
 
     def isOnEdgeZ(self, p) -> bool: # To do
-        raise Exception('Volume: Implement isOnEdgeZ')
+        raise NotImplementedError('Volume: isOnEdgeZ')
 
     def contains(self, point1) -> bool: # To do
-        raise Exception('Volume: Implement contains')
+        raise NotImplementedError('Volume: contains')
 
     def getNumberOfElements(self) -> int:
-        raise Exception('Volume: Implement getNumberOfElements')
+        raise NotImplementedError('Volume: getNumberOfElements')
 
     def is2D(self) -> bool:
         return self.getNSlices() == 1
 
     def getCalibratedX(self, point) -> float: # To do
-        raise Exception('Volume: Implement getCalibratedX')
+        raise NotImplementedError('Volume: getCalibratedX')
 
     def getCalibratedY(self, point) -> float: # To do
-        raise Exception('Volume: Implement getCalibratedY')
+        raise NotImplementedError('Volume: getCalibratedY')
 
     def getXYScaledZ(self, z: float) -> float:
         return z*self.getDppZ() / self.getDppXY()
 
     def getCalibratedZ(self, point, match_xy: bool) -> float: # To do
-        raise Exception('Volume: Implement getCalibratedZ')
+        raise NotImplementedError('Volume: getCalibratedZ')
 
     def getExtents(self, pixel_distances: bool, match_xy: bool) -> List[List[float]]:
         if self.size() == 0:
@@ -314,7 +314,7 @@ class Volume():
         self._extents = [[raw_min_x, raw_max_x],[raw_min_y, raw_max_y],[raw_min_z, raw_max_z]]
         
     def getAsImage(self, image_name: str, t: int, n_frames: int) -> Image:
-        raise Exception('Volume: Implement getAsImage')
+        raise NotImplementedError('Volume: getAsImage')
 
     def getAsTightImage(self, image_name: str) -> Image:
         border_widths: List[List[int]] = [[0,0],[0,0],[0,0]]
@@ -349,7 +349,7 @@ class Volume():
             return self.size() * self.getDppXY() * self.getDppXY() * self.getDppZ()
         
     def getOverlap(self, volume2: Volume) -> int:
-        raise Exception('Volume: Implement getOverlap')
+        raise NotImplementedError('Volume: getOverlap')
 
     def getX(self, pixel_distances: bool) -> npt.NDArray[np.float32] | npt.NDArray[np.uint32]:
         if pixel_distances:
@@ -373,22 +373,22 @@ class Volume():
             return self._coordinate_set.getPoints()[:,2]*self.getDppZ()
 
     def getSurfaceXCoords(self): # To do
-        raise Exception('Volume: Implement getSurfaceXCoords')
+        raise NotImplementedError('Volume: getSurfaceXCoords')
 
     def getSurfaceYCoords(self): # To do
-        raise Exception('Volume: Implement getSurfaceYCoords')
+        raise NotImplementedError('Volume: getSurfaceYCoords')
 
     def getSurfaceZCoords(self): # To do
-        raise Exception('Volume: Implement getSurfaceZCoords')
+        raise NotImplementedError('Volume: getSurfaceZCoords')
 
     def getSurfaceX(self, pixel_distances: bool): # To do
-        raise Exception('Volume: Implement getSurfaceX')
+        raise NotImplementedError('Volume: getSurfaceX')
 
     def getSurfaceY(self, pixel_distances: bool): # To do
-        raise Exception('Volume: Implement getSurfaceY')
+        raise NotImplementedError('Volume: getSurfaceY')
 
     def getSurfaceZ(self, pixel_distances: bool, match_xy: bool): # To do
-        raise Exception('Volume: Implement getSurfaceZ')
+        raise NotImplementedError('Volume: getSurfaceZ')
 
     def getXMean(self, pixel_distances: bool) -> float:
         return self.getMeanCentroid(pixel_distances, True)[0]
@@ -425,31 +425,31 @@ class Volume():
         return height * self.getDppZ()
 
     def hasVolume(self) -> bool:
-        raise Exception('Volume: Implement hasVolume')
+        raise NotImplementedError('Volume: hasVolume')
 
     def hasArea(self) -> bool:
-        raise Exception('Volume: Implement hasArea')
+        raise NotImplementedError('Volume: hasArea')
 
     def calculateAngle2D(self, volume2: Volume) -> float:
-        raise Exception('Volume: Implement calculateAngle2D')
+        raise NotImplementedError('Volume: calculateAngle2D')
 
     def calculateAngleToPoint2D(self, point) -> float: # To do
-        raise Exception('Volume: Implement calculateAngleToPoint2D')
+        raise NotImplementedError('Volume: calculateAngleToPoint2D')
 
     def calculatePointPointSeparation(self, point1, point2, pixel_distances: bool) -> float: # To do
-        raise Exception('Volume: Implement calculatePointPointSeparation')
+        raise NotImplementedError('Volume: calculatePointPointSeparation')
 
     def getSurfaceSeparation(self, volume2, pixel_distances: bool, force2D: bool, ignore_edges_xy: bool, ignore_edges_z: bool) -> float: # To do
-        raise Exception('Volume: Implement getSurfaceSeparation')
+        raise NotImplementedError('Volume: getSurfaceSeparation')
 
     def getPointSurfaceSeparation(self, point, pixel_distances: bool, force2D: bool, ignore_edges_xy: bool, ignore_edges_z: bool) -> float: # To do
-        raise Exception('Volume: Implement getPointSurfaceSeparation')
+        raise NotImplementedError('Volume: getPointSurfaceSeparation')
 
     def getCentroidSeparation(self, volume2: Volume, pixel_distances: bool, force_2D: bool) -> float: # To do
-        raise Exception('Volume: Implement getCentroidSeparation')
+        raise NotImplementedError('Volume: getCentroidSeparation')
 
     def getOverlappingPoints(self, volume2: Volume) -> Volume:
-        raise Exception('Volume: Implement getOverlappingPoints')
+        raise NotImplementedError('Volume: getOverlappingPoints')
 
     def getSlice(self, slice: int) -> Volume:
         width: int = self.getWidth()
