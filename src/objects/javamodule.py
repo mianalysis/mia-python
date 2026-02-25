@@ -80,7 +80,7 @@ class JavaModule(Module):
         raise NotImplementedError("JavaModule: getParameter")
 
     def updateParameterValue(self, name, value):
-        raise NotImplementedError("JavaModule: updateParameterValue")
+        self._java_module.updateParameterValue(name, value)
 
     def getParameterValue(self, name, workspace):
         raise NotImplementedError("JavaModule: getParameterValue")
@@ -193,3 +193,27 @@ class JavaModule(Module):
     def writeProgressStatus(self, count, total, featureBeingProcessed):
         raise NotImplementedError("JavaModule: writeProgressStatus")
             
+    
+    # From Ref
+
+    def getName(self) -> str:
+        raise NotImplementedError("JavaModule: getName")
+    
+    def getDescription(self) -> str:
+        raise NotImplementedError("JavaModule: getDescription")
+    
+    def setDescription(self, description: str):
+        raise NotImplementedError("JavaModule: setDescription")
+    
+    def getNickname(self) -> str:
+        raise NotImplementedError("JavaModule: getNickname")
+    
+    def setNickname(self, nickname: str):
+        raise NotImplementedError("JavaModule: setNickname")
+    
+    def appendXMLAttributes(self, element):
+        raise NotImplementedError("JavaModule: appendXMLAttributes")
+    
+    def setAttributesFromXML(self, node):
+        raise NotImplementedError("JavaModule: setAttributesFromXML")
+    

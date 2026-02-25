@@ -190,3 +190,27 @@ class Module(ABC):
             
     @abstractmethod
     def writeProgressStatus(self, count, total, featureBeingProcessed): ...
+    
+    
+    # From Ref
+    
+    @abstractmethod
+    def getName(self) -> str: ...
+    
+    @abstractmethod
+    def getDescription(self) -> str: ...
+    
+    @abstractmethod
+    def setDescription(self, description: str): ...
+    
+    @abstractmethod
+    def getNickname(self) -> str: ...
+    
+    @abstractmethod
+    def setNickname(self, nickname: str): ...
+    
+    @abstractmethod
+    def appendXMLAttributes(self, element): ...
+    
+    @abstractmethod
+    def setAttributesFromXML(self, node): ...
