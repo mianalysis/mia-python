@@ -31,9 +31,10 @@ def read(filepath: str): # To do
     for modules_node in modules_nodes:
         for module_node in modules_node:
             module: Module = initialiseModule(module_node, modules)
-            print(module)
-        
-        
+            modules.add(module)
+            
+    return modules
+                
 def initialiseModule(module_node: ET.Element, modules: Modules) -> Module:
     classname: str | None = module_node.get(CLASSNAME)
     
@@ -94,12 +95,11 @@ def populateParameters(parameters_node: ET.Element, module: Module):
         nickname: str = parameter_node.get(NICKNAME, "")
         value: str = parameter_node.get(VALUE, "")
         visible: bool = bool(parameter_node.get(VISIBLE, False))
-        
-        module.updateParameterValue(name, value)
-        
+                
         parameter = module.getParameter(name)
         if parameter is None:
             raise Exception(f'AnalysisReader: Parameter "{name}" in module "{module.getName()}" not found')
         
+        parameter.setValueFromString(value)
         parameter.setNickname(nickname)
         parameter.setVisible(visible)

@@ -90,6 +90,9 @@ class Modules:
     def duplicate(self, copyIDs):
         raise NotImplementedError("Modules: duplicate")
 
+    def add(self, module: Module):
+        self._modules.append(module)
+    
     def addAll(self, modules):
         raise NotImplementedError("Modules: addAll")
 

@@ -1,16 +1,20 @@
-# To do: Convert WorkspaceWrapper to hold a Python Workspace object
+from __future__ import annotations
+from weakref import WeakKeyDictionary
 
 from jpype import JImplements, JOverride # type: ignore
 from scyjava import jimport # type: ignore
-from src.wrappers.metadatawrapper import MetadataWrapper
-from src.utilities.conversion import py_dict_to_java_map
 
+from src.objects.workspace import Workspace
+from src.utilities.conversion import py_dict_to_java_map
 from src.wrappers.imagewrapper import ImageWrapper
+from src.wrappers.metadatawrapper import MetadataWrapper
 from src.wrappers.objwrapper import ObjWrapper
 from src.wrappers.objswrapper import ObjsWrapper
 
 import jpype
 import os
+
+_wrapper_cache: WeakKeyDictionary[Workspace, WorkspaceWrapper] = WeakKeyDictionary()
 
 JFile = jimport('java.io.File') # type: ignore
 
@@ -143,3 +147,14 @@ class WorkspaceWrapper():
     @JOverride
     def setWorkspaces(self,workspaces):
         raise NotImplementedError('WorkspaceWrapper: setWorkspaces')
+    
+    
+def wrapWorkspace(workspace: Workspace) -> WorkspaceWrapper:
+    try:
+        return _wrapper_cache[workspace]
+    except:        
+        workspace_wrapper = WorkspaceWrapper(None, None, 0, None)
+        workspace_wrapper.setPythonWorkspace(workspace)
+        _wrapper_cache[workspace]  = workspace_wrapper
+    
+        return workspace_wrapper

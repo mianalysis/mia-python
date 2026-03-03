@@ -1,0 +1,66 @@
+from abc import ABC, abstractmethod
+
+from src.objects.ref import Ref
+
+class Parameter(Ref, ABC):
+    @abstractmethod
+    def initialiseControl(self): ...
+
+    @abstractmethod
+    def getValue(self, workspace): ...
+
+    @abstractmethod
+    def setValue(self, value) -> None: ...
+
+    @abstractmethod
+    def getRawStringValue(self) -> str: ...
+
+    @abstractmethod
+    def setValueFromString(self, string: str) -> None: ...
+
+    @abstractmethod
+    def verify(self) -> bool: ...
+
+    @abstractmethod
+    def duplicate(self, new_module): ...
+
+    @abstractmethod
+    def getNameAsString(self) -> str: ...
+
+    # Can be used to display a different name if the raw name isn't useful for the GUI
+    @abstractmethod
+    def getAlternativeString(self) -> str: ...
+
+    @abstractmethod
+    def createNewInstance(self, name, module): ...
+
+    @abstractmethod
+    def getModule(self): ...
+
+    @abstractmethod
+    def setModule(self, module): ...
+
+    @abstractmethod
+    def getControl(self): ...
+
+    @abstractmethod
+    def setControl(self, control) -> None: ...
+
+    @abstractmethod
+    def isVisible(self) -> bool: ...
+
+    @abstractmethod
+    def setVisible(self, visible: bool) -> None: ...
+
+    @abstractmethod
+    def isValid(self) -> bool: ...
+
+    @abstractmethod
+    def setValid(self, valid: bool) -> None: ...
+
+    @abstractmethod
+    def isExported(self) -> bool: ...
+
+    @abstractmethod
+    def setExported(self, exported: bool) -> None: ...
+    

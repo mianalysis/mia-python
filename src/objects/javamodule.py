@@ -1,4 +1,8 @@
+from src.objects.javaparameter import JavaParameter
+from src.objects.parameter import Parameter
 from src.objects.module import Module
+from src.objects.workspace import Workspace
+from src.wrappers.workspacewrapper import WorkspaceWrapper, wrapWorkspace
 
 class JavaModule(Module):
     def __init__(self, java_module):
@@ -10,8 +14,8 @@ class JavaModule(Module):
     def getVersionNumber(self):
         raise NotImplementedError("JavaModule: getVersionNumber")
 
-    def process(self, workspace):
-        raise NotImplementedError("JavaModule: process")
+    def process(self, workspace: Workspace):
+        self._java_module.process(workspace)
 
     def initialiseParameters(self):
         raise NotImplementedError("JavaModule: initialiseParameters")
@@ -67,7 +71,7 @@ class JavaModule(Module):
     def addMetadataRef(self, ref):
         raise NotImplementedError("JavaModule: addMetadataRef")
 
-    def getParentChildRef(self, parentName, childName):
+    def getParentChildRef(self, parent_name: str, child_name: str):
         raise NotImplementedError("JavaModule: getParentChildRef")
 
     def addParentChildRef(self, ref):
@@ -76,8 +80,8 @@ class JavaModule(Module):
     def addPartnerRef(self, ref):
         raise NotImplementedError("JavaModule: addPartnerRef")
 
-    def getParameter(self, name):
-        raise NotImplementedError("JavaModule: getParameter")
+    def getParameter(self, name) -> Parameter:
+        return JavaParameter(self._java_module.getParameter(name))
 
     def updateParameterValue(self, name, value):
         self._java_module.updateParameterValue(name, value)
@@ -97,7 +101,7 @@ class JavaModule(Module):
     def getParametersMatchingType(self, type):
         raise NotImplementedError("JavaModule: getParametersMatchingType")
 
-    def addParameterGroupParameters(self, parameterGroup, type, parameters):
+    def addParameterGroupParameters(self, parameter_group, type, parameters):
         raise NotImplementedError("JavaModule: addParameterGroupParameters")
 
     def getModules(self):
@@ -106,13 +110,13 @@ class JavaModule(Module):
     def setModules(self, modules):
         raise NotImplementedError("JavaModule: setModules")
 
-    def hasParameter(self, parameterName):
+    def hasParameter(self, parameter_name):
         raise NotImplementedError("JavaModule: hasParameter")
 
     def getModuleID(self):
         raise NotImplementedError("JavaModule: getModuleID")
 
-    def setModuleID(self, moduleID):
+    def setModuleID(self, module_id):
         raise NotImplementedError("JavaModule: setModuleID")
 
     def getShortDescription(self):
@@ -133,25 +137,25 @@ class JavaModule(Module):
     def canBeDisabled(self):
         raise NotImplementedError("JavaModule: canBeDisabled")
 
-    def setCanBeDisabled(self, canBeDisabled):
+    def setCanBeDisabled(self, can_be_disabled):
         raise NotImplementedError("JavaModule: setCanBeDisabled")
 
     def canShowProcessingTitle(self):
         raise NotImplementedError("JavaModule: canShowProcessingTitle")
 
-    def setShowProcessingViewTitle(self, showProcessingViewTitle):
+    def setShowProcessingViewTitle(self, show_processing_view_title):
         raise NotImplementedError("JavaModule: setShowProcessingViewTitle")
 
     def isVerbose(self):
         raise NotImplementedError("JavaModule: isVerbose")
 
-    def setVerbose(self, verboseIn):
+    def setVerbose(self, verbose_in):
         raise NotImplementedError("JavaModule: setVerbose")
 
     def canShowOutput(self):
         raise NotImplementedError("JavaModule: canShowOutput")
 
-    def setShowOutput(self, showOutput):
+    def setShowOutput(self, show_output):
         raise NotImplementedError("JavaModule: setShowOutput")
 
     def isRunnable(self):
@@ -178,38 +182,23 @@ class JavaModule(Module):
     def getRedirectModuleID(self, workspace):
         raise NotImplementedError("JavaModule: getRedirectModuleID")
 
-    def setRedirectModuleID(self, redirectModuleID):
+    def setRedirectModuleID(self, redirect_module_id):
         raise NotImplementedError("JavaModule: setRedirectModuleID")
 
     def hasVisibleParameters(self):
         raise NotImplementedError("JavaModule: hasVisibleParameters")
 
-    def duplicate(self, newModules, copyID):
+    def duplicate(self, new_modules, copy_id):
         raise NotImplementedError("JavaModule: duplicate")
 
     def writeStatus(self, message):
         raise NotImplementedError("JavaModule: writeStatus")
 
-    def writeProgressStatus(self, count, total, featureBeingProcessed):
+    def writeProgressStatus(self, count, total, feature_being_processed):
         raise NotImplementedError("JavaModule: writeProgressStatus")
             
     
     # From Ref
-
-    def getName(self) -> str:
-        raise NotImplementedError("JavaModule: getName")
-    
-    def getDescription(self) -> str:
-        raise NotImplementedError("JavaModule: getDescription")
-    
-    def setDescription(self, description: str):
-        raise NotImplementedError("JavaModule: setDescription")
-    
-    def getNickname(self) -> str:
-        raise NotImplementedError("JavaModule: getNickname")
-    
-    def setNickname(self, nickname: str):
-        raise NotImplementedError("JavaModule: setNickname")
     
     def appendXMLAttributes(self, element):
         raise NotImplementedError("JavaModule: appendXMLAttributes")
