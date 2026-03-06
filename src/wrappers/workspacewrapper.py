@@ -1,18 +1,21 @@
 from __future__ import annotations
-from weakref import WeakKeyDictionary
-
 from jpype import JImplements, JOverride # type: ignore
 from scyjava import jimport # type: ignore
+from typing import TYPE_CHECKING
+from weakref import WeakKeyDictionary
 
 from src.objects.workspace import Workspace
 from src.utilities.conversion import py_dict_to_java_map
-from src.wrappers.imagewrapper import ImageWrapper
-from src.wrappers.metadatawrapper import MetadataWrapper
-from src.wrappers.objwrapper import ObjWrapper
-from src.wrappers.objswrapper import ObjsWrapper
+from src.wrappers.imagewrapper import ImageWrapper, wrapImage
+from src.wrappers.metadatawrapper import MetadataWrapper, wrapMetadata
+from src.wrappers.objwrapper import ObjWrapper, wrapObj
+from src.wrappers.objswrapper import ObjsWrapper, wrapObjs
 
 import jpype
 import os
+
+if TYPE_CHECKING:
+    from src.wrappers.workspaceswrapper import WorkspacesWrapper
 
 _wrapper_cache: WeakKeyDictionary[Workspace, WorkspaceWrapper] = WeakKeyDictionary()
 
@@ -20,48 +23,35 @@ JFile = jimport('java.io.File') # type: ignore
 
 @JImplements('io.github.mianalysis.mia.object.WorkspaceI')
 class WorkspaceWrapper():
-    def __init__(self, ID: int, file_path: str, series: int, workspaces): # To do
-        self._ID: int = ID
-        self._workspaces = workspaces
-        self._images = {}
-        self._objects = {}
-
-        self._metadata: MetadataWrapper = MetadataWrapper()
-        self._metadata.setFile(JFile(file_path))
-        self._metadata.setSeriesNumber(series)
-        
-        if file_path is None:
-            self._metadata.setFilepath("")
-            self._metadata.setFilename("")
-            self._metadata.setExt("")
-        else:
-            (folder, filename) = os.path.split(file_path) 
-            self._metadata.setFilepath(folder)
-            self._metadata.setFilename(filename)
-            self._metadata.setExt(os.path.splitext(file_path)[1])
+    def __init__(self, ID: int, file_path: str, series: int, workspaces: WorkspacesWrapper):
+        if workspaces is not None:
+            self._workspace: Workspace = Workspace(ID=ID, file_path=file_path, series=series, workspaces=workspaces.getPythonWorkspaces())
+    
+    def setPythonWorkspace(self, workspace: Workspace): # No return
+        self._workspace = workspace
         
     @JOverride
-    def addObjects(self, obj: ObjWrapper):
-        self._objects[obj.getName()] = obj
+    def addObjects(self, objs: ObjsWrapper): # No return
+        self._workspace.addObjects(objs.getPythonObjs())
 
     @JOverride
-    def removeObjects(self, name: str, retainMeasurements: bool):
+    def removeObjects(self, name: str, retain_measurements: bool):
         raise NotImplementedError('WorkspaceWrapper: removeObjects')
 
     @JOverride
-    def addImage(self, image: ImageWrapper):
-        self._images[image.getName()] = image
+    def addImage(self, image: ImageWrapper): # No return
+        self._workspace.addImage(image.getPythonImage())
 
     @JOverride
-    def removeImage(self, name: str, retainMeasurements: bool):
+    def removeImage(self, name: str, retain_measurements: bool):
         raise NotImplementedError('WorkspaceWrapper: removeImage')
 
     @JOverride
-    def clearAllImages(self,retainMeasurements: bool):
+    def clearAllImages(self,retain_measurements: bool):
         raise NotImplementedError('WorkspaceWrapper: clearAllImages')
 
     @JOverride
-    def clearAllObjects(self,retainMeasurements: bool):
+    def clearAllObjects(self,retain_measurements: bool):
         raise NotImplementedError('WorkspaceWrapper: clearAllObjects')
 
     @JOverride
@@ -73,20 +63,21 @@ class WorkspaceWrapper():
         raise NotImplementedError('WorkspaceWrapper: showMetadata')
     
     @JOverride
-    def getImage(self,name: str):
-        return self._images[name]
+    def getImage(self, name: str) -> ImageWrapper:
+        return wrapImage(self._workspace.getImage(name))
 
     @JOverride
     def getAllObjects(self):
-        return py_dict_to_java_map(self._objects,'LinkedHashMap')
+        # return py_dict_to_java_map(self._objects,'LinkedHashMap')
+        raise NotImplementedError('WorkspaceWrapper: getAllObjects')
         
     @JOverride
     def getObjects(self, name: str) -> ObjsWrapper:
-        return self._objects[name]
+        return wrapObjs(self._workspace.getObjects(name))
 
     @JOverride
     def getObjectSet(self,name: str):
-        return self._objects[name]
+        raise NotImplementedError('WorkspaceWrapper: getObjectSet')
 
     @JOverride
     def getSingleTimepointWorkspaces(self):
@@ -94,11 +85,12 @@ class WorkspaceWrapper():
 
     @JOverride
     def setAllObjects(self,objects):
-        self._objects = objects
+        raise NotImplementedError('WorkspaceWrapper: setAllObjects')
 
     @JOverride
     def getImages(self):
-        return jpype.java.util.LinkedHashMap(self._images)
+        # return jpype.java.util.LinkedHashMap(self._images)
+        raise NotImplementedError('WorkspaceWrapper: getImages')
 
     @JOverride
     def setImages(self,images): # To do
@@ -106,7 +98,7 @@ class WorkspaceWrapper():
 
     @JOverride
     def getMetadata(self) -> MetadataWrapper:
-        return self._metadata
+        return wrapMetadata(self._workspace.getMetadata())
 
     @JOverride
     def setMetadata(self,metadata: MetadataWrapper):
@@ -114,7 +106,7 @@ class WorkspaceWrapper():
 
     @JOverride
     def getID(self) -> int:
-        return self._ID
+        raise NotImplementedError('WorkspaceWrapper: getID')
 
     @JOverride
     def getProgress(self) -> float:
@@ -137,7 +129,7 @@ class WorkspaceWrapper():
         raise NotImplementedError('WorkspaceWrapper: exportWorkspace')
     
     @JOverride
-    def setExportWorkspace(self,exportWorkspace):
+    def setExportWorkspace(self,export_workspace):
         raise NotImplementedError('WorkspaceWrapper: setExportWorkspace')
     
     @JOverride
@@ -153,7 +145,7 @@ def wrapWorkspace(workspace: Workspace) -> WorkspaceWrapper:
     try:
         return _wrapper_cache[workspace]
     except:        
-        workspace_wrapper = WorkspaceWrapper(None, None, 0, None)
+        workspace_wrapper: WorkspaceWrapper = WorkspaceWrapper(0, "", 0, None)
         workspace_wrapper.setPythonWorkspace(workspace)
         _wrapper_cache[workspace]  = workspace_wrapper
     

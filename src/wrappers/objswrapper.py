@@ -15,6 +15,8 @@ if TYPE_CHECKING:
     from src.objects.obj import Obj    
     from src.wrappers.coordinatesetwrapper import CoordinateSetFactoryWrapper
     from src.wrappers.imagewrapper import ImageWrapper
+    from src.wrappers.modulewrapper import ModuleWrapper
+    from src.wrappers.moduleswrapper import ModulesWrapper
     from src.wrappers.objwrapper import ObjWrapper
     from src.types.JPointType import JPointType
     from src.types.JSpatioTemporallyCalibratedType import JSpatioTemporallyCalibrated
@@ -332,7 +334,7 @@ class ObjsWrapper():
         raise NotImplementedError('ObjsWrapper: getByEqualsIgnoreNameAndID')
     
     @JOverride
-    def showMeasurements(self, module, modules): # To do
+    def showMeasurements(self, module: ModuleWrapper, modules: ModulesWrapper): # To do
         measurement_refs = module.updateAndGetObjectMeasurementRefs()
         if measurement_refs is None:
             return

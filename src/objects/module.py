@@ -5,6 +5,9 @@ from src.objects.ref import Ref
 
 # Abstract Module class
 class Module(Ref, ABC):
+    def __init__(self, name: str):
+        super().__init__(name)
+        
     @abstractmethod
     def getCategory(self): ...
         

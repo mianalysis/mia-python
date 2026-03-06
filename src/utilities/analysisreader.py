@@ -1,9 +1,9 @@
-from jpype import JClass
+from jpype import JClass # type: ignore
 from typing import List
 
-from src.objects.javamodule import JavaModule
 from src.objects.module import Module
 from src.objects.modules import Modules
+from src.wrappers.javamodule import JavaModule
 from src.wrappers.moduleswrapper import wrapModules
 
 import xml.etree.ElementTree as ET
@@ -21,7 +21,7 @@ VALUE: str = "VALUE"
 VERSION: str = "VERSION"
 VISIBLE: str = "VISIBLE"
 
-def read(filepath: str): # To do
+def read(filepath: str) -> Modules:
     tree = ET.parse(filepath)
     root: ET.Element = tree.getroot()
     modules_nodes: List[ET.Element] = root.findall("MODULES")

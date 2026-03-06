@@ -6,6 +6,7 @@ from src.wrappers.workspacewrapper import WorkspaceWrapper, wrapWorkspace
 
 class JavaModule(Module):
     def __init__(self, java_module):
+        super().__init__(java_module.getName())
         self._java_module = java_module
 
     def getCategory(self):
@@ -15,7 +16,7 @@ class JavaModule(Module):
         raise NotImplementedError("JavaModule: getVersionNumber")
 
     def process(self, workspace: Workspace):
-        self._java_module.process(workspace)
+        self._java_module.process(wrapWorkspace(workspace))
 
     def initialiseParameters(self):
         raise NotImplementedError("JavaModule: initialiseParameters")

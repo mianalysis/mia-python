@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from jpype import JImplements, JOverride  # type: ignore
 from scyjava import jimport  # type: ignore
-from typing import TYPE_CHECKING
+from typing import List, TYPE_CHECKING
 from weakref import WeakKeyDictionary
 from xarray import DataArray
 
@@ -16,6 +16,8 @@ from src.wrappers.coordinatesetwrapper import CoordinateSetFactoryWrapper
 from src.wrappers.measurementwrapper import MeasurementWrapper, wrapMeasurement
 
 if TYPE_CHECKING:
+    from src.wrappers.modulewrapper import ModuleWrapper
+    from src.wrappers.moduleswrapper import ModulesWrapper
     from src.wrappers.objswrapper import ObjsWrapper
 
 JDisplayModes = jimport('io.github.mianalysis.mia.object.image.ImageI.DisplayModes')
@@ -217,8 +219,13 @@ class ImageWrapper:
         self.show(self.getName(), None, normalise, JDisplayModes.COLOUR, None)
 
     @JOverride
-    def showMeasurements(self, module):
-        raise NotImplementedError('ImageWrapper: showMeasurements')
+    def showMeasurements(self, module: ModuleWrapper):
+        measurement_refs = module.updateAndGetImageMeasurementRefs()
+        if measurement_refs is None:
+            return
+        
+        measurement_names: List[str] = [str(ref.getName()) for ref in measurement_refs.values()]
+        self._image.showMeasurements(measurement_names)
     
     @JOverride
     def showAllMeasurements(self):

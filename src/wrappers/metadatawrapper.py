@@ -2,84 +2,57 @@ from __future__ import annotations
 from jpype import JImplements, JOverride # type: ignore
 from scyjava import jimport # type: ignore
 from typing import Any, Dict
+from weakref import WeakKeyDictionary
 
+from src.objects.metadata import Metadata
 from src.types.JFileType import JFileType
 
-JMetadata = jimport('io.github.mianalysis.mia.object.metadata.MetadataI')
+JFile = jimport('java.io.File') # type: ignore
 
-FILENAME: str = JMetadata.FILENAME
-FILEPATH: str = JMetadata.FILEPATH
-WELL: str = JMetadata.WELL
-ROW: str = JMetadata.ROW
-COL: str = JMetadata.COL
-FIELD: str = JMetadata.FIELD
-TIMEPOINT: str = JMetadata.TIMEPOINT
-ZPOSITION: str = JMetadata.ZPOSITION
-CHANNEL: str = JMetadata.CHANNEL
-YEAR: str = JMetadata.YEAR
-MONTH: str = JMetadata.MONTH
-DAY: str = JMetadata.DAY
-HOUR: str = JMetadata.HOUR
-MINUTE: str = JMetadata.MINUTE
-SECOND: str = JMetadata.SECOND
-CELLTYPE: str = JMetadata.CELLTYPE
-MAGNIFICATION: str = JMetadata.MAGNIFICATION
-COMMENT: str = JMetadata.COMMENT
-FILE: str = JMetadata.FILE
-EXTENSION: str = JMetadata.EXTENSION
-KEYWORD: str = JMetadata.KEYWORD
-SERIES_NUMBER: str = JMetadata.SERIES_NUMBER
-SERIES_NAME: str = JMetadata.SERIES_NAME
-UNITS: str = JMetadata.UNITS
-PLATE_NAME: str = JMetadata.PLATE_NAME
-PLATE_MANUFACTURER: str = JMetadata.PLATE_MANUFACTURER
-PLATE_MODEL: str = JMetadata.PLATE_MODEL
-TIMELINE_NUMBER: str = JMetadata.TIMELINE_NUMBER
-ACTION_NUMBER: str = JMetadata.ACTION_NUMBER
-AREA_NAME: str = JMetadata.AREA_NAME
+_wrapper_cache: WeakKeyDictionary[Metadata, MetadataWrapper] = WeakKeyDictionary()
 
 @JImplements('io.github.mianalysis.mia.object.metadata.MetadataI')
 class MetadataWrapper:
     def __init__(self):
-        self._store: Dict[str, Any] = {}
+        self._metadata: Metadata = Metadata()
         
-    def getPythonMetadataStore(self) -> Dict[str, Any]:
-        return self._store
+    def getPythonMetadata(self) -> Metadata:
+        return self._metadata
     
-    def setPythonMetadataStore(self, store: Dict[str, Any]):  # No return
-        self._store = store
+    def setPythonMetadata(self, metadata: Metadata):  # No return
+        self._metadata = metadata
         
     @JOverride
     def getFilename(self) -> str:
-        return self._store[FILENAME]
+        raise NotImplementedError('MetadataWrapper: getFilename')
     
     @JOverride
     def setFilename(self, filename: str):  # No return
-        self._store[FILENAME] = filename
+        raise NotImplementedError('MetadataWrapper: setFilename')
     
     @JOverride
     def getFilepath(self) -> str:
-        return self._store[FILEPATH]
+        raise NotImplementedError('MetadataWrapper: getFilepath')
     
     @JOverride
     def setFilepath(self, filepath: str):  # No return
-        self._store[FILEPATH] = filepath
+        raise NotImplementedError('MetadataWrapper: setFilepath')
     
     @JOverride
     def getExt(self) -> str:
-        return self._store[EXTENSION]
+        raise NotImplementedError('MetadataWrapper: getExt')
     
     @JOverride
     def setExt(self, ext: str):  # No return
-        self._store[EXTENSION] = ext
+        raise NotImplementedError('MetadataWrapper: setExt')
     
     @JOverride
     def getFile(self) -> JFileType:
-        return self._store[FILE]
+        return JFile(self._metadata.getFile())
     
     @JOverride
     def setFile(self, file: JFileType):  # No return
-        self._store[FILE] = file
+        self._metadata.setFile(file.getPath())
     
     @JOverride
     def getHour(self) -> int:
@@ -219,22 +192,19 @@ class MetadataWrapper:
     
     @JOverride
     def getSeriesNumber(self) -> int:
-        if self._store[SERIES_NUMBER] is None:
-            return -1
-        else:
-            return self._store[SERIES_NUMBER]
+        return self._metadata.getSeriesNumber()
     
     @JOverride
     def setSeriesNumber(self, seriesNumber: int):  # No return
-        self._store[SERIES_NUMBER] = seriesNumber
+        self._metadata.setSeriesNumber(seriesNumber)
     
     @JOverride
     def getSeriesName(self) -> str:
-        raise NotImplementedError('MetadataWrapper: getSeriesName')
+        return self._metadata.getSeriesName()
     
     @JOverride
     def setSeriesName(self, seriesName: str):  # No return
-        raise NotImplementedError('MetadataWrapper: setSeriesName')
+        self._metadata.setSeriesName(seriesName)
     
     @JOverride
     def getUnits(self) -> str:
@@ -298,7 +268,7 @@ class MetadataWrapper:
 
     @JOverride
     def hasKey(self, key: str) -> bool:
-        return key in self._store.keys()
+        raise NotImplementedError('MetadataWrapper: hasKey')
     
     @JOverride
     def keySet(self):  # To do
@@ -310,29 +280,30 @@ class MetadataWrapper:
 
     @JOverride
     def clear(self):  # No return
-        self._store = {}
+        raise NotImplementedError('MetadataWrapper: clear')
 
     @JOverride
     def put(self, key: str, value: Any):
-        self._store[key] = value
+        raise NotImplementedError('MetadataWrapper: put')
 
     @JOverride
     def get(self, key: str) -> Any:
-        return self._store[key]
+        raise NotImplementedError('MetadataWrapper: get')
 
     @JOverride
     def remove(self, key: str) -> Any:
-        item = self._store[key]
-        self._store.pop(key)
-        return item
+        raise NotImplementedError('MetadataWrapper: remove')
 
     @JOverride
     def clone(self) -> MetadataWrapper:
         raise NotImplementedError('MetadataWrapper: clone')
         
-def wrapMetadataStore(store: Dict[str, Any]) -> MetadataWrapper:
-    print("MetadataWrapper: caching on wrapMetadataStore once separate Metadata class complete")
-    wrapper: MetadataWrapper = MetadataWrapper()
-    wrapper.setPythonMetadataStore(store)
+def wrapMetadata(metadata: Metadata) -> MetadataWrapper:
+    try:
+        return _wrapper_cache[metadata]
+    except:        
+        metadata_wrapper: MetadataWrapper = MetadataWrapper()
+        metadata_wrapper.setPythonMetadata(metadata)
+        _wrapper_cache[metadata]  = metadata_wrapper
     
-    return wrapper
+        return metadata_wrapper

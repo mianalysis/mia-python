@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from matplotlib.colors import Colormap
+from prettytable import PrettyTable
 from typing import Any, Dict, List, Tuple, TYPE_CHECKING
 from xarray import DataArray
 
+import math
 import numpy as np
 import numpy.typing as npt
 
@@ -12,6 +14,7 @@ from src.objects.measurement import Measurement
 from src.utilities.imagerenderer import NotebookImageRenderer
 
 if TYPE_CHECKING:
+    from src.objects.module import Module
     from src.objects.obj import Obj
     from src.objects.objs import Objs
 
@@ -310,8 +313,37 @@ class Image:
     def show(self, title: str, colormap: Colormap | str | None, normalise: bool, display_mode: str, overlay):
         self._renderer.render(self, title, colormap, normalise, display_mode, overlay)
 
-    def showMeasurements(self, module):
-        raise NotImplementedError('Image: showMeasurements')
+    def showMeasurements(self, measurement_names: List[str]):
+        table: PrettyTable = PrettyTable()
+        
+        for measurement_name in measurement_names:
+            measurement: Measurement | None = self.getMeasurement(measurement_name)
+            measurement_value: List[float] = [math.nan if measurement is None else measurement.getValue()]
+            
+            table.add_column(measurement_name, measurement_value)
+            
+        print(table)
+        
+        # String name = getName();
+        
+
+        # // Getting a list of all measurements relating to this object collection
+        # LinkedHashSet<String> measNames = new LinkedHashSet<>();
+        # for (ImageMeasurementRef measRef : measRefs.values()) {
+        #     if (measRef.getImageName().equals(name))
+        #         measNames.add(measRef.getName());
+        # }
+
+        # // Setting the measurements from the Module
+        # for (String measName : measNames) {
+        #     MeasurementI measurement = getMeasurement(measName);
+        #     double value = measurement == null ? Double.NaN : measurement.getValue();
+
+        #     // Setting value
+        #     rt.setValue(measName, 0, value);
+
+        # }
+
     
     def showAllMeasurements(self):
         raise NotImplementedError('Image: showAllMeasurements')
