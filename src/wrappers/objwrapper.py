@@ -1,6 +1,6 @@
 from __future__ import annotations
-from jpype import JImplements, JOverride # type: ignore
-from scyjava import jimport # type: ignore
+from jpype import JImplements, JOverride  # type: ignore
+from scyjava import jimport  # type: ignore
 from typing import Dict, List, Self, TYPE_CHECKING
 from weakref import WeakKeyDictionary
 
@@ -11,46 +11,61 @@ from src.objects.volume import Volume
 from src.types.types import Point
 from src.types.JSpatioTemporallyCalibratedType import JSpatioTemporallyCalibrated
 from src.utilities.rois import getRoi
-from src.wrappers.coordinatesetwrapper import CoordinateSetWrapper, CoordinateSetFactoryWrapper, wrapCoordinateSet
+from src.wrappers.coordinatesetwrapper import (
+    CoordinateSetWrapper,
+    CoordinateSetFactoryWrapper,
+    wrapCoordinateSet,
+)
 from src.wrappers.measurementwrapper import MeasurementWrapper, wrapMeasurement
 from src.wrappers.volumewrapper import VolumeFactoryWrapper, VolumeWrapper, wrapVolume
 
 if TYPE_CHECKING:
-    from src.objects.coordinateset import CoordinateSet    
+    from src.objects.coordinateset import CoordinateSet
     from src.wrappers.imagewrapper import ImageWrapper
     from src.wrappers.objswrapper import ObjsWrapper
     from src.types.JPointType import JPointType
 
-JLinkedHashMap = jimport('java.util.LinkedHashMap')
-JObj = jimport('io.github.mianalysis.mia.object.coordinates.ObjI') # type: ignore
-JObjAdaptor = jimport('io.github.mianalysis.mia.python.ObjAdaptor') # type: ignore
-JVolumeAdaptor = jimport('io.github.mianalysis.mia.python.VolumeAdaptor') # type: ignore
+JLinkedHashMap = jimport("java.util.LinkedHashMap")
+JObj = jimport("io.github.mianalysis.mia.object.coordinates.ObjI")  # type: ignore
+JObjAdaptor = jimport("io.github.mianalysis.mia.python.ObjAdaptor")  # type: ignore
+JVolumeAdaptor = jimport("io.github.mianalysis.mia.python.VolumeAdaptor")  # type: ignore
 
 _wrapper_cache: WeakKeyDictionary[Obj, ObjWrapper] = WeakKeyDictionary()
 
-@JImplements('io.github.mianalysis.mia.object.coordinates.ObjI')
-class ObjWrapper:    
-    def __init__(self, coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper | None, obj_collection: ObjsWrapper | None, ID: int):
+
+@JImplements("io.github.mianalysis.mia.object.coordinates.ObjI")
+class ObjWrapper:
+    def __init__(
+        self,
+        coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper | None,
+        obj_collection: ObjsWrapper | None,
+        ID: int,
+    ):
         if coordinate_set_factory_wrapper is not None and obj_collection is not None:
-            self._obj: Obj = Obj(coordinate_set_factory_wrapper.getPythonCoordinateSetFactory(), obj_collection.getPythonObjs(), ID)
+            self._obj: Obj = Obj(
+                coordinate_set_factory_wrapper.getPythonCoordinateSetFactory(),
+                obj_collection.getPythonObjs(),
+                ID,
+            )
 
     def getPythonObj(self) -> Obj:
         return self._obj
 
     def setPythonObj(self, obj: Obj):
         self._obj = obj
-            
+
     @JOverride
     def getFactory(self) -> VolumeFactoryWrapper:
         return VolumeFactoryWrapper()
-    
+
     @JOverride
     def getObjectCollection(self) -> ObjsWrapper:
         from src.wrappers.objswrapper import wrapObjs
+
         return wrapObjs(self._obj.getObjectCollection())
 
     @JOverride
-    def setObjectCollection(self, obj_collection: ObjsWrapper): # No return
+    def setObjectCollection(self, obj_collection: ObjsWrapper):  # No return
         self._obj.setObjectCollection(obj_collection.getPythonObjs())
 
     @JOverride
@@ -76,120 +91,144 @@ class ObjWrapper:
         return self
 
     @JOverride
-    def getAllParents(self): # To do
-        print("ObjWrapper: Need to implement custom list to handle python object removal")
+    def getAllParents(self):  # To do
+        print(
+            "ObjWrapper: Need to implement custom list to handle python object removal"
+        )
         parent_wrappers = JLinkedHashMap()
-        
+
         parent: Obj
         for parent in self._obj.getAllParents().values():
             parent_wrapper: ObjWrapper = wrapObj(parent)
             parent_wrappers.put(parent.getName(), parent_wrapper)
-        
+
         return parent_wrappers
 
     @JOverride
-    def setAllParents(self, parents): # To do
-        raise NotImplementedError('ObjWrapper: setAllParents')
+    def setAllParents(self, parents):  # To do
+        raise NotImplementedError("ObjWrapper: setAllParents")
 
     @JOverride
-    def getAllChildren(self): # To do
-        print("ObjWrapper: Need to implement custom list to handle python object removal")
+    def getAllChildren(self):  # To do
+        print(
+            "ObjWrapper: Need to implement custom list to handle python object removal"
+        )
         from src.wrappers.objswrapper import wrapObjs
-        
+
         all_children_wrappers = JLinkedHashMap()
-        
+
         children: Objs
         for children in self._obj.getAllChildren().values():
             children_wrappers: ObjsWrapper = wrapObjs(children)
             all_children_wrappers.put(children.getName(), children_wrappers)
-        
+
         return all_children_wrappers
 
     @JOverride
-    def setAllChildren(self, children): # To do
-        raise NotImplementedError('ObjWrapper: setAllChildren')
+    def setAllChildren(self, children):  # To do
+        raise NotImplementedError("ObjWrapper: setAllChildren")
 
     @JOverride
-    def getAllPartners(self): # To do
-        print("ObjWrapper: Need to implement custom list to handle python object removal")
+    def getAllPartners(self):  # To do
+        print(
+            "ObjWrapper: Need to implement custom list to handle python object removal"
+        )
         from src.wrappers.objswrapper import wrapObjs
-        
+
         all_partner_wrappers = JLinkedHashMap()
-        
+
         partners: Objs
         for partners in self._obj.getAllPartners().values():
             partner_wrappers: ObjsWrapper = wrapObjs(partners)
             all_partner_wrappers.put(partners.getName(), partner_wrappers)
-        
+
         return all_partner_wrappers
 
     @JOverride
-    def setAllPartners(self, partners): # To do
-        raise NotImplementedError('ObjWrapper: setAllPartners')
+    def setAllPartners(self, partners):  # To do
+        raise NotImplementedError("ObjWrapper: setAllPartners")
 
     @JOverride
-    def removeRelationships(self): # No return
+    def removeRelationships(self):  # No return
         self._obj.removeRelationships()
 
     @JOverride
-    def getMeasurements(self): # To do
-        print("ObjWrapper: Need to implement custom list to handle python object removal")
+    def getMeasurements(self):  # To do
+        print(
+            "ObjWrapper: Need to implement custom list to handle python object removal"
+        )
         from src.wrappers.objswrapper import wrapObjs
-        
+
         measurement_wrappers = JLinkedHashMap()
-        
+
         measurement: Measurement
         for measurement in self._obj.getMeasurements().values():
             measurement_wrapper: MeasurementWrapper = wrapMeasurement(measurement)
             measurement_wrappers.put(measurement.getName(), measurement_wrapper)
-        
+
         return measurement_wrappers
 
     @JOverride
-    def setMeasurements(self, measurements): # To do
-        raise NotImplementedError('ObjWrapper: setMeasurements')
-    
-    @JOverride
-    def getMetadata(self): # To do
-        raise NotImplementedError('ObjWrapper: getMetadata')
+    def setMeasurements(self, measurements):  # To do
+        raise NotImplementedError("ObjWrapper: setMeasurements")
 
     @JOverride
-    def setMetadata(self, metadata): # To do
-        raise NotImplementedError('ObjWrapper: setMetadata')
+    def getMetadata(self):  # To do
+        raise NotImplementedError("ObjWrapper: getMetadata")
 
     @JOverride
-    def getRois(self): # To do
-        raise NotImplementedError('ObjWrapper: getRois')
+    def setMetadata(self, metadata):  # To do
+        raise NotImplementedError("ObjWrapper: setMetadata")
 
     @JOverride
-    def clearROIs(self): # No return
-        raise NotImplementedError('ObjWrapper: clearROIs')
+    def getRois(self):  # To do
+        raise NotImplementedError("ObjWrapper: getRois")
 
     @JOverride
-    def duplicate(self, new_collection: ObjsWrapper, duplicate_relationships: bool, duplicate_measurements: bool, duplicate_metadata: bool) -> ObjWrapper:
-        raise NotImplementedError('ObjWrapper: duplicate')
+    def clearROIs(self):  # No return
+        raise NotImplementedError("ObjWrapper: clearROIs")
+
+    @JOverride
+    def duplicate(
+        self,
+        new_collection: ObjsWrapper,
+        duplicate_relationships: bool,
+        duplicate_measurements: bool,
+        duplicate_metadata: bool,
+    ) -> ObjWrapper:
+        raise NotImplementedError("ObjWrapper: duplicate")
 
     @JOverride
     def equalsIgnoreNameAndID(self, obj: ObjWrapper) -> bool:
-        raise NotImplementedError('ObjWrapper: equalsIgnoreNameAndID')
+        raise NotImplementedError("ObjWrapper: equalsIgnoreNameAndID")
 
     @JOverride
     def toString(self) -> str:
         return self._obj.toString()
 
-
     ## Inherited from VolumeWrapper
 
     @JOverride
-    def createNewVolume(self, coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper, example_volume: VolumeWrapper) -> VolumeWrapper:
-        volume: Volume = self._obj.createNewVolume(coordinate_set_factory_wrapper.getPythonCoordinateSetFactory(), example_volume.getPythonVolume())
+    def createNewVolume(
+        self,
+        coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper,
+        example_volume: VolumeWrapper,
+    ) -> VolumeWrapper:
+        volume: Volume = self._obj.createNewVolume(
+            coordinate_set_factory_wrapper.getPythonCoordinateSetFactory(),
+            example_volume.getPythonVolume(),
+        )
         return wrapVolume(volume)
 
     @JOverride
     def getCoordinateSetFactory(self) -> CoordinateSetFactoryWrapper:
-        coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper = CoordinateSetFactoryWrapper()
-        coordinate_set_factory_wrapper.setPythonCoordinateSetFactory(self._obj.getCoordinateSetFactory())
-        
+        coordinate_set_factory_wrapper: CoordinateSetFactoryWrapper = (
+            CoordinateSetFactoryWrapper()
+        )
+        coordinate_set_factory_wrapper.setPythonCoordinateSetFactory(
+            self._obj.getCoordinateSetFactory()
+        )
+
         return coordinate_set_factory_wrapper
 
     @JOverride
@@ -211,42 +250,44 @@ class ObjWrapper:
         return self._obj.hasCalculatedProjection()
 
     @JOverride
-    def getMeanCentroid(self, pixel_distances: bool, match_xy: bool) -> JPointType[float]:
+    def getMeanCentroid(
+        self, pixel_distances: bool, match_xy: bool
+    ) -> JPointType[float]:
         centroid: Point = self._obj.getMeanCentroid(pixel_distances, match_xy)
         # Will likely need to create a Point wrapper as the values aren't immutable
-        raise NotImplementedError('ObjWrapper: getMeanCentroid')
+        raise NotImplementedError("ObjWrapper: getMeanCentroid")
 
     @JOverride
     def hasCalculatedCentroid(self) -> bool:
         return self._obj.hasCalculatedCentroid()
 
     @JOverride
-    def clearAllCoordinates(self): # No return
+    def clearAllCoordinates(self):  # No return
         self._obj.clearAllCoordinates()
 
     @JOverride
-    def clearSurface(self): # No return
+    def clearSurface(self):  # No return
         self._obj.clearSurface()
 
     @JOverride
-    def clearPoints(self): # No return
+    def clearPoints(self):  # No return
         self._obj.clearPoints()
 
     @JOverride
-    def clearProjected(self): # No return
+    def clearProjected(self):  # No return
         self._obj.clearProjected()
 
     @JOverride
-    def clearCentroid(self): # No return
+    def clearCentroid(self):  # No return
         self._obj.clearCentroid()
 
     @JOverride
     def hashCode(self) -> int:
-        raise NotImplementedError('ObjWrapper: hashCode')
+        raise NotImplementedError("ObjWrapper: hashCode")
 
     @JOverride
     def equals(self, obj: ObjWrapper) -> bool:
-        raise NotImplementedError('ObjWrapper: equals')
+        raise NotImplementedError("ObjWrapper: equals")
 
     @JOverride
     def getCoordinateSet(self) -> CoordinateSetWrapper:
@@ -257,9 +298,8 @@ class ObjWrapper:
         self._obj.setCoordinateSet(coordinate_set.getPythonCoordinateSet())
 
     @JOverride
-    def getCalibratedIterator(self, pixel_distances: bool, match_xy: bool): # To do
-        raise NotImplementedError('ObjWrapper: getCalibratedIterator')
-    
+    def getCalibratedIterator(self, pixel_distances: bool, match_xy: bool):  # To do
+        raise NotImplementedError("ObjWrapper: getCalibratedIterator")
 
     # From SpatiallyCalibrated
 
@@ -268,7 +308,7 @@ class ObjWrapper:
         return self._obj.getWidth()
 
     @JOverride
-    def setWidth(self, width: int): # No return
+    def setWidth(self, width: int):  # No return
         self._obj.setWidth(width)
 
     @JOverride
@@ -276,23 +316,23 @@ class ObjWrapper:
         return self._obj.getHeight()
 
     @JOverride
-    def setHeight(self, height: int): # No return
+    def setHeight(self, height: int):  # No return
         self._obj.setHeight(height)
-        
+
     @JOverride
     def getNSlices(self) -> int:
         return self._obj.getNSlices()
 
     @JOverride
-    def setNSlices(self, n_slices: int): # No return
+    def setNSlices(self, n_slices: int):  # No return
         self._obj.setNSlices(n_slices)
-        
+
     @JOverride
     def getDppXY(self) -> float:
         return self._obj.getDppXY()
 
     @JOverride
-    def setDppXY(self, dpp_xy: float): # No return
+    def setDppXY(self, dpp_xy: float):  # No return
         self._obj.setDppXY(dpp_xy)
 
     @JOverride
@@ -300,7 +340,7 @@ class ObjWrapper:
         return self._obj.getDppZ()
 
     @JOverride
-    def setDppZ(self, dpp_z: float): # No return
+    def setDppZ(self, dpp_z: float):  # No return
         self._obj.setDppZ(dpp_z)
 
     @JOverride
@@ -308,16 +348,17 @@ class ObjWrapper:
         return self._obj.getSpatialUnits()
 
     @JOverride
-    def setSpatialUnits(self, spatial_units: str): # No return
+    def setSpatialUnits(self, spatial_units: str):  # No return
         self._obj.setSpatialUnits(spatial_units)
-        
+
     @JOverride
-    def applySpatialCalibrationToImage(self, ipl): # To do
+    def applySpatialCalibrationToImage(self, ipl):  # To do
         ipl.getCalibration().pixelWidth = self.getDppXY()
         ipl.getCalibration().pixelHeight = self.getDppXY()
-        ipl.getCalibration().pixelDepth = 1 if self.getNSlices() == 1 else self.getDppZ()
+        ipl.getCalibration().pixelDepth = (
+            1 if self.getNSlices() == 1 else self.getDppZ()
+        )
         ipl.getCalibration().setUnit(self.getSpatialUnits())
-
 
     # From SpatioTemporallyCalibrated
 
@@ -326,7 +367,7 @@ class ObjWrapper:
         return self._obj.getNFrames()
 
     @JOverride
-    def setNFrames(self, n_frames: int): # No return
+    def setNFrames(self, n_frames: int):  # No return
         self._obj.setNFrames(n_frames)
 
     @JOverride
@@ -334,99 +375,102 @@ class ObjWrapper:
         return self._obj.getFrameInterval()
 
     @JOverride
-    def setFrameInterval(self, frame_interval: float): # No return
-        self._obj.setFrameInterval(frame_interval)  
+    def setFrameInterval(self, frame_interval: float):  # No return
+        self._obj.setFrameInterval(frame_interval)
 
     @JOverride
-    def getTemporalUnit(self): # To do
+    def getTemporalUnit(self):  # To do
         return self._obj.getTemporalUnit()
 
     @JOverride
-    def setTemporalUnit(self, time_unit): # To do
+    def setTemporalUnit(self, time_unit):  # To do
         self._obj.setTemporalUnit(time_unit)
 
     @JOverride
-    def applySpatioTemporalCalibrationToImage(self, ipl): # To do
+    def applySpatioTemporalCalibrationToImage(self, ipl):  # To do
         self.applySpatialCalibrationToImage(ipl)
-        
+
         ipl.getCalibration().frameInterval = self.getFrameInterval()
         print("ObjWrapper: applySpatioTemporalCalibrationToImage (Set FPS correctly)")
 
     @JOverride
-    def setSpatioTemporalCalibrationFromExample(self, example: JSpatioTemporallyCalibrated): # No return
-        raise NotImplementedError('ObjWrapper: setSpatioTemporalCalibrationFromExample')
-
+    def setSpatioTemporalCalibrationFromExample(
+        self, example: JSpatioTemporallyCalibrated
+    ):  # No return
+        raise NotImplementedError("ObjWrapper: setSpatioTemporalCalibrationFromExample")
 
     # Obj default methods
-    
-    def getParents(self, use_full_hierarchy: bool): # To do
-        print("ObjWrapper: Need to implement custom list to handle python object removal")
+
+    def getParents(self, use_full_hierarchy: bool):  # To do
+        print(
+            "ObjWrapper: Need to implement custom list to handle python object removal"
+        )
         parent_wrappers = JLinkedHashMap()
-        
+
         parent: Obj
         for parent in self._obj.getParents(use_full_hierarchy).values():
             parent_wrapper: ObjWrapper = wrapObj(parent)
             parent_wrappers.put(parent.getName(), parent_wrapper)
-        
+
         return parent_wrappers
 
     def getParent(self, name: str) -> ObjWrapper | None:
         parent: Obj = self._obj.getParent(name)
-        return None if parent is None else wrapObj(parent)        
+        return None if parent is None else wrapObj(parent)
 
-    def addParent(self, parent: ObjWrapper): # No return
+    def addParent(self, parent: ObjWrapper):  # No return
         self._obj.addParent(parent.getPythonObj())
 
     def removeParent(self, name: str):
-        raise NotImplementedError('ObjWrapper: removeParent')
+        raise NotImplementedError("ObjWrapper: removeParent")
 
     def getChildren(self, name: str) -> ObjsWrapper:
-        raise NotImplementedError('ObjWrapper: getChildren')
+        raise NotImplementedError("ObjWrapper: getChildren")
 
     def addChildren(self, child_set: ObjsWrapper):
-        raise NotImplementedError('ObjWrapper: addChildren')
+        raise NotImplementedError("ObjWrapper: addChildren")
 
     def removeChildren(self, name: str):
-        raise NotImplementedError('ObjWrapper: removeChildren')
+        raise NotImplementedError("ObjWrapper: removeChildren")
 
     def addChild(self, child: ObjWrapper):
         self._obj.addChild(child.getPythonObj())
 
     def removeChild(self, child: ObjWrapper):
-        raise NotImplementedError('ObjWrapper: removeChild')
+        raise NotImplementedError("ObjWrapper: removeChild")
 
     def getPartners(self, name: str) -> ObjsWrapper:
-        raise NotImplementedError('ObjWrapper: getPartners')
+        raise NotImplementedError("ObjWrapper: getPartners")
 
     def addPartners(self, partner_set: ObjsWrapper):
-        raise NotImplementedError('ObjWrapper: addPartners')
+        raise NotImplementedError("ObjWrapper: addPartners")
 
     def addPartner(self, partner: ObjWrapper):
-        raise NotImplementedError('ObjWrapper: addPartner')
+        raise NotImplementedError("ObjWrapper: addPartner")
 
     def removePartner(self, partner: ObjWrapper):
-        raise NotImplementedError('ObjWrapper: removePartner')
+        raise NotImplementedError("ObjWrapper: removePartner")
 
     def removePartners(self, name: str):
-        raise NotImplementedError('ObjWrapper: removePartners')
+        raise NotImplementedError("ObjWrapper: removePartners")
 
     def getPreviousPartners(self, name: str) -> ObjsWrapper:
-        raise NotImplementedError('ObjWrapper: getPreviousPartners')
+        raise NotImplementedError("ObjWrapper: getPreviousPartners")
 
     def getSimultaneousPartners(self, name: str) -> ObjsWrapper:
-        raise NotImplementedError('ObjWrapper: getSimultaneousPartners')
+        raise NotImplementedError("ObjWrapper: getSimultaneousPartners")
 
     def getNextPartners(self, name: str) -> ObjsWrapper:
-        raise NotImplementedError('ObjWrapper: getNextPartners')
+        raise NotImplementedError("ObjWrapper: getNextPartners")
 
-    def addMetadataItem(self, metadata_item): # To do
-        raise NotImplementedError('ObjWrapper: addMetadataItem')
+    def addMetadataItem(self, metadata_item):  # To do
+        raise NotImplementedError("ObjWrapper: addMetadataItem")
 
-    def getMetadataItem(self, name: str): # To do
-        raise NotImplementedError('ObjWrapper: getMetadataItem')
+    def getMetadataItem(self, name: str):  # To do
+        raise NotImplementedError("ObjWrapper: getMetadataItem")
 
     def removeMetadataItem(self, name: str):
-        raise NotImplementedError('ObjWrapper: removeMetadataItem')
+        raise NotImplementedError("ObjWrapper: removeMetadataItem")
 
     def addMeasurement(self, measurement: MeasurementWrapper):
         self._obj.addMeasurement(measurement.getPythonMeasurement())
@@ -436,109 +480,112 @@ class ObjWrapper:
         return None if measurement is None else wrapMeasurement(measurement)
 
     def removeMeasurement(self, name: str):
-        raise NotImplementedError('ObjWrapper: removeMeasurement')
+        raise NotImplementedError("ObjWrapper: removeMeasurement")
 
     def getAsImage(self, imageName: str, single_timepoint: bool) -> ImageWrapper:
-        raise NotImplementedError('ObjWrapper: getAsImage')
+        raise NotImplementedError("ObjWrapper: getAsImage")
 
-    def getCentroidAsImage(self, imageName: str, single_timepoint: bool) -> ImageWrapper:
-        raise NotImplementedError('ObjWrapper: getCentroidAsImage')
+    def getCentroidAsImage(
+        self, imageName: str, single_timepoint: bool
+    ) -> ImageWrapper:
+        raise NotImplementedError("ObjWrapper: getCentroidAsImage")
 
     def addToImage(self, image: ImageWrapper, hue: float):
-        raise NotImplementedError('ObjWrapper: addToImage')
+        raise NotImplementedError("ObjWrapper: addToImage")
 
     def addCentroidToImage(self, image: ImageWrapper, hue: float):
-        raise NotImplementedError('ObjWrapper: addCentroidToImage')
+        raise NotImplementedError("ObjWrapper: addCentroidToImage")
 
     def removeOutOfBoundsCoords(self):
-        raise NotImplementedError('ObjWrapper: removeOutOfBoundsCoords')
+        raise NotImplementedError("ObjWrapper: removeOutOfBoundsCoords")
 
-    def getImgPlusCoordinateIterator(self): # To do
-        raise NotImplementedError('ObjWrapper: getImgPlusCoordinateIterator')
-
+    def getImgPlusCoordinateIterator(self):  # To do
+        raise NotImplementedError("ObjWrapper: getImgPlusCoordinateIterator")
 
     # Volume default methods
-            
-    def getCoordinateIterator(self): # To do
-        raise NotImplementedError('ObjWrapper: getCoordinateIterator')
 
-    def addCoord(self, x: int, y: int, z: int): # No return
-        self._obj.addCoord(x,y,z)
-        
-    def addPoint(self, point): # To do
-        raise NotImplementedError('ObjWrapper: addPoint')
+    def getCoordinateIterator(self):  # To do
+        raise NotImplementedError("ObjWrapper: getCoordinateIterator")
 
-    def addPointsFromRoi(self, roi, z: int): # To do
-        raise NotImplementedError('ObjWrapper: addPointsFromRoi')
+    def addCoord(self, x: int, y: int, z: int):  # No return
+        self._obj.addCoord(x, y, z)
 
-    def addPointsFromPolygon(self, polygon, z: int): # To do
-        raise NotImplementedError('ObjWrapper: addPointsFromPolygon')
+    def addPoint(self, point):  # To do
+        raise NotImplementedError("ObjWrapper: addPoint")
 
-    def addPointsFromShape(self, polygon, z: int): # To do
-        raise NotImplementedError('ObjWrapper: addPointsFromShape')
+    def addPointsFromRoi(self, roi, z: int):  # To do
+        raise NotImplementedError("ObjWrapper: addPointsFromRoi")
+
+    def addPointsFromPolygon(self, polygon, z: int):  # To do
+        raise NotImplementedError("ObjWrapper: addPointsFromPolygon")
+
+    def addPointsFromShape(self, polygon, z: int):  # To do
+        raise NotImplementedError("ObjWrapper: addPointsFromShape")
 
     def translateCoords(self, x_offs: int, y_offs: int, zOffs: int):
-        raise NotImplementedError('ObjWrapper: translateCoords')
+        raise NotImplementedError("ObjWrapper: translateCoords")
 
-    def finalise(self): # No return
+    def finalise(self):  # No return
         self._obj.finalise()
 
-    def finaliseSlice(self, z: int): # No return
+    def finaliseSlice(self, z: int):  # No return
         self._obj.finaliseSlice(z)
 
-    def getPoints(self): # To do
-        raise NotImplementedError('ObjWrapper: getPoints')
+    def getPoints(self):  # To do
+        raise NotImplementedError("ObjWrapper: getPoints")
 
     def getProjectedArea(self, pixel_distances: bool) -> float:
-        raise NotImplementedError('ObjWrapper: getProjectedArea')
+        raise NotImplementedError("ObjWrapper: getProjectedArea")
 
     def size(self) -> int:
         return self._obj.size()
 
-    def setPoints(self, points): # To do
-        raise NotImplementedError('ObjWrapper: setPoints')
+    def setPoints(self, points):  # To do
+        raise NotImplementedError("ObjWrapper: setPoints")
 
-    def isOnEdgeXY(self, p) -> bool: # To do
-        raise NotImplementedError('ObjWrapper: isOnEdgeXY')
+    def isOnEdgeXY(self, p) -> bool:  # To do
+        raise NotImplementedError("ObjWrapper: isOnEdgeXY")
 
-    def isOnEdgeZ(self, p) -> bool: # To do
-        raise NotImplementedError('ObjWrapper: isOnEdgeZ')
+    def isOnEdgeZ(self, p) -> bool:  # To do
+        raise NotImplementedError("ObjWrapper: isOnEdgeZ")
 
-    def contains(self, point1) -> bool: # To do
-        raise NotImplementedError('ObjWrapper: contains')
+    def contains(self, point1) -> bool:  # To do
+        raise NotImplementedError("ObjWrapper: contains")
 
     def getNumberOfElements(self) -> int:
-        raise NotImplementedError('ObjWrapper: getNumberOfElements')
+        raise NotImplementedError("ObjWrapper: getNumberOfElements")
 
     def is2D(self) -> bool:
         return self._obj.is2D()
 
-    def getCalibratedX(self, point) -> float: # To do
-        raise NotImplementedError('ObjWrapper: getCalibratedX')
+    def getCalibratedX(self, point) -> float:  # To do
+        raise NotImplementedError("ObjWrapper: getCalibratedX")
 
-    def getCalibratedY(self, point) -> float: # To do
-        raise NotImplementedError('ObjWrapper: getCalibratedY')
+    def getCalibratedY(self, point) -> float:  # To do
+        raise NotImplementedError("ObjWrapper: getCalibratedY")
 
     def getXYScaledZ(self, z: float) -> float:
         return self._obj.getXYScaledZ(z)
 
-    def getCalibratedZ(self, point, match_xy: bool) -> float: # To do
-        raise NotImplementedError('ObjWrapper: getCalibratedZ')
+    def getCalibratedZ(self, point, match_xy: bool) -> float:  # To do
+        raise NotImplementedError("ObjWrapper: getCalibratedZ")
 
     def getExtents(self, pixel_distances: bool, match_xy: bool) -> List[List[float]]:
         return self._obj.getExtents(pixel_distances, match_xy)
 
     def getAsTightImage(self, imageName: str) -> ImageWrapper:
-        raise NotImplementedError('ObjWrapper: getAsTightImage')
+        raise NotImplementedError("ObjWrapper: getAsTightImage")
 
-    def getAsTightImageWithBorders(self, imageName: str, border_widths) -> ImageWrapper: # To do
-        raise NotImplementedError('ObjWrapper: getAsTightImageWithBorders')
+    def getAsTightImageWithBorders(
+        self, imageName: str, border_widths
+    ) -> ImageWrapper:  # To do
+        raise NotImplementedError("ObjWrapper: getAsTightImageWithBorders")
 
     def getContainedVolume(self, pixel_distances: bool) -> float:
         return self._obj.getContainedVolume(pixel_distances)
 
     def getOverlap(self, volume2: VolumeWrapper) -> int:
-        raise NotImplementedError('ObjWrapper: getOverlap')
+        raise NotImplementedError("ObjWrapper: getOverlap")
 
     def getX(self, pixel_distances: bool) -> List[float]:
         return list(self._obj.getX(pixel_distances))
@@ -549,23 +596,23 @@ class ObjWrapper:
     def getZ(self, pixel_distances: bool, match_xy: bool) -> List[float]:
         return list(self._obj.getZ(pixel_distances, match_xy))
 
-    def getSurfaceXCoords(self): # To do
-        raise NotImplementedError('ObjWrapper: getSurfaceXCoords')
+    def getSurfaceXCoords(self):  # To do
+        raise NotImplementedError("ObjWrapper: getSurfaceXCoords")
 
-    def getSurfaceYCoords(self): # To do
-        raise NotImplementedError('ObjWrapper: getSurfaceYCoords')
+    def getSurfaceYCoords(self):  # To do
+        raise NotImplementedError("ObjWrapper: getSurfaceYCoords")
 
-    def getSurfaceZCoords(self): # To do
-        raise NotImplementedError('ObjWrapper: getSurfaceZCoords')
+    def getSurfaceZCoords(self):  # To do
+        raise NotImplementedError("ObjWrapper: getSurfaceZCoords")
 
-    def getSurfaceX(self, pixel_distances: bool): # To do
-        raise NotImplementedError('ObjWrapper: getSurfaceX')
+    def getSurfaceX(self, pixel_distances: bool):  # To do
+        raise NotImplementedError("ObjWrapper: getSurfaceX")
 
-    def getSurfaceY(self, pixel_distances: bool): # To do
-        raise NotImplementedError('ObjWrapper: getSurfaceY')
+    def getSurfaceY(self, pixel_distances: bool):  # To do
+        raise NotImplementedError("ObjWrapper: getSurfaceY")
 
-    def getSurfaceZ(self, pixel_distances: bool, match_xy: bool): # To do
-        raise NotImplementedError('ObjWrapper: getSurfaceZ')
+    def getSurfaceZ(self, pixel_distances: bool, match_xy: bool):  # To do
+        raise NotImplementedError("ObjWrapper: getSurfaceZ")
 
     def getXMean(self, pixel_distances: bool) -> float:
         return self._obj.getXMean(pixel_distances)
@@ -578,70 +625,92 @@ class ObjWrapper:
 
     def calculateBaseAreaPx(self) -> float:
         return self._obj.calculateBaseAreaPx()
-    
+
     def getVolumeHeight(self, pixel_distances: bool, match_xy: bool) -> float:
         return self._obj.getVolumeHeight(pixel_distances, match_xy)
 
     def hasVolume(self) -> bool:
-        raise NotImplementedError('ObjWrapper: hasVolume')
+        raise NotImplementedError("ObjWrapper: hasVolume")
 
     def hasArea(self) -> bool:
-        raise NotImplementedError('ObjWrapper: hasArea')
+        raise NotImplementedError("ObjWrapper: hasArea")
 
     def calculateAngle2D(self, volume2: VolumeWrapper) -> float:
-        raise NotImplementedError('ObjWrapper: calculateAngle2D')
+        raise NotImplementedError("ObjWrapper: calculateAngle2D")
 
-    def calculateAngleToPoint2D(self, point) -> float: # To do
-        raise NotImplementedError('ObjWrapper: calculateAngleToPoint2D')
+    def calculateAngleToPoint2D(self, point) -> float:  # To do
+        raise NotImplementedError("ObjWrapper: calculateAngleToPoint2D")
 
-    def calculatePointPointSeparation(self, point1, point2, pixel_distances: bool) -> float: # To do
-        raise NotImplementedError('ObjWrapper: calculatePointPointSeparation')
+    def calculatePointPointSeparation(
+        self, point1, point2, pixel_distances: bool
+    ) -> float:  # To do
+        raise NotImplementedError("ObjWrapper: calculatePointPointSeparation")
 
-    def getSurfaceSeparation(self, volume2, pixel_distances: bool, force2D: bool, ignore_edges_xy: bool, ignore_edges_z: bool) -> float: # To do
-        raise NotImplementedError('ObjWrapper: getSurfaceSeparation')
+    def getSurfaceSeparation(
+        self,
+        volume2,
+        pixel_distances: bool,
+        force2D: bool,
+        ignore_edges_xy: bool,
+        ignore_edges_z: bool,
+    ) -> float:  # To do
+        raise NotImplementedError("ObjWrapper: getSurfaceSeparation")
 
-    def getPointSurfaceSeparation(self, point, pixel_distances: bool, force2D: bool, ignore_edges_xy: bool, ignore_edges_z: bool) -> float: # To do
-        raise NotImplementedError('ObjWrapper: getPointSurfaceSeparation')
+    def getPointSurfaceSeparation(
+        self,
+        point,
+        pixel_distances: bool,
+        force2D: bool,
+        ignore_edges_xy: bool,
+        ignore_edges_z: bool,
+    ) -> float:  # To do
+        raise NotImplementedError("ObjWrapper: getPointSurfaceSeparation")
 
-    def getCentroidSeparation(self, volume2: VolumeWrapper, pixel_distances: bool, force2D: bool) -> float: # To do
-        raise NotImplementedError('ObjWrapper: getCentroidSeparation')
+    def getCentroidSeparation(
+        self, volume2: VolumeWrapper, pixel_distances: bool, force2D: bool
+    ) -> float:  # To do
+        raise NotImplementedError("ObjWrapper: getCentroidSeparation")
 
     def getOverlappingPoints(self, volume2: VolumeWrapper) -> VolumeWrapper:
-        raise NotImplementedError('ObjWrapper: getOverlappingPoints')
+        raise NotImplementedError("ObjWrapper: getOverlappingPoints")
 
     def getSlice(self, slice: int) -> VolumeWrapper:
-        raise NotImplementedError('ObjWrapper: getSlice')
+        raise NotImplementedError("ObjWrapper: getSlice")
 
-    def getRoi(self, slice: int): # To do
+    def getRoi(self, slice: int):  # To do
         return getRoi(self._obj, slice)
-        
 
-@JImplements('io.github.mianalysis.mia.object.coordinates.ObjFactoryI')
+
+@JImplements("io.github.mianalysis.mia.object.coordinates.ObjFactoryI")
 class ObjFactoryWrapper:
-    
+
     @JOverride
     def getName(self) -> str:
         return "Python object factory"
-    
+
     @JOverride
     def duplicate(self) -> ObjFactoryWrapper:
         return ObjFactoryWrapper()
 
     @JOverride
-    def createObj(self, factory: CoordinateSetFactoryWrapper, obj_collection: ObjsWrapper) -> ObjWrapper: # To do
+    def createObj(
+        self, factory: CoordinateSetFactoryWrapper, obj_collection: ObjsWrapper
+    ) -> ObjWrapper:  # To do
         return ObjWrapper(factory, obj_collection, obj_collection.getAndIncrementID())
 
     @JOverride
-    def createObjWithID(self, factory: CoordinateSetFactoryWrapper, obj_collection: ObjsWrapper, ID: int) -> ObjWrapper: # To do
+    def createObjWithID(
+        self, factory: CoordinateSetFactoryWrapper, obj_collection: ObjsWrapper, ID: int
+    ) -> ObjWrapper:  # To do
         return ObjWrapper(factory, obj_collection, ID)
+
 
 def wrapObj(obj: Obj) -> ObjWrapper:
     try:
         return _wrapper_cache[obj]
-    except:        
+    except:
         obj_wrapper = ObjWrapper(None, None, 0)
         obj_wrapper.setPythonObj(obj)
-        _wrapper_cache[obj]  = obj_wrapper
-    
+        _wrapper_cache[obj] = obj_wrapper
+
         return obj_wrapper
-    

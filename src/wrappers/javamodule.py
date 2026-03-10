@@ -4,6 +4,7 @@ from src.objects.module import Module
 from src.objects.workspace import Workspace
 from src.wrappers.workspacewrapper import WorkspaceWrapper, wrapWorkspace
 
+
 class JavaModule(Module):
     def __init__(self, java_module):
         super().__init__(java_module.getName())
@@ -197,13 +198,11 @@ class JavaModule(Module):
 
     def writeProgressStatus(self, count, total, feature_being_processed):
         raise NotImplementedError("JavaModule: writeProgressStatus")
-            
-    
+
     # From Ref
-    
+
     def appendXMLAttributes(self, element):
         raise NotImplementedError("JavaModule: appendXMLAttributes")
-    
+
     def setAttributesFromXML(self, node):
         raise NotImplementedError("JavaModule: setAttributesFromXML")
-    

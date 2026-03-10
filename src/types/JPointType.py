@@ -1,7 +1,8 @@
 from __future__ import annotations
-from typing import Protocol,TypeVar
+from typing import Protocol, TypeVar
 
 T = TypeVar("T", bound=float)  # Python equivalent for Java's Number
+
 
 class JPointType(Protocol[T]):
     """Python type stub for io.github.mianalysis.mia.object.coordinates.Point"""

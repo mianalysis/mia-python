@@ -2,6 +2,7 @@ from __future__ import annotations
 from typing import List
 from src.objects.module import Module
 
+
 class Modules:
     def __init__(self):
         self._modules: List[Module] = []
@@ -57,7 +58,9 @@ class Modules:
     def getParametersMatchingType(self, type, cut_off_module):
         raise NotImplementedError("Modules: getParametersMatchingType")
 
-    def getAvailableObjectsMatchingClass(self, cut_off_module, object_class, ignore_removed):
+    def getAvailableObjectsMatchingClass(
+        self, cut_off_module, object_class, ignore_removed
+    ):
         raise NotImplementedError("Modules: getAvailableObjectsMatchingClass")
 
     def getAvailableObjects(self, cut_off_module, ignore_removed):
@@ -92,7 +95,7 @@ class Modules:
 
     def add(self, module: Module):
         self._modules.append(module)
-    
+
     def addAll(self, modules):
         raise NotImplementedError("Modules: addAll")
 
@@ -119,4 +122,3 @@ class Modules:
 
     def indexOf(self, module):
         raise NotImplementedError("Modules: indexOf")
-    

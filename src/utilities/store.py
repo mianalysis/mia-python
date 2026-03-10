@@ -1,3 +1,2 @@
 class Store:
     ij = None
-    

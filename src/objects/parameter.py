@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 
 from src.objects.ref import Ref
 
+
 class Parameter(Ref, ABC):
     @abstractmethod
     def initialiseControl(self): ...
@@ -63,4 +64,3 @@ class Parameter(Ref, ABC):
 
     @abstractmethod
     def setExported(self, exported: bool) -> None: ...
-    

@@ -1,5 +1,6 @@
 from src.objects.parameter import Parameter
 
+
 class JavaParameter(Parameter):
     def __init__(self, java_parameter) -> None:
         self._java_parameter = java_parameter
@@ -63,12 +64,11 @@ class JavaParameter(Parameter):
 
     def setExported(self, exported: bool) -> None:
         raise NotImplementedError("JavaParameter: setExported")
-    
-    
+
     # From Ref
-    
+
     def appendXMLAttributes(self, element):
         raise NotImplementedError("JavaParameter: appendXMLAttributes")
-    
+
     def setAttributesFromXML(self, node):
         raise NotImplementedError("JavaParameter: setAttributesFromXML")

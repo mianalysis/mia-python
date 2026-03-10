@@ -11,31 +11,42 @@ import numpy as np
 if TYPE_CHECKING:
     from src.objects.objs import Objs
     from src.objects.coordinateset import CoordinateSetFactory
-    from src.objects.image import Image  
+    from src.objects.image import Image
     from src.types.types import Point
 
 
 class Obj(Volume):
-    def __init__(self, coordinate_set_factory: CoordinateSetFactory, obj_collection: Objs, ID: int):
-        super().__init__(coordinate_set_factory, obj_collection.getWidth(),obj_collection.getHeight(), 
-                         obj_collection.getNSlices(), obj_collection.getDppXY(), obj_collection.getDppZ(), 
-                         obj_collection.getSpatialUnits())
-        
+    def __init__(
+        self,
+        coordinate_set_factory: CoordinateSetFactory,
+        obj_collection: Objs,
+        ID: int,
+    ):
+        super().__init__(
+            coordinate_set_factory,
+            obj_collection.getWidth(),
+            obj_collection.getHeight(),
+            obj_collection.getNSlices(),
+            obj_collection.getDppXY(),
+            obj_collection.getDppZ(),
+            obj_collection.getSpatialUnits(),
+        )
+
         self._ID: int = ID
         self._obj_collection: Objs = obj_collection
-        
-        self._n_frames: int = obj_collection.getNFrames()    
+
+        self._n_frames: int = obj_collection.getNFrames()
         self._frame_interval: float = obj_collection.getFrameInterval()
         self._temporal_unit = obj_collection.getTemporalUnit()
-        
+
         self._T: int = 0
         self._parents: Dict[str, Obj] = {}
         self._children: Dict[str, Objs] = {}
         self._partners: Dict[str, Objs] = {}
-        
+
         self._measurements: Dict[str, Measurement] = {}
         # To do: Create ObjMetadata class
-        
+
     def getObjectCollection(self) -> Objs:
         return self._obj_collection
 
@@ -49,44 +60,44 @@ class Obj(Volume):
         return self._ID
 
     def setID(self, ID: int) -> Obj:
-        self._ID = ID # type: ignore
-        
+        self._ID = ID  # type: ignore
+
         return self
 
     def getT(self) -> int:
         return self._T
 
     def setT(self, T: int) -> Obj:
-        self._T = T # type: ignore
-        
+        self._T = T  # type: ignore
+
         return self
 
     def getAllParents(self) -> Dict[str, Obj]:
         return self._parents
 
     def setAllParents(self, parents: Dict[str, Obj]):
-        raise NotImplementedError('Obj: setAllParents')
+        raise NotImplementedError("Obj: setAllParents")
 
     def getAllChildren(self) -> Dict[str, Objs]:
         return self._children
 
     def setAllChildren(self, children: Dict[str, Objs]):
-        raise NotImplementedError('Obj: setAllChildren')
+        raise NotImplementedError("Obj: setAllChildren")
 
     def getAllPartners(self) -> Dict[str, Objs]:
         return self._partners
 
     def setAllPartners(self, partners: Dict[str, Objs]):
-        raise NotImplementedError('Obj: setAllPartners')
+        raise NotImplementedError("Obj: setAllPartners")
 
-    def removeRelationships(self): # No return
+    def removeRelationships(self):  # No return
         # Removing itself as a child from its parent
         if self._parents is not None:
             parent: Obj
             for parent in self._parents.values():
                 if parent is not None:
                     parent.removeChild(self)
-        
+
         # Removing itself as a parent from any children
         if self._children is not None:
             child_set: Objs
@@ -114,59 +125,63 @@ class Obj(Volume):
 
     def setMeasurements(self, measurements: Dict[str, Measurement]):
         self._measurements = measurements
-    
-    def getMetadata(self): # To do
-        raise NotImplementedError('Obj: getMetadata')
 
-    def setMetadata(self, metadata): # To do
-        raise NotImplementedError('Obj: setMetadata')
+    def getMetadata(self):  # To do
+        raise NotImplementedError("Obj: getMetadata")
 
-    def getRois(self): # To do
-        raise NotImplementedError('Obj: getRois')
+    def setMetadata(self, metadata):  # To do
+        raise NotImplementedError("Obj: setMetadata")
 
-    def clearROIs(self): # No return
-        raise NotImplementedError('Obj: clearROIs')
+    def getRois(self):  # To do
+        raise NotImplementedError("Obj: getRois")
 
-    def duplicate(self, new_collection: Objs, duplicate_relationships: bool, duplicate_measurements: bool, duplicate_metadata: bool) -> Obj:
-        raise NotImplementedError('Obj: duplicate')
+    def clearROIs(self):  # No return
+        raise NotImplementedError("Obj: clearROIs")
+
+    def duplicate(
+        self,
+        new_collection: Objs,
+        duplicate_relationships: bool,
+        duplicate_measurements: bool,
+        duplicate_metadata: bool,
+    ) -> Obj:
+        raise NotImplementedError("Obj: duplicate")
 
     def equalsIgnoreNameAndID(self, obj: Obj) -> bool:
-        raise NotImplementedError('Obj: equalsIgnoreNameAndID')
+        raise NotImplementedError("Obj: equalsIgnoreNameAndID")
 
     def toString(self) -> str:
-        return f"Object \"{self.getName()}\", ID = {self.getID()}, frame = {self.getT()}"
-
+        return f'Object "{self.getName()}", ID = {self.getID()}, frame = {self.getT()}'
 
     # From SpatioTemporallyCalibrated
 
     def getNFrames(self) -> int:
         return self._n_frames
 
-    def setNFrames(self, n_frames: int): # No return
+    def setNFrames(self, n_frames: int):  # No return
         self._n_frames = n_frames
 
     def getFrameInterval(self) -> float:
         return self._frame_interval
 
-    def setFrameInterval(self, frame_interval: float): # No return
+    def setFrameInterval(self, frame_interval: float):  # No return
         self._frame_interval = frame_interval
 
-    def getTemporalUnit(self): # To do
+    def getTemporalUnit(self):  # To do
         return self._temporal_unit
 
-    def setTemporalUnit(self, temporal_unit): # To do
+    def setTemporalUnit(self, temporal_unit):  # To do
         self._temporal_unit = temporal_unit
-    
-    def applySpatioTemporalCalibrationToImage(self, ipl): # To do
-        raise NotImplementedError('Obj: applySpatioTemporalCalibrationToImage')
-    
-    def setSpatioTemporalCalibrationFromExample(self, example): # To do
-        # This should just use Python objects
-        raise NotImplementedError('Obj: setSpatioTemporalCalibrationFromExample')
 
+    def applySpatioTemporalCalibrationToImage(self, ipl):  # To do
+        raise NotImplementedError("Obj: applySpatioTemporalCalibrationToImage")
+
+    def setSpatioTemporalCalibrationFromExample(self, example):  # To do
+        # This should just use Python objects
+        raise NotImplementedError("Obj: setSpatioTemporalCalibrationFromExample")
 
     # Obj default methods
-            
+
     def getParents(self, use_full_hierarchy: bool) -> Dict[str, Obj]:
         if not use_full_hierarchy:
             return self.getAllParents()
@@ -181,36 +196,36 @@ class Obj(Volume):
         for parent in self.getAllParents().values():
             if parent is None:
                 continue
-            
+
             current_parents: Dict[str, Obj] = parent.getParents(True)
             if current_parents is None:
                 continue
-            
+
             current_parent: Obj
             for current_parent in current_parents.values():
                 parent_hierarchy[current_parent.getName()] = current_parent
-    
+
         return parent_hierarchy
 
     def getParent(self, name: str) -> Obj:
         # Split name down by " // " tokenizer
         elements: List[str] = name.split(" // ")
-        
+
         # Getting the first parent
         parent: Obj = self._parents[elements[0]]
-        
+
         if len(elements) == 1:
             return parent
-        
+
         new_name: str = ""
-        for i in range(1,len(elements)):
+        for i in range(1, len(elements)):
             new_name = new_name + elements[i]
-            if i != len(elements)-1:
+            if i != len(elements) - 1:
                 new_name = new_name + " // "
-                
+
         if parent is None:
             return None
-        
+
         return parent.getParent(new_name)
 
     def addParent(self, parent: Obj):
@@ -221,59 +236,61 @@ class Obj(Volume):
         self._parents.pop(name)
 
     def getChildren(self, name: str) -> Objs:
-        raise NotImplementedError('Obj: getChildren')
+        raise NotImplementedError("Obj: getChildren")
 
     def addChildren(self, child_set: Objs):
-        raise NotImplementedError('Obj: addChildren')
+        raise NotImplementedError("Obj: addChildren")
 
     def removeChildren(self, name: str):
-        raise NotImplementedError('Obj: removeChildren')
+        raise NotImplementedError("Obj: removeChildren")
 
     def addChild(self, child: Obj):
         if child is None:
             return
-        
+
         child_name: str = child.getName()
         if child_name not in self._children:
-            self._children[child_name] = child.getObjectCollection().createNewObjsFromThis(child_name)
-            
+            self._children[child_name] = (
+                child.getObjectCollection().createNewObjsFromThis(child_name)
+            )
+
         self._children[child_name].add(child)
 
     def removeChild(self, child: Obj):
-        raise NotImplementedError('Obj: removeChild')
+        raise NotImplementedError("Obj: removeChild")
 
     def getPartners(self, name: str) -> Objs:
-        raise NotImplementedError('Obj: getPartners')
+        raise NotImplementedError("Obj: getPartners")
 
     def addPartners(self, partner_set: Objs):
-        raise NotImplementedError('Obj: addPartners')
+        raise NotImplementedError("Obj: addPartners")
 
     def addPartner(self, partner: Obj):
-        raise NotImplementedError('Obj: addPartner')
+        raise NotImplementedError("Obj: addPartner")
 
     def removePartner(self, partner: Obj):
-        raise NotImplementedError('Obj: removePartner')
+        raise NotImplementedError("Obj: removePartner")
 
     def removePartners(self, name: str):
-        raise NotImplementedError('Obj: removePartners')
+        raise NotImplementedError("Obj: removePartners")
 
     def getPreviousPartners(self, name: str) -> Objs:
-        raise NotImplementedError('Obj: getPreviousPartners')
+        raise NotImplementedError("Obj: getPreviousPartners")
 
     def getSimultaneousPartners(self, name: str) -> Objs:
-        raise NotImplementedError('Obj: getSimultaneousPartners')
+        raise NotImplementedError("Obj: getSimultaneousPartners")
 
     def getNextPartners(self, name: str) -> Objs:
-        raise NotImplementedError('Obj: getNextPartners')
+        raise NotImplementedError("Obj: getNextPartners")
 
-    def addMetadataItem(self, metadata_item): # To do
-        raise NotImplementedError('Obj: addMetadataItem')
+    def addMetadataItem(self, metadata_item):  # To do
+        raise NotImplementedError("Obj: addMetadataItem")
 
-    def getMetadataItem(self, name: str): # To do
-        raise NotImplementedError('Obj: getMetadataItem')
+    def getMetadataItem(self, name: str):  # To do
+        raise NotImplementedError("Obj: getMetadataItem")
 
     def removeMetadataItem(self, name: str):
-        raise NotImplementedError('Obj: removeMetadataItem')
+        raise NotImplementedError("Obj: removeMetadataItem")
 
     def addMeasurement(self, measurement: Measurement):
         self._measurements[measurement.getName()] = measurement
@@ -281,44 +298,43 @@ class Obj(Volume):
     def getMeasurement(self, name: str) -> Measurement | None:
         name = replaceSpatialUnits(name)
         name = replaceTemporalUnits(name)
-        
+
         return self._measurements.get(name)
 
     def removeMeasurement(self, name: str):
-        raise NotImplementedError('Obj: removeMeasurement')
+        raise NotImplementedError("Obj: removeMeasurement")
 
     def getAsImage(self, imageName: str, single_timepoint: bool) -> Image:
-        raise NotImplementedError('Obj: getAsImage')
-    
-    def getCentroidAsImage(self, imageName: str, single_timepoint: bool) -> Image:
-        raise NotImplementedError('Obj: getCentroidAsImage')
+        raise NotImplementedError("Obj: getAsImage")
 
-    def addToImage(self, image: Image, hue: float): # No return
+    def getCentroidAsImage(self, imageName: str, single_timepoint: bool) -> Image:
+        raise NotImplementedError("Obj: getCentroidAsImage")
+
+    def addToImage(self, image: Image, hue: float):  # No return
         # np_img: DataArray = image.getRawImage()
-        
+
         point: Point | None
         for point in self.getCoordinateSet():
             if point is None:
                 continue
-            
+
             image.putPixel(hue, point[0], point[1], z=point[2], t=self.getT())
             # x: int = point[0]
             # y: int = point[1]
             # z: int = point[2]
-            
+
             # np_img[y,x,0] = hue
 
     def addCentroidToImage(self, image: Image, hue: float):
-        raise NotImplementedError('Obj: addCentroidToImage')
+        raise NotImplementedError("Obj: addCentroidToImage")
 
     def removeOutOfBoundsCoords(self):
-        raise NotImplementedError('Obj: removeOutOfBoundsCoords')
+        raise NotImplementedError("Obj: removeOutOfBoundsCoords")
 
-    def getImgPlusCoordinateIterator(self): # To do
-        raise NotImplementedError('Obj: getImgPlusCoordinateIterator')
+    def getImgPlusCoordinateIterator(self):  # To do
+        raise NotImplementedError("Obj: getImgPlusCoordinateIterator")
 
-        
     # Volume default methods
-    
-    def addCoord(self, x: int, y: int, z: int): # No return
-        super().addCoord(x,y,z)
+
+    def addCoord(self, x: int, y: int, z: int):  # No return
+        super().addCoord(x, y, z)

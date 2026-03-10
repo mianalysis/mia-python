@@ -1,264 +1,262 @@
-
 from jpype import JImplements, JOverride
 from scyjava import jimport
 
-Status = jimport('io.github.mianalysis.mia.object.system.Status')
+Status = jimport("io.github.mianalysis.mia.object.system.Status")
 
-ModuleI = jimport('io.github.mianalysis.mia.module.ModuleI')
+ModuleI = jimport("io.github.mianalysis.mia.module.ModuleI")
 
 
 @JImplements(ModuleI)
 class ModuleDemo:
     @JOverride
     def getCategory(self):
-        raise NotImplementedError('ModuleWrapper: getCategory')
-    
+        raise NotImplementedError("ModuleWrapper: getCategory")
+
     @JOverride
     def getVersionNumber(self):
-        raise NotImplementedError('ModuleWrapper: getVersionNumber')
-    
+        raise NotImplementedError("ModuleWrapper: getVersionNumber")
+
     @JOverride
     def process(self, workspace):
         print(workspace.getMetadata())
         return Status.PASS
-    
+
     @JOverride
     def initialiseParameters(self):
-        raise NotImplementedError('ModuleWrapper: initialiseParameters')
-    
+        raise NotImplementedError("ModuleWrapper: initialiseParameters")
+
     @JOverride
     def updateAndGetParameters(self):
-        raise NotImplementedError('ModuleWrapper: updateAndGetParameters')
-    
+        raise NotImplementedError("ModuleWrapper: updateAndGetParameters")
+
     @JOverride
     def updateAndGetImageMeasurementRefs(self):
-        raise NotImplementedError('ModuleWrapper: updateAndGetImageMeasurementRefs')
-    
+        raise NotImplementedError("ModuleWrapper: updateAndGetImageMeasurementRefs")
+
     @JOverride
     def updateAndGetObjectMeasurementRefs(self):
-        raise NotImplementedError('ModuleWrapper: updateAndGetObjectMeasurementRefs')
-    
+        raise NotImplementedError("ModuleWrapper: updateAndGetObjectMeasurementRefs")
+
     @JOverride
     def updateAndGetObjectMetadataRefs(self):
-        raise NotImplementedError('ModuleWrapper: updateAndGetObjectMetadataRefs')
-    
+        raise NotImplementedError("ModuleWrapper: updateAndGetObjectMetadataRefs")
+
     @JOverride
     def updateAndGetMetadataReferences(self):
-        raise NotImplementedError('ModuleWrapper: updateAndGetMetadataReferences')
-    
+        raise NotImplementedError("ModuleWrapper: updateAndGetMetadataReferences")
+
     @JOverride
     def updateAndGetParentChildRefs(self):
-        raise NotImplementedError('ModuleWrapper: updateAndGetParentChildRefs')
-    
+        raise NotImplementedError("ModuleWrapper: updateAndGetParentChildRefs")
+
     @JOverride
     def updateAndGetPartnerRefs(self):
-        raise NotImplementedError('ModuleWrapper: updateAndGetPartnerRefs')
-    
+        raise NotImplementedError("ModuleWrapper: updateAndGetPartnerRefs")
+
     @JOverride
     def verify(self):
-        raise NotImplementedError('ModuleWrapper: verify')
-    
+        raise NotImplementedError("ModuleWrapper: verify")
+
     @JOverride
     def execute(self, workspace):
-        raise NotImplementedError('ModuleWrapper: execute')
-    
+        raise NotImplementedError("ModuleWrapper: execute")
+
     @JOverride
     def addObjectMeasurementRef(self, ref):
-        raise NotImplementedError('ModuleWrapper: addObjectMeasurementRef')
-    
+        raise NotImplementedError("ModuleWrapper: addObjectMeasurementRef")
+
     @JOverride
     def addObjectMetadataRef(self, ref):
-        raise NotImplementedError('ModuleWrapper: addObjectMetadataRef')
-    
+        raise NotImplementedError("ModuleWrapper: addObjectMetadataRef")
+
     @JOverride
     def getImageMeasurementRef(self, name):
-        raise NotImplementedError('ModuleWrapper: getImageMeasurementRef')
-    
+        raise NotImplementedError("ModuleWrapper: getImageMeasurementRef")
+
     @JOverride
     def addImageMeasurementRef(self, ref):
-        raise NotImplementedError('ModuleWrapper: addImageMeasurementRef')
-    
+        raise NotImplementedError("ModuleWrapper: addImageMeasurementRef")
+
     @JOverride
     def getObjectMeasurementRef(self, name):
-        raise NotImplementedError('ModuleWrapper: getObjectMeasurementRef')
-    
+        raise NotImplementedError("ModuleWrapper: getObjectMeasurementRef")
+
     @JOverride
     def getObjectMetadataRef(self, name):
-        raise NotImplementedError('ModuleWrapper: getObjectMetadataRef')
-    
+        raise NotImplementedError("ModuleWrapper: getObjectMetadataRef")
+
     @JOverride
     def getMetadataRef(self, name):
-        raise NotImplementedError('ModuleWrapper: getMetadataRef')
-    
+        raise NotImplementedError("ModuleWrapper: getMetadataRef")
+
     @JOverride
     def addMetadataRef(self, ref):
-        raise NotImplementedError('ModuleWrapper: addMetadataRef')
-    
+        raise NotImplementedError("ModuleWrapper: addMetadataRef")
+
     @JOverride
     def getParentChildRef(self, parentName, childName):
-        raise NotImplementedError('ModuleWrapper: getParentChildRef')
-    
+        raise NotImplementedError("ModuleWrapper: getParentChildRef")
+
     @JOverride
     def addParentChildRef(self, ref):
-        raise NotImplementedError('ModuleWrapper: addParentChildRef')
-    
+        raise NotImplementedError("ModuleWrapper: addParentChildRef")
+
     @JOverride
     def addPartnerRef(self, ref):
-        raise NotImplementedError('ModuleWrapper: addPartnerRef')
-    
+        raise NotImplementedError("ModuleWrapper: addPartnerRef")
+
     @JOverride
     def getParameter(self, name):
-        raise NotImplementedError('ModuleWrapper: getParameter')
-    
+        raise NotImplementedError("ModuleWrapper: getParameter")
+
     @JOverride
     def updateParameterValue(self, name, value):
-        raise NotImplementedError('ModuleWrapper: updateParameterValue')
-    
+        raise NotImplementedError("ModuleWrapper: updateParameterValue")
+
     @JOverride
     def getParameterValue(self, name, workspace):
-        raise NotImplementedError('ModuleWrapper: getParameterValue')
-    
+        raise NotImplementedError("ModuleWrapper: getParameterValue")
+
     @JOverride
     def setParameterVisibility(self, name, visible):
-        raise NotImplementedError('ModuleWrapper: setParameterVisibility')
-    
+        raise NotImplementedError("ModuleWrapper: setParameterVisibility")
+
     @JOverride
     def getAllParameters(self):
-        raise NotImplementedError('ModuleWrapper: getAllParameters')
-    
+        raise NotImplementedError("ModuleWrapper: getAllParameters")
+
     @JOverride
     def invalidParameterIsVisible(self):
-        raise NotImplementedError('ModuleWrapper: invalidParameterIsVisible')
-    
+        raise NotImplementedError("ModuleWrapper: invalidParameterIsVisible")
+
     @JOverride
     def getParametersMatchingType(self, type):
-        raise NotImplementedError('ModuleWrapper: getParametersMatchingType')
-    
+        raise NotImplementedError("ModuleWrapper: getParametersMatchingType")
+
     @JOverride
     def addParameterGroupParameters(self, parameterGroup, type, parameters):
-        raise NotImplementedError('ModuleWrapper: addParameterGroupParameters')
-    
+        raise NotImplementedError("ModuleWrapper: addParameterGroupParameters")
+
     @JOverride
     def getModules(self):
-        raise NotImplementedError('ModuleWrapper: getModules')
-    
+        raise NotImplementedError("ModuleWrapper: getModules")
+
     @JOverride
     def setModules(self, modules):
-        raise NotImplementedError('ModuleWrapper: setModules')
-    
+        raise NotImplementedError("ModuleWrapper: setModules")
+
     @JOverride
     def hasParameter(self, parameterName):
-        raise NotImplementedError('ModuleWrapper: hasParameter')
-    
+        raise NotImplementedError("ModuleWrapper: hasParameter")
+
     @JOverride
     def getModuleID(self):
-        raise NotImplementedError('ModuleWrapper: getModuleID')
-    
+        raise NotImplementedError("ModuleWrapper: getModuleID")
+
     @JOverride
     def setModuleID(self, moduleID):
-        raise NotImplementedError('ModuleWrapper: setModuleID')
-    
+        raise NotImplementedError("ModuleWrapper: setModuleID")
+
     @JOverride
     def getShortDescription(self):
-        raise NotImplementedError('ModuleWrapper: getShortDescription')
-    
+        raise NotImplementedError("ModuleWrapper: getShortDescription")
+
     @JOverride
     def getNotes(self):
-        raise NotImplementedError('ModuleWrapper: getNotes')
-    
+        raise NotImplementedError("ModuleWrapper: getNotes")
+
     @JOverride
     def setNotes(self, notes):
-        raise NotImplementedError('ModuleWrapper: setNotes')
-    
+        raise NotImplementedError("ModuleWrapper: setNotes")
+
     @JOverride
     def isEnabled(self):
-        raise NotImplementedError('ModuleWrapper: isEnabled')
-    
+        raise NotImplementedError("ModuleWrapper: isEnabled")
+
     @JOverride
     def setEnabled(self, enabled):
-        raise NotImplementedError('ModuleWrapper: setEnabled')
-    
+        raise NotImplementedError("ModuleWrapper: setEnabled")
+
     @JOverride
     def canBeDisabled(self):
-        raise NotImplementedError('ModuleWrapper: canBeDisabled')
-    
+        raise NotImplementedError("ModuleWrapper: canBeDisabled")
+
     @JOverride
     def setCanBeDisabled(self, canBeDisabled):
-        raise NotImplementedError('ModuleWrapper: setCanBeDisabled')
-    
+        raise NotImplementedError("ModuleWrapper: setCanBeDisabled")
+
     @JOverride
     def canShowProcessingTitle(self):
-        raise NotImplementedError('ModuleWrapper: canShowProcessingTitle')
-    
+        raise NotImplementedError("ModuleWrapper: canShowProcessingTitle")
+
     @JOverride
     def setShowProcessingViewTitle(self, showProcessingViewTitle):
-        raise NotImplementedError('ModuleWrapper: setShowProcessingViewTitle')
-    
+        raise NotImplementedError("ModuleWrapper: setShowProcessingViewTitle")
+
     @JOverride
     def isVerbose(self):
-        raise NotImplementedError('ModuleWrapper: isVerbose')
-    
+        raise NotImplementedError("ModuleWrapper: isVerbose")
+
     @JOverride
     def setVerbose(self, verboseIn):
-        raise NotImplementedError('ModuleWrapper: setVerbose')
-    
+        raise NotImplementedError("ModuleWrapper: setVerbose")
+
     @JOverride
     def canShowOutput(self):
-        raise NotImplementedError('ModuleWrapper: canShowOutput')
-    
+        raise NotImplementedError("ModuleWrapper: canShowOutput")
+
     @JOverride
     def setShowOutput(self, showOutput):
-        raise NotImplementedError('ModuleWrapper: setShowOutput')
-    
+        raise NotImplementedError("ModuleWrapper: setShowOutput")
+
     @JOverride
     def isRunnable(self):
-        raise NotImplementedError('ModuleWrapper: isRunnable')
-    
+        raise NotImplementedError("ModuleWrapper: isRunnable")
+
     @JOverride
     def setRunnable(self, runnable):
-        raise NotImplementedError('ModuleWrapper: setRunnable')
-    
+        raise NotImplementedError("ModuleWrapper: setRunnable")
+
     @JOverride
     def isReachable(self):
-        raise NotImplementedError('ModuleWrapper: isReachable')
-    
+        raise NotImplementedError("ModuleWrapper: isReachable")
+
     @JOverride
     def setReachable(self, reachable):
-        raise NotImplementedError('ModuleWrapper: setReachable')
-    
+        raise NotImplementedError("ModuleWrapper: setReachable")
+
     @JOverride
     def isDeprecated(self):
-        raise NotImplementedError('ModuleWrapper: isDeprecated')
-    
+        raise NotImplementedError("ModuleWrapper: isDeprecated")
+
     @JOverride
     def setDeprecated(self, deprecated):
-        raise NotImplementedError('ModuleWrapper: setDeprecated')
-    
+        raise NotImplementedError("ModuleWrapper: setDeprecated")
+
     @JOverride
     def getIL2Support(self):
-        raise NotImplementedError('ModuleWrapper: getIL2Support')
-    
+        raise NotImplementedError("ModuleWrapper: getIL2Support")
+
     @JOverride
     def getRedirectModuleID(self, workspace):
-        raise NotImplementedError('ModuleWrapper: getRedirectModuleID')
-    
+        raise NotImplementedError("ModuleWrapper: getRedirectModuleID")
+
     @JOverride
     def setRedirectModuleID(self, redirectModuleID):
-        raise NotImplementedError('ModuleWrapper: setRedirectModuleID')
-    
+        raise NotImplementedError("ModuleWrapper: setRedirectModuleID")
+
     @JOverride
     def hasVisibleParameters(self):
-        raise NotImplementedError('ModuleWrapper: hasVisibleParameters')
-    
+        raise NotImplementedError("ModuleWrapper: hasVisibleParameters")
+
     @JOverride
     def duplicate(self, newModules, copyID):
-        raise NotImplementedError('ModuleWrapper: duplicate')
-    
+        raise NotImplementedError("ModuleWrapper: duplicate")
+
     @JOverride
     def writeStatus(self, message):
-        raise NotImplementedError('ModuleWrapper: writeStatus')
-    
+        raise NotImplementedError("ModuleWrapper: writeStatus")
+
     @JOverride
     def writeProgressStatus(self, count, total, featureBeingProcessed):
-        raise NotImplementedError('ModuleWrapper: writeProgressStatus')
-    
+        raise NotImplementedError("ModuleWrapper: writeProgressStatus")

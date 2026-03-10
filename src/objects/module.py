@@ -3,197 +3,197 @@ from abc import ABC, abstractmethod
 from src.objects.parameter import Parameter
 from src.objects.ref import Ref
 
+
 # Abstract Module class
 class Module(Ref, ABC):
     def __init__(self, name: str):
         super().__init__(name)
-        
+
     @abstractmethod
     def getCategory(self): ...
-        
+
     @abstractmethod
     def getVersionNumber(self): ...
-    
+
     @abstractmethod
     def process(self, workspace): ...
-    
+
     @abstractmethod
     def initialiseParameters(self): ...
-    
+
     @abstractmethod
     def updateAndGetParameters(self): ...
-    
+
     @abstractmethod
     def updateAndGetImageMeasurementRefs(self): ...
-    
+
     @abstractmethod
     def updateAndGetObjectMeasurementRefs(self): ...
-    
+
     @abstractmethod
     def updateAndGetObjectMetadataRefs(self): ...
-    
+
     @abstractmethod
     def updateAndGetMetadataReferences(self): ...
-            
+
     @abstractmethod
     def updateAndGetParentChildRefs(self): ...
-            
+
     @abstractmethod
     def updateAndGetPartnerRefs(self): ...
-            
+
     @abstractmethod
     def verify(self): ...
-            
+
     @abstractmethod
     def execute(self, workspace): ...
-            
+
     @abstractmethod
     def addObjectMeasurementRef(self, ref): ...
-            
+
     @abstractmethod
     def addObjectMetadataRef(self, ref): ...
-            
+
     @abstractmethod
     def getImageMeasurementRef(self, name): ...
-            
+
     @abstractmethod
     def addImageMeasurementRef(self, ref): ...
-            
+
     @abstractmethod
     def getObjectMeasurementRef(self, name): ...
-            
+
     @abstractmethod
     def getObjectMetadataRef(self, name): ...
-            
+
     @abstractmethod
     def getMetadataRef(self, name): ...
-            
+
     @abstractmethod
     def addMetadataRef(self, ref): ...
-            
+
     @abstractmethod
     def getParentChildRef(self, parent_name: str, child_name: str): ...
-            
+
     @abstractmethod
     def addParentChildRef(self, ref): ...
-            
+
     @abstractmethod
     def addPartnerRef(self, ref): ...
-            
+
     @abstractmethod
     def getParameter(self, name: str) -> Parameter: ...
-            
+
     @abstractmethod
     def updateParameterValue(self, name, value): ...
-            
+
     @abstractmethod
     def getParameterValue(self, name, workspace): ...
-            
+
     @abstractmethod
     def setParameterVisibility(self, name, visible): ...
-            
+
     @abstractmethod
     def getAllParameters(self): ...
-            
+
     @abstractmethod
     def invalidParameterIsVisible(self): ...
-            
+
     @abstractmethod
     def getParametersMatchingType(self, type): ...
-            
+
     @abstractmethod
     def addParameterGroupParameters(self, parameter_group, type, parameters): ...
-            
+
     @abstractmethod
     def getModules(self): ...
-            
+
     @abstractmethod
     def setModules(self, modules): ...
-            
+
     @abstractmethod
     def hasParameter(self, parameter_name): ...
-            
+
     @abstractmethod
     def getModuleID(self): ...
-            
+
     @abstractmethod
     def setModuleID(self, module_id): ...
-            
+
     @abstractmethod
     def getShortDescription(self): ...
-            
+
     @abstractmethod
     def getNotes(self): ...
-            
+
     @abstractmethod
     def setNotes(self, notes): ...
-            
+
     @abstractmethod
     def isEnabled(self): ...
-            
+
     @abstractmethod
     def setEnabled(self, enabled): ...
-            
+
     @abstractmethod
     def canBeDisabled(self): ...
-            
+
     @abstractmethod
     def setCanBeDisabled(self, can_be_disabled): ...
-            
+
     @abstractmethod
     def canShowProcessingTitle(self): ...
-            
+
     @abstractmethod
     def setShowProcessingViewTitle(self, show_processing_view_title): ...
-            
+
     @abstractmethod
     def isVerbose(self): ...
-            
+
     @abstractmethod
     def setVerbose(self, verbose_in): ...
-            
+
     @abstractmethod
     def canShowOutput(self): ...
-            
+
     @abstractmethod
     def setShowOutput(self, show_output): ...
-            
+
     @abstractmethod
     def isRunnable(self): ...
-            
+
     @abstractmethod
     def setRunnable(self, runnable): ...
-            
+
     @abstractmethod
     def isReachable(self): ...
-            
+
     @abstractmethod
     def setReachable(self, reachable): ...
-            
+
     @abstractmethod
     def isDeprecated(self): ...
-            
+
     @abstractmethod
     def setDeprecated(self, deprecated): ...
-            
+
     @abstractmethod
     def getIL2Support(self): ...
-            
+
     @abstractmethod
     def getRedirectModuleID(self, workspace): ...
-            
+
     @abstractmethod
     def setRedirectModuleID(self, redirect_module_id): ...
-            
+
     @abstractmethod
     def hasVisibleParameters(self): ...
-            
+
     @abstractmethod
     def duplicate(self, new_modules, copy_id): ...
-            
+
     @abstractmethod
     def writeStatus(self, message): ...
-            
+
     @abstractmethod
     def writeProgressStatus(self, count, total, feature_being_processed): ...
-    

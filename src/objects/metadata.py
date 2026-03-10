@@ -37,213 +37,213 @@ AREA_NAME: str = "Area name"
 class Metadata:
     def __init__(self):
         self._store: Dict[str, Any] = {}
-        
+
     def getPythonMetadataStore(self) -> Dict[str, Any]:
         return self._store
-    
+
     def setPythonMetadataStore(self, store: Dict[str, Any]):  # No return
         self._store = store
-        
+
     def getFilename(self) -> str:
         return self._store[FILENAME]
-    
+
     def setFilename(self, filename: str):  # No return
         self._store[FILENAME] = filename
-    
+
     def getFilepath(self) -> str:
         return self._store[FILEPATH]
-    
+
     def setFilepath(self, filepath: str):  # No return
         self._store[FILEPATH] = filepath
-    
+
     def getExt(self) -> str:
         return self._store[EXTENSION]
-    
+
     def setExt(self, ext: str):  # No return
         self._store[EXTENSION] = ext
-    
+
     def getFile(self) -> str:
         if FILE not in self._store:
             return ""
-        
+
         return self._store[FILE]
-    
+
     def setFile(self, file):  # To do
         self._store[FILE] = file
-    
+
     def getHour(self) -> int:
-        raise NotImplementedError('Metadata: getHour')
-    
+        raise NotImplementedError("Metadata: getHour")
+
     def setHour(self, hour: int):  # No return
-        raise NotImplementedError('Metadata: setHour')
-    
+        raise NotImplementedError("Metadata: setHour")
+
     def getMin(self) -> int:
-        raise NotImplementedError('Metadata: getMin')
-    
+        raise NotImplementedError("Metadata: getMin")
+
     def setMin(self, min: int):  # No return
-        raise NotImplementedError('Metadata: setMin')
-    
+        raise NotImplementedError("Metadata: setMin")
+
     def getSec(self) -> int:
-        raise NotImplementedError('Metadata: getSec')
-    
+        raise NotImplementedError("Metadata: getSec")
+
     def setSec(self, sec: int):  # No return
-        raise NotImplementedError('Metadata: setSec')
-    
+        raise NotImplementedError("Metadata: setSec")
+
     def getWell(self) -> str:
-        raise NotImplementedError('Metadata: getWell')
-    
+        raise NotImplementedError("Metadata: getWell")
+
     def setWell(self, well: str):  # No return
-        raise NotImplementedError('Metadata: setWell')
-    
+        raise NotImplementedError("Metadata: setWell")
+
     def getRow(self) -> int:
-        raise NotImplementedError('Metadata: getRow')
-    
+        raise NotImplementedError("Metadata: getRow")
+
     def setRow(self, row: int):  # No return
-        raise NotImplementedError('Metadata: setRow')
-    
+        raise NotImplementedError("Metadata: setRow")
+
     def getCol(self) -> int:
-        raise NotImplementedError('Metadata: getCol')
-    
+        raise NotImplementedError("Metadata: getCol")
+
     def setCol(self, col: int):  # No return
-        raise NotImplementedError('Metadata: setCol')
-    
+        raise NotImplementedError("Metadata: setCol")
+
     def getField(self) -> int:
-        raise NotImplementedError('Metadata: getField')
-    
+        raise NotImplementedError("Metadata: getField")
+
     def setField(self, field: int):  # No return
-        raise NotImplementedError('Metadata: setField')
-    
+        raise NotImplementedError("Metadata: setField")
+
     def getTimepoint(self) -> int:
-        raise NotImplementedError('Metadata: getTimepoint')
-    
+        raise NotImplementedError("Metadata: getTimepoint")
+
     def setTimepoint(self, timepoint: int):  # No return
-        raise NotImplementedError('Metadata: setTimepoint')
-    
+        raise NotImplementedError("Metadata: setTimepoint")
+
     def getZ(self) -> int:
-        raise NotImplementedError('Metadata: getZ')
-    
+        raise NotImplementedError("Metadata: getZ")
+
     def setZ(self, z: int):  # No return
-        raise NotImplementedError('Metadata: setZ')
-    
+        raise NotImplementedError("Metadata: setZ")
+
     def getChannel(self) -> int:
-        raise NotImplementedError('Metadata: getChannel')
-    
+        raise NotImplementedError("Metadata: getChannel")
+
     def setChannel(self, channel: int):  # No return
-        raise NotImplementedError('Metadata: setChannel')
-    
+        raise NotImplementedError("Metadata: setChannel")
+
     def getCelltype(self) -> str:
-        raise NotImplementedError('Metadata: getCelltype')
-    
+        raise NotImplementedError("Metadata: getCelltype")
+
     def setCelltype(self, celltype: str):  # No return
-        raise NotImplementedError('Metadata: setCelltype')
-    
+        raise NotImplementedError("Metadata: setCelltype")
+
     def getMag(self) -> str:
-        raise NotImplementedError('Metadata: getMag')
-    
+        raise NotImplementedError("Metadata: getMag")
+
     def setMag(self, mag: str):  # No return
-        raise NotImplementedError('Metadata: setMag')
-    
+        raise NotImplementedError("Metadata: setMag")
+
     def getYear(self) -> int:
-        raise NotImplementedError('Metadata: getYear')
-    
+        raise NotImplementedError("Metadata: getYear")
+
     def setYear(self, year: int):  # No return
-        raise NotImplementedError('Metadata: setYear')
-    
+        raise NotImplementedError("Metadata: setYear")
+
     def getMonth(self) -> int:
-        raise NotImplementedError('Metadata: getMonth')
-    
+        raise NotImplementedError("Metadata: getMonth")
+
     def setMonth(self, month: int):  # No return
-        raise NotImplementedError('Metadata: setMonth')
-    
+        raise NotImplementedError("Metadata: setMonth")
+
     def getDay(self) -> int:
-        raise NotImplementedError('Metadata: getDay')
-    
+        raise NotImplementedError("Metadata: getDay")
+
     def setDay(self, day: int):  # No return
-        raise NotImplementedError('Metadata: setDay')
-    
+        raise NotImplementedError("Metadata: setDay")
+
     def getComment(self) -> str:
-        raise NotImplementedError('Metadata: getComment')
-    
+        raise NotImplementedError("Metadata: getComment")
+
     def setComment(self, comment: str):  # No return
-        raise NotImplementedError('Metadata: setComment')
-    
+        raise NotImplementedError("Metadata: setComment")
+
     def getKeyword(self) -> str:
-        raise NotImplementedError('Metadata: getKeyword')
-    
+        raise NotImplementedError("Metadata: getKeyword")
+
     def putKeyword(self, keyword: str):  # No return
-        raise NotImplementedError('Metadata: putKeyword')
-    
+        raise NotImplementedError("Metadata: putKeyword")
+
     def getSeriesNumber(self) -> int:
         if SERIES_NUMBER not in self._store:
             return -1
-        
+
         if self._store[SERIES_NUMBER] is None:
             return -1
         else:
             return self._store[SERIES_NUMBER]
-    
+
     def setSeriesNumber(self, seriesNumber: int):  # No return
         self._store[SERIES_NUMBER] = seriesNumber
-    
+
     def getSeriesName(self) -> str:
-        raise NotImplementedError('Metadata: getSeriesName')
-    
+        raise NotImplementedError("Metadata: getSeriesName")
+
     def setSeriesName(self, seriesName: str):  # No return
-        raise NotImplementedError('Metadata: setSeriesName')
-    
+        raise NotImplementedError("Metadata: setSeriesName")
+
     def getUnits(self) -> str:
-        raise NotImplementedError('Metadata: getUnits')
-    
+        raise NotImplementedError("Metadata: getUnits")
+
     def setUnits(self, units: str):  # No return
-        raise NotImplementedError('Metadata: setUnits')
-    
+        raise NotImplementedError("Metadata: setUnits")
+
     def getPlateName(self) -> str:
-        raise NotImplementedError('Metadata: getPlateName')
-    
+        raise NotImplementedError("Metadata: getPlateName")
+
     def setPlateName(self, plateName: str):  # No return
-        raise NotImplementedError('Metadata: setPlateName')
-    
+        raise NotImplementedError("Metadata: setPlateName")
+
     def getPlateManufacturer(self) -> str:
-        raise NotImplementedError('Metadata: getPlateManufacturer')
-    
+        raise NotImplementedError("Metadata: getPlateManufacturer")
+
     def setPlateManufacturer(self, plateManufacturer: str):  # No return
-        raise NotImplementedError('Metadata: setPlateManufacturer')
-    
+        raise NotImplementedError("Metadata: setPlateManufacturer")
+
     def getPlateModel(self) -> str:
-        raise NotImplementedError('Metadata: getPlateModel')
-    
+        raise NotImplementedError("Metadata: getPlateModel")
+
     def setPlateModel(self, plateModel: str):  # No return
-        raise NotImplementedError('Metadata: setPlateModel')
-    
+        raise NotImplementedError("Metadata: setPlateModel")
+
     def getTimelineNumber(self) -> int:
-        raise NotImplementedError('Metadata: getTimelineNumber')
-    
+        raise NotImplementedError("Metadata: getTimelineNumber")
+
     def setTimelineNumber(self, timelineNumber: int):  # No return
-        raise NotImplementedError('Metadata: setTimelineNumber')
-    
+        raise NotImplementedError("Metadata: setTimelineNumber")
+
     def getActionNumber(self) -> int:
-        raise NotImplementedError('Metadata: getActionNumber')
-    
+        raise NotImplementedError("Metadata: getActionNumber")
+
     def setActionNumber(self, actionNumber: int):  # No return
-        raise NotImplementedError('Metadata: setActionNumber')
-    
+        raise NotImplementedError("Metadata: setActionNumber")
+
     def getAsString(self, property: str) -> str:
-        raise NotImplementedError('Metadata: getAsString')
-    
+        raise NotImplementedError("Metadata: getAsString")
+
     def printParameters(self):  # No return
-        raise NotImplementedError('Metadata: raise NotImplementedErrorParameters')
-    
+        raise NotImplementedError("Metadata: raise NotImplementedErrorParameters")
+
     def insertMetadataValues(self, genericFormat: str) -> str:
-        raise NotImplementedError('Metadata: insertMetadataValues')
+        raise NotImplementedError("Metadata: insertMetadataValues")
 
     def hasKey(self, key: str) -> bool:
         return key in self._store.keys()
-    
+
     def keySet(self):  # To do
-        raise NotImplementedError('Metadata: keySet')
+        raise NotImplementedError("Metadata: keySet")
 
     def values(self):  # To do
-        raise NotImplementedError('Metadata: values')
+        raise NotImplementedError("Metadata: values")
 
     def clear(self):  # No return
         self._store = {}
@@ -257,9 +257,8 @@ class Metadata:
     def remove(self, key: str) -> Any:
         item = self._store[key]
         self._store.pop(key)
-        
+
         return item
 
     def clone(self) -> Metadata:
-        raise NotImplementedError('Metadata: clone')
-        
+        raise NotImplementedError("Metadata: clone")

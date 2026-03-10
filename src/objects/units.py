@@ -16,12 +16,15 @@ MINUTE: str = "Minutes"
 HOUR: str = "Hours"
 DAY: str = "Days"
 
+
 class Units:
     spatial_units: str = PIXELS
     temporal_units: str = FRAMES
-    
+
+
 def replaceSpatialUnits(input_string: str) -> str:
     return input_string.replace("${SCAL}", getSpatialSymbol())
+
 
 def getSpatialSymbol() -> str:
     symbol_map: Dict[str, str] = {
@@ -31,16 +34,18 @@ def getSpatialSymbol() -> str:
         MILLIMETRE: "mm",
         MICROMETRE: "μm",
         NANOMETRE: "nm",
-        ANGSTROM: "Å"
+        ANGSTROM: "Å",
     }
-    
+
     if Units.spatial_units in symbol_map:
         return symbol_map[Units.spatial_units]
-    
-    return ""         
+
+    return ""
+
 
 def replaceTemporalUnits(input_string: str) -> str:
     return input_string.replace("${TCAL}", getTemporalSymbol())
+
 
 def getTemporalSymbol() -> str:
     symbol_map: Dict[str, str] = {
@@ -50,9 +55,9 @@ def getTemporalSymbol() -> str:
         SECOND: "s",
         MINUTE: "min",
         HOUR: "h",
-        DAY: "days"
+        DAY: "days",
     }
-    
+
     if Units.temporal_units in symbol_map:
         return symbol_map[Units.temporal_units]
 

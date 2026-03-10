@@ -2,6 +2,7 @@
 from __future__ import annotations
 from typing import Any, List, Optional
 
+
 class JFileType:
     # Constructors
     def __init__(self, pathname: str): ...

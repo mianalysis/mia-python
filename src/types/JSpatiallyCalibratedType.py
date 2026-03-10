@@ -1,6 +1,7 @@
 # Listing the methods, but to avoid annotating yet more Java classes (for now), annotating any unknown classes as Any
 from __future__ import annotations
 
+
 class JSpatiallyCalibrated:
     # Methods
     def getName(self) -> str: ...

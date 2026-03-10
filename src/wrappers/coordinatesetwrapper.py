@@ -1,6 +1,6 @@
 from __future__ import annotations
-from jpype import JImplements, JInt, JOverride # type: ignore
-from scyjava import jimport # type: ignore
+from jpype import JImplements, JInt, JOverride  # type: ignore
+from scyjava import jimport  # type: ignore
 from typing import TYPE_CHECKING
 from weakref import WeakKeyDictionary
 
@@ -11,30 +11,36 @@ if TYPE_CHECKING:
     from src.types.JPointType import JPointType
     from src.types.types import Point, Points
 
-JPoint = jimport('io.github.mianalysis.mia.object.coordinates.Point') # type: ignore
+JPoint = jimport("io.github.mianalysis.mia.object.coordinates.Point")  # type: ignore
 
-_wrapper_cache: WeakKeyDictionary[CoordinateSet, CoordinateSetWrapper] = WeakKeyDictionary()
+_wrapper_cache: WeakKeyDictionary[CoordinateSet, CoordinateSetWrapper] = (
+    WeakKeyDictionary()
+)
 
-@JImplements('io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI','java.lang.Iterable')
-class CoordinateSetWrapper():
+
+@JImplements(
+    "io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetI",
+    "java.lang.Iterable",
+)
+class CoordinateSetWrapper:
     def __init__(self):
         self._coordinate_set: CoordinateSet = CoordinateSet()
-                    
+
     def getPythonCoordinateSet(self) -> CoordinateSet:
         return self._coordinate_set
-    
+
     def setPythonCoordinateSet(self, coordinate_set: CoordinateSet):
         self._coordinate_set = coordinate_set
 
     def getPythonPoints(self) -> Points:
         return self._coordinate_set.getPoints()
 
-    def getPythonPointAtIndex(self, idx:int) -> Point:
+    def getPythonPointAtIndex(self, idx: int) -> Point:
         return self._coordinate_set.getPointAtIndex(idx)
-        
+
     def getPointAtIndex(self, idx: int) -> JPointType[int]:
         point: Point = self._coordinate_set.getPointAtIndex(idx)
-        return JPoint[int](point[idx,0],point[idx,1],point[idx,2]) # type: ignore
+        return JPoint[int](point[idx, 0], point[idx, 1], point[idx, 2])  # type: ignore
 
     @JOverride
     def getFactory(self) -> CoordinateSetFactoryWrapper:
@@ -42,7 +48,7 @@ class CoordinateSetWrapper():
 
     @JOverride
     def addCoord(self, x: int, y: int, z: int) -> bool:
-        return self._coordinate_set.addCoord(x,y,z)
+        return self._coordinate_set.addCoord(x, y, z)
 
     @JOverride
     def getNumberOfElements(self) -> int:
@@ -53,34 +59,35 @@ class CoordinateSetWrapper():
         return self.getFactory().createCoordinateSet()
 
     @JOverride
-    def finalise(self): # No return
+    def finalise(self):  # No return
         self._coordinate_set.finalise()
 
     @JOverride
-    def finaliseSlice(self, z: int): # No return
+    def finaliseSlice(self, z: int):  # No return
         self._coordinate_set.finaliseSlice(z)
 
     @JOverride
     def duplicate(self) -> CoordinateSetWrapper:
-        new_coordinate_set_wrapper: CoordinateSetWrapper = self.getFactory().createCoordinateSet()
-        
+        new_coordinate_set_wrapper: CoordinateSetWrapper = (
+            self.getFactory().createCoordinateSet()
+        )
+
         point: Point
         for point in self._coordinate_set.getPoints():
             new_coordinate_set_wrapper.addCoord(point[0], point[1], point[2])
 
-        return new_coordinate_set_wrapper        
-    
+        return new_coordinate_set_wrapper
+
     @JOverride
     def calculateProjected(self) -> CoordinateSetWrapper:
-        raise NotImplementedError('CoordinateSetWrapper: calculateProjected')
-        
+        raise NotImplementedError("CoordinateSetWrapper: calculateProjected")
+
     @JOverride
     def getSlice(self, slice: int) -> CoordinateSetWrapper:
-        raise NotImplementedError('CoordinateSetWrapper: getSlice')
-
+        raise NotImplementedError("CoordinateSetWrapper: getSlice")
 
     # From Set
-    
+
     @JOverride
     def size(self) -> int:
         return self._coordinate_set.size()
@@ -94,21 +101,21 @@ class CoordinateSetWrapper():
         return self._coordinate_set.isEmpty()
 
     @JOverride
-    def toArray(self, array=None): # To do
+    def toArray(self, array=None):  # To do
         return self._coordinate_set.toArray(array)
 
     @JOverride
     def contains(self, point: Point) -> bool:
         return self._coordinate_set.contains(point)
-        
+
     @JOverride
     def containsAll(self, points: Points) -> bool:
         return self._coordinate_set.containsAll(points)
-    
+
     @JOverride
     def add(self, point: Point) -> bool:
         return self._coordinate_set.add(point)
-        
+
     @JOverride
     def addAll(self, points: Points) -> bool:
         return self._coordinate_set.addAll(points)
@@ -120,15 +127,15 @@ class CoordinateSetWrapper():
     @JOverride
     def remove(self, point: Point) -> bool:
         return self._coordinate_set.remove(point)
-        
+
     @JOverride
     def removeAll(self, points: Points) -> bool:
         return self._coordinate_set.removeAll(points)
 
     @JOverride
-    def clear(self): # No return
+    def clear(self):  # No return
         return self._coordinate_set.clear()
-        
+
     @JOverride
     def equals(self, point: Point) -> bool:
         return self._coordinate_set.equals(point)
@@ -138,49 +145,52 @@ class CoordinateSetWrapper():
         return self._coordinate_set.hashCode(point)
 
     @JOverride
-    def spliterator(self): # To do
-        raise NotImplementedError('CoordinateSetWrapper: spliterator')
+    def spliterator(self):  # To do
+        raise NotImplementedError("CoordinateSetWrapper: spliterator")
 
 
-@JImplements('java.util.Iterator')
+@JImplements("java.util.Iterator")
 class CoordinateSetWrapperIterator:
     def __init__(self, coordinate_set: CoordinateSet):
         self._next_idx: int = 0
         self._coordinate_set: CoordinateSet = coordinate_set
-    
+
     @JOverride
     def hasNext(self) -> bool:
         return self._next_idx < self._coordinate_set.size()
-    
+
     @JOverride
-    def next(self) -> JPointType: 
+    def next(self) -> JPointType:
         point: Point = self._coordinate_set.getPointAtIndex(self._next_idx)
         self._next_idx = self._next_idx + 1
-        
-        return JPoint(JInt(point[0]),JInt(point[1]),JInt(point[2]))
-    
+
+        return JPoint(JInt(point[0]), JInt(point[1]), JInt(point[2]))
+
     @JOverride
-    def remove(self): # No return
-        raise NotImplementedError('CoordinateSetWrapperIterator: remove')
-            
-    def forEachRemaining(self, action): # To do
-        raise NotImplementedError('CoordinateSetWrapperIterator: forEachRemaining')
-    
-@JImplements('io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI')
-class CoordinateSetFactoryWrapper():    
+    def remove(self):  # No return
+        raise NotImplementedError("CoordinateSetWrapperIterator: remove")
+
+    def forEachRemaining(self, action):  # To do
+        raise NotImplementedError("CoordinateSetWrapperIterator: forEachRemaining")
+
+
+@JImplements("io.github.mianalysis.mia.object.coordinates.volume.CoordinateSetFactoryI")
+class CoordinateSetFactoryWrapper:
     def __init__(self):
         self._coordinate_set_factory: CoordinateSetFactory = CoordinateSetFactory()
-        
+
     def getPythonCoordinateSetFactory(self) -> CoordinateSetFactory:
         return self._coordinate_set_factory
-    
-    def setPythonCoordinateSetFactory(self, coordinate_set_factory: CoordinateSetFactory):
+
+    def setPythonCoordinateSetFactory(
+        self, coordinate_set_factory: CoordinateSetFactory
+    ):
         self._coordinate_set_factory = coordinate_set_factory
-    
+
     @JOverride
     def getName(self) -> str:
         return "Python coordinate set factory"
-    
+
     @JOverride
     def createCoordinateSet(self) -> CoordinateSetWrapper:
         return CoordinateSetWrapper()
@@ -188,27 +198,26 @@ class CoordinateSetFactoryWrapper():
     @JOverride
     def duplicate(self) -> CoordinateSetFactoryWrapper:
         return CoordinateSetFactoryWrapper()
-    
+
     @JOverride
     def calculateSurface(self, is_2D: bool) -> CoordinateSetWrapper:
-        raise NotImplementedError('CoordinateSetWrapper: calculateSurface')
-    
+        raise NotImplementedError("CoordinateSetWrapper: calculateSurface")
+
     @JOverride
     def calculateSurface2D(self) -> CoordinateSetWrapper:
-        raise NotImplementedError('CoordinateSetWrapper: calculateSurface2D')
-    
+        raise NotImplementedError("CoordinateSetWrapper: calculateSurface2D")
+
     @JOverride
     def calculateSurface3D(self) -> CoordinateSetWrapper:
-        raise NotImplementedError('CoordinateSetWrapper: calculateSurface3D')
+        raise NotImplementedError("CoordinateSetWrapper: calculateSurface3D")
 
 
 def wrapCoordinateSet(coordinate_set: CoordinateSet) -> CoordinateSetWrapper:
     try:
         return _wrapper_cache[coordinate_set]
-    except:        
+    except:
         coordinate_set_wrapper: CoordinateSetWrapper = CoordinateSetWrapper()
         coordinate_set_wrapper.setPythonCoordinateSet(coordinate_set)
-        _wrapper_cache[coordinate_set]  = coordinate_set_wrapper
-    
+        _wrapper_cache[coordinate_set] = coordinate_set_wrapper
+
         return coordinate_set_wrapper
-    

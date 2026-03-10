@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from jpype import JImplements, JOverride # type: ignore
+from jpype import JImplements, JOverride  # type: ignore
 from typing import List
 from weakref import WeakKeyDictionary
 
@@ -10,27 +10,30 @@ from src.wrappers.workspacewrapper import WorkspaceWrapper
 
 _wrapper_cache: WeakKeyDictionary[Modules, ModulesWrapper] = WeakKeyDictionary()
 
+
 @JImplements("io.github.mianalysis.mia.module.ModulesI")
 class ModulesWrapper:
     def __init__(self) -> None:
         self._modules: Modules = Modules()
-    
+
     def getPythonModules(self) -> Modules:
         return self._modules
-    
+
     def setPythonModules(self, modules: Modules):  # No return
         self._modules = modules
-        
+
     @JOverride
     def getModules(self) -> List[ModuleWrapper]:
         raise NotImplementedError("ModulesWrapper: getModules")
 
     @JOverride
-    def execute(self, workspace: WorkspaceWrapper, clear_memory_at_and: bool) -> bool: # To do
+    def execute(
+        self, workspace: WorkspaceWrapper, clear_memory_at_and: bool
+    ) -> bool:  # To do
         raise NotImplementedError("ModulesWrapper: execute")
 
     @JOverride
-    def removeAllModules(self): # No return
+    def removeAllModules(self):  # No return
         raise NotImplementedError("ModulesWrapper: removeAllModules")
 
     @JOverride
@@ -38,7 +41,7 @@ class ModulesWrapper:
         raise NotImplementedError("ModulesWrapper: getAnalysisFilename")
 
     @JOverride
-    def setAnalysisFilename(self, analysis_filename: str): # No return
+    def setAnalysisFilename(self, analysis_filename: str):  # No return
         raise NotImplementedError("ModulesWrapper: setAnalysisFilename")
 
     @JOverride
@@ -46,11 +49,11 @@ class ModulesWrapper:
         raise NotImplementedError("ModulesWrapper: getModuleByID")
 
     @JOverride
-    def getImageSource(self, image_name: str, cut_off_module: ModuleWrapper): # To do
+    def getImageSource(self, image_name: str, cut_off_module: ModuleWrapper):  # To do
         raise NotImplementedError("ModulesWrapper: getImageSource")
 
     @JOverride
-    def getObjectSource(self, object_name: str, cut_off_module: ModuleWrapper): 
+    def getObjectSource(self, object_name: str, cut_off_module: ModuleWrapper):
         raise NotImplementedError("ModulesWrapper: getObjectSource")
 
     @JOverride
@@ -62,47 +65,59 @@ class ModulesWrapper:
         raise NotImplementedError("ModulesWrapper: objectsExportMetadata")
 
     @JOverride
-    def hasModuleMatchingType(self, clazz) -> bool: # To do
+    def hasModuleMatchingType(self, clazz) -> bool:  # To do
         raise NotImplementedError("ModulesWrapper: hasModuleMatchingType")
 
     @JOverride
-    def getImageMeasurementRefs(self, image_name: str, cut_off_module: ModuleWrapper): # To do
+    def getImageMeasurementRefs(
+        self, image_name: str, cut_off_module: ModuleWrapper
+    ):  # To do
         raise NotImplementedError("ModulesWrapper: getImageMeasurementRefs")
 
     @JOverride
-    def getObjectMeasurementRefs(self, object_name: str, cut_off_module: ModuleWrapper): # To do
+    def getObjectMeasurementRefs(
+        self, object_name: str, cut_off_module: ModuleWrapper
+    ):  # To do
         raise NotImplementedError("ModulesWrapper: getObjectMeasurementRefs")
 
     @JOverride
-    def getObjectMetadataRefs(self, object_name: str, cut_off_module: ModuleWrapper): # To do
+    def getObjectMetadataRefs(
+        self, object_name: str, cut_off_module: ModuleWrapper
+    ):  # To do
         raise NotImplementedError("ModulesWrapper: getObjectMetadataRefs")
 
     @JOverride
-    def getMetadataRefs(self, cut_off_module: ModuleWrapper): # To do
+    def getMetadataRefs(self, cut_off_module: ModuleWrapper):  # To do
         raise NotImplementedError("ModulesWrapper: getMetadataRefs")
 
     @JOverride
-    def getParentChildRefs(self, cut_off_module: ModuleWrapper): # To do
+    def getParentChildRefs(self, cut_off_module: ModuleWrapper):  # To do
         raise NotImplementedError("ModulesWrapper: getParentChildRefs")
 
     @JOverride
-    def getPartnerRefs(self, cut_off_module: ModuleWrapper): # To do
+    def getPartnerRefs(self, cut_off_module: ModuleWrapper):  # To do
         raise NotImplementedError("ModulesWrapper: getPartnerRefs")
 
     @JOverride
-    def getParametersMatchingType(self, type, cut_off_module: ModuleWrapper): # To do
+    def getParametersMatchingType(self, type, cut_off_module: ModuleWrapper):  # To do
         raise NotImplementedError("ModulesWrapper: getParametersMatchingType")
 
     @JOverride
-    def getAvailableObjectsMatchingClass(self, cut_off_module: ModuleWrapper, object_class, ignore_removed: bool): # To do
+    def getAvailableObjectsMatchingClass(
+        self, cut_off_module: ModuleWrapper, object_class, ignore_removed: bool
+    ):  # To do
         raise NotImplementedError("ModulesWrapper: getAvailableObjectsMatchingClass")
 
     @JOverride
-    def getAvailableObjects(self, cut_off_module: ModuleWrapper, ignore_removed: bool): # To do
+    def getAvailableObjects(
+        self, cut_off_module: ModuleWrapper, ignore_removed: bool
+    ):  # To do
         raise NotImplementedError("ModulesWrapper: getAvailableObjects")
 
     @JOverride
-    def getAvailableImages(self, cut_off_module: ModuleWrapper, ignore_removed: bool): # To do
+    def getAvailableImages(
+        self, cut_off_module: ModuleWrapper, ignore_removed: bool
+    ):  # To do
         raise NotImplementedError("ModulesWrapper: getAvailableImages")
 
     @JOverride
@@ -110,27 +125,27 @@ class ModulesWrapper:
         raise NotImplementedError("ModulesWrapper: hasVisibleParameters")
 
     @JOverride
-    def getInputControl(self): # To do
+    def getInputControl(self):  # To do
         raise NotImplementedError("ModulesWrapper: getInputControl")
 
     @JOverride
-    def setInputControl(self, input_control): # To do
+    def setInputControl(self, input_control):  # To do
         raise NotImplementedError("ModulesWrapper: setInputControl")
 
     @JOverride
-    def getOutputControl(self): # To do
+    def getOutputControl(self):  # To do
         raise NotImplementedError("ModulesWrapper: getOutputControl")
 
     @JOverride
-    def setOutputControl(self, output_control): # To do
+    def setOutputControl(self, output_control):  # To do
         raise NotImplementedError("ModulesWrapper: setOutputControl")
 
     @JOverride
-    def reorder(self, from_indices: List[int], to_idx: int): # No return
+    def reorder(self, from_indices: List[int], to_idx: int):  # No return
         raise NotImplementedError("ModulesWrapper: reorder")
 
     @JOverride
-    def insert(self, modules_to_insert: ModulesWrapper, to_idx: int): # No return
+    def insert(self, modules_to_insert: ModulesWrapper, to_idx: int):  # No return
         raise NotImplementedError("ModulesWrapper: insert")
 
     @JOverride
@@ -166,38 +181,36 @@ class ModulesWrapper:
         raise NotImplementedError("ModulesWrapper: removeAtIndex")
 
     @JOverride
-    def clear(self): # No return
+    def clear(self):  # No return
         raise NotImplementedError("ModulesWrapper: clear")
 
     @JOverride
     def indexOf(self, module: ModuleWrapper) -> int:
         raise NotImplementedError("ModulesWrapper: indexOf")
-    
-    
+
     # From Refs
-    
+
     @JOverride
     def add(self, ref) -> bool:
         raise NotImplementedError("ModulesWrapper: add")
-    
+
     @JOverride
-    def values(self): # To do
+    def values(self):  # To do
         raise NotImplementedError("ModulesWrapper: values")
-    
-    
+
     # From Iterable
-    
+
     @JOverride
-    def iterator(self): # To do
+    def iterator(self):  # To do
         raise NotImplementedError("ModulesWrapper: iterator")
-    
-    
-def wrapModules(modules: Modules) -> ModulesWrapper: # To do
+
+
+def wrapModules(modules: Modules) -> ModulesWrapper:  # To do
     try:
         return _wrapper_cache[modules]
-    except:        
+    except:
         modules_wrapper: ModulesWrapper = ModulesWrapper()
         modules_wrapper.setPythonModules(modules)
-        _wrapper_cache[modules]  = modules_wrapper
-    
+        _wrapper_cache[modules] = modules_wrapper
+
         return modules_wrapper
